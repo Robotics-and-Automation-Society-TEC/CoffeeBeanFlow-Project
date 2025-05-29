@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "fQuM9fRRA/U=",
+  "dgSpecHash": "zDkNomwHn2Q=",
   "success": true,
-  "projectFilePath": "C:\\Users\\josev\\CoffeBeanFlow\\CoffeBeanFlow1\\CoffeeBeanFlow-Project\\CoffeBeanFlowDB\\CoffeBeanFlowDB.csproj",
+  "projectFilePath": "C:\\Users\\josev\\OneDrive\\Documentos\\Semestre II 2025\\IEEEras\\CoffeeBeanFlow-Project\\CoffeBeanFlowDB\\CoffeBeanFlowDB.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\josev\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.5\\microsoft.aspnetcore.openapi.9.0.5.nupkg.sha512",
     "C:\\Users\\josev\\.nuget\\packages\\microsoft.entityframeworkcore\\9.0.5\\microsoft.entityframeworkcore.9.0.5.nupkg.sha512",

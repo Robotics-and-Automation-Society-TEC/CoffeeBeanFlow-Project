@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\josev\\CoffeBeanFlow\\CoffeBeanFlow1\\CoffeeBeanFlow-Project\\CoffeBeanFlowDB\\CoffeBeanFlowDB.csproj": {}
+    "C:\\Users\\josev\\OneDrive\\Documentos\\Semestre II 2025\\IEEEras\\CoffeeBeanFlow-Project\\CoffeBeanFlowDB\\CoffeBeanFlowDB.csproj": {}
   },
   "projects": {
-    "C:\\Users\\josev\\CoffeBeanFlow\\CoffeBeanFlow1\\CoffeeBeanFlow-Project\\CoffeBeanFlowDB\\CoffeBeanFlowDB.csproj": {
+    "C:\\Users\\josev\\OneDrive\\Documentos\\Semestre II 2025\\IEEEras\\CoffeeBeanFlow-Project\\CoffeBeanFlowDB\\CoffeBeanFlowDB.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\josev\\CoffeBeanFlow\\CoffeBeanFlow1\\CoffeeBeanFlow-Project\\CoffeBeanFlowDB\\CoffeBeanFlowDB.csproj",
+        "projectUniqueName": "C:\\Users\\josev\\OneDrive\\Documentos\\Semestre II 2025\\IEEEras\\CoffeeBeanFlow-Project\\CoffeBeanFlowDB\\CoffeBeanFlowDB.csproj",
         "projectName": "CoffeBeanFlowDB",
-        "projectPath": "C:\\Users\\josev\\CoffeBeanFlow\\CoffeBeanFlow1\\CoffeeBeanFlow-Project\\CoffeBeanFlowDB\\CoffeBeanFlowDB.csproj",
+        "projectPath": "C:\\Users\\josev\\OneDrive\\Documentos\\Semestre II 2025\\IEEEras\\CoffeeBeanFlow-Project\\CoffeBeanFlowDB\\CoffeBeanFlowDB.csproj",
         "packagesPath": "C:\\Users\\josev\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\josev\\CoffeBeanFlow\\CoffeBeanFlow1\\CoffeeBeanFlow-Project\\CoffeBeanFlowDB\\obj\\",
+        "outputPath": "C:\\Users\\josev\\OneDrive\\Documentos\\Semestre II 2025\\IEEEras\\CoffeeBeanFlow-Project\\CoffeBeanFlowDB\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
