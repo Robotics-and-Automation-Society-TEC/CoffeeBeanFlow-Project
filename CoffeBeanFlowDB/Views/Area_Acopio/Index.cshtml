@@ -1,0 +1,143 @@
+@model IEnumerable<CoffeBeanFlowDB.Models.Area_AcopioItem>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Rtotal)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Robjetivo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rsobreobjetivo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Vendido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Disponible)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Enproceso)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Altura)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Zona)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nrecibo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nproductor)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nfinca)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Despulpado)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Psegundas)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PDmecanicos)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PPulpaPergamino)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PPergaminoPulpa)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DFruta)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Dpergamino_humedo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ID_Secado)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rtotal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Robjetivo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rsobreobjetivo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Vendido)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Disponible)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Enproceso)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Altura)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Zona)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nrecibo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nproductor)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nfinca)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Despulpado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Psegundas)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PDmecanicos)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PPulpaPergamino)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PPergaminoPulpa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DFruta)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Dpergamino_humedo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ID_Secado)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Nlote">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Nlote">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Nlote">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

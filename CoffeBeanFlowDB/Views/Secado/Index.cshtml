@@ -1,0 +1,65 @@
+@model IEnumerable<CoffeBeanFlowDB.Models.SecadoItem>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Finicio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Dsecado)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Psolar)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pmecanico)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ffinal)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nlote)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Finicio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Dsecado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Psolar)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Pmecanico)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ffinal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nlote)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID_Secado">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ID_Secado">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ID_Secado">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

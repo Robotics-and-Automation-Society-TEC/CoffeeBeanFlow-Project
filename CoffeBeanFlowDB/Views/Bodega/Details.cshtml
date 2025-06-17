@@ -1,0 +1,90 @@
+@model CoffeBeanFlowDB.Models.BodegaItem
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>BodegaItem</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.D_Bellota)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.D_Bellota)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.D_Pergamino)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.D_Pergamino)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Hinicial)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Hinicial)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Hfinal)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Hfinal)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.W_pergamino)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.W_pergamino)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.W_bellota)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.W_bellota)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FinicioReposo)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FinicioReposo)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CantidadSacos)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CantidadSacos)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PMTexterna)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PMTexterna)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PMTinterna)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PMTinterna)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PMH_relativa)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PMH_relativa)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Nlote)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Nlote)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.ID_Bodega">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

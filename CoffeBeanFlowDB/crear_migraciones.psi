@@ -1,0 +1,39 @@
+# Lista de tus DbContext
+$contexts = @(
+    "Area_AcopioContext",
+    "BodegaContext",
+    "CatacionContext",
+    "Enviar_muestrasContext",
+    "Formulario_CaracterizacionContext",
+    "Gbx_inmadurasContext",
+    "Gbx_madurasContext",
+    "Gbx_sobremadurasContext",
+    "Guardar_CafeContext",
+    "HumedadContext",
+    "NcamaContext",
+    "PesoVerdeContext",
+    "RCinmadurasContext",
+    "RCmadurasContext",
+    "RCsobremadurasContext",
+    "Registro_FormularioContext",
+    "RondasContext",
+    "SecadoContext",
+    "SuministraContext",
+    "TemperaturaSecadoContext",
+    "TermoHigrometriaContext",
+    "TrillaContext"
+)
+
+# Crear carpeta para todas las migraciones si no existe
+if (-not (Test-Path ".\Migrations")) {
+    New-Item -ItemType Directory -Path ".\Migrations"
+}
+
+# Ejecutar migraciones para cada contexto
+foreach ($context in $contexts) {
+    $migrationName = "Init_$context"
+    $outputDir = "Migrations\$context"
+
+    Write-Host "`n🧱 Generando migración para $context..."
+    dotnet ef migrations add $migrationName --context $context --output-dir $outputDir
+}

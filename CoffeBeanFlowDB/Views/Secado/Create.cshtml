@@ -1,0 +1,58 @@
+@model CoffeBeanFlowDB.Models.SecadoItem
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>SecadoItem</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Finicio" class="control-label"></label>
+                <input asp-for="Finicio" class="form-control" />
+                <span asp-validation-for="Finicio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Dsecado" class="control-label"></label>
+                <input asp-for="Dsecado" class="form-control" />
+                <span asp-validation-for="Dsecado" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Psolar" class="control-label"></label>
+                <input asp-for="Psolar" class="form-control" />
+                <span asp-validation-for="Psolar" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Pmecanico" class="control-label"></label>
+                <input asp-for="Pmecanico" class="form-control" />
+                <span asp-validation-for="Pmecanico" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ffinal" class="control-label"></label>
+                <input asp-for="Ffinal" class="form-control" />
+                <span asp-validation-for="Ffinal" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Nlote" class="control-label"></label>
+                <input asp-for="Nlote" class="form-control" />
+                <span asp-validation-for="Nlote" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
