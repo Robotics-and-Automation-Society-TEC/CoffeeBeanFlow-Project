@@ -1,31 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\josev\\OneDrive\\Documentos\\Semestre II 2025\\IEEEras\\CoffeeBeanFlow-Project\\CoffeBeanFlowDB\\CoffeBeanFlowDB.csproj": {}
+    "C:\\Users\\noemi\\OneDrive\\Documentos\\Repo-Coffee\\CoffeeBeanFlow-Project\\CoffeBeanFlowDB\\CoffeBeanFlowDB.csproj": {}
   },
   "projects": {
-    "C:\\Users\\josev\\OneDrive\\Documentos\\Semestre II 2025\\IEEEras\\CoffeeBeanFlow-Project\\CoffeBeanFlowDB\\CoffeBeanFlowDB.csproj": {
+    "C:\\Users\\noemi\\OneDrive\\Documentos\\Repo-Coffee\\CoffeeBeanFlow-Project\\CoffeBeanFlowDB\\CoffeBeanFlowDB.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\josev\\OneDrive\\Documentos\\Semestre II 2025\\IEEEras\\CoffeeBeanFlow-Project\\CoffeBeanFlowDB\\CoffeBeanFlowDB.csproj",
+        "projectUniqueName": "C:\\Users\\noemi\\OneDrive\\Documentos\\Repo-Coffee\\CoffeeBeanFlow-Project\\CoffeBeanFlowDB\\CoffeBeanFlowDB.csproj",
         "projectName": "CoffeBeanFlowDB",
-        "projectPath": "C:\\Users\\josev\\OneDrive\\Documentos\\Semestre II 2025\\IEEEras\\CoffeeBeanFlow-Project\\CoffeBeanFlowDB\\CoffeBeanFlowDB.csproj",
-        "packagesPath": "C:\\Users\\josev\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\josev\\OneDrive\\Documentos\\Semestre II 2025\\IEEEras\\CoffeeBeanFlow-Project\\CoffeBeanFlowDB\\obj\\",
+        "projectPath": "C:\\Users\\noemi\\OneDrive\\Documentos\\Repo-Coffee\\CoffeeBeanFlow-Project\\CoffeBeanFlowDB\\CoffeBeanFlowDB.csproj",
+        "packagesPath": "C:\\Users\\noemi\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\noemi\\OneDrive\\Documentos\\Repo-Coffee\\CoffeeBeanFlow-Project\\CoffeBeanFlowDB\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\josev\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\noemi\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
