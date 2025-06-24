@@ -1,0 +1,89 @@
+@model CoffeBeanFlowDB.Models.BodegaItem
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>BodegaItem</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID_Bodega" />
+            <div class="form-group">
+                <label asp-for="D_Bellota" class="control-label"></label>
+                <input asp-for="D_Bellota" class="form-control" />
+                <span asp-validation-for="D_Bellota" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="D_Pergamino" class="control-label"></label>
+                <input asp-for="D_Pergamino" class="form-control" />
+                <span asp-validation-for="D_Pergamino" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Hinicial" class="control-label"></label>
+                <input asp-for="Hinicial" class="form-control" />
+                <span asp-validation-for="Hinicial" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Hfinal" class="control-label"></label>
+                <input asp-for="Hfinal" class="form-control" />
+                <span asp-validation-for="Hfinal" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="W_pergamino" class="control-label"></label>
+                <input asp-for="W_pergamino" class="form-control" />
+                <span asp-validation-for="W_pergamino" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="W_bellota" class="control-label"></label>
+                <input asp-for="W_bellota" class="form-control" />
+                <span asp-validation-for="W_bellota" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FinicioReposo" class="control-label"></label>
+                <input asp-for="FinicioReposo" class="form-control" />
+                <span asp-validation-for="FinicioReposo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CantidadSacos" class="control-label"></label>
+                <input asp-for="CantidadSacos" class="form-control" />
+                <span asp-validation-for="CantidadSacos" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PMTexterna" class="control-label"></label>
+                <input asp-for="PMTexterna" class="form-control" />
+                <span asp-validation-for="PMTexterna" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PMTinterna" class="control-label"></label>
+                <input asp-for="PMTinterna" class="form-control" />
+                <span asp-validation-for="PMTinterna" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PMH_relativa" class="control-label"></label>
+                <input asp-for="PMH_relativa" class="form-control" />
+                <span asp-validation-for="PMH_relativa" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Nlote" class="control-label"></label>
+                <input asp-for="Nlote" class="form-control" />
+                <span asp-validation-for="Nlote" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,53 @@
+@model IEnumerable<CoffeBeanFlowDB.Models.PesoVerdeItem>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Winferiores)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Wfinal)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WFinferior)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ID_PesoTrilla)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Winferiores)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Wfinal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WFinferior)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ID_PesoTrilla)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID_PesoVerde">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ID_PesoVerde">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ID_PesoVerde">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

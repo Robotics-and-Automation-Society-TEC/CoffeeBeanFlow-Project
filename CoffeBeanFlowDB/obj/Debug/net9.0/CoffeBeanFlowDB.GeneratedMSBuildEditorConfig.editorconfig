@@ -1,21 +1,473 @@
 is_global = true
 build_property.TargetFramework = net9.0
+build_property.TargetFramework = net9.0
+build_property.TargetPlatformMinVersion = 
 build_property.TargetPlatformMinVersion = 
 build_property.UsingMicrosoftNETSdkWeb = true
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
 build_property.ProjectTypeGuids = 
 build_property.InvariantGlobalization = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
 build_property.PlatformNeutralAssembly = 
 build_property.EnforceExtendedAnalyzerRules = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = CoffeBeanFlowDB
 build_property.RootNamespace = CoffeBeanFlowDB
-build_property.ProjectDir = C:\Users\josev\OneDrive\Documentos\Semestre II 2025\IEEEras\CoffeeBeanFlow-Project\CoffeBeanFlowDB\
+build_property.ProjectDir = C:\Users\noemi\OneDrive\Documentos\Repo-Coffee\CoffeeBeanFlow-Project\CoffeBeanFlowDB\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\josev\OneDrive\Documentos\Semestre II 2025\IEEEras\CoffeeBeanFlow-Project\CoffeBeanFlowDB
+build_property.MSBuildProjectDirectory = C:\Users\noemi\OneDrive\Documentos\Repo-Coffee\CoffeeBeanFlow-Project\CoffeBeanFlowDB
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Area_Acopio/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXJlYV9BY29waW9cQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Area_Acopio/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXJlYV9BY29waW9cRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Area_Acopio/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXJlYV9BY29waW9cRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Area_Acopio/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXJlYV9BY29waW9cRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Area_Acopio/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXJlYV9BY29waW9cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Bodega/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9kZWdhXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Bodega/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9kZWdhXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Bodega/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9kZWdhXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Bodega/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9kZWdhXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Bodega/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQm9kZWdhXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Catacion/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0YWNpb25cQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Catacion/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0YWNpb25cRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Catacion/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0YWNpb25cRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Catacion/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0YWNpb25cRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Catacion/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0YWNpb25cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Enviar_muestras/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW52aWFyX211ZXN0cmFzXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Enviar_muestras/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW52aWFyX211ZXN0cmFzXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Enviar_muestras/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW52aWFyX211ZXN0cmFzXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Enviar_muestras/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW52aWFyX211ZXN0cmFzXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Enviar_muestras/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW52aWFyX211ZXN0cmFzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Formulario_Caracterizacion/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybXVsYXJpb19DYXJhY3Rlcml6YWNpb25cQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Formulario_Caracterizacion/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybXVsYXJpb19DYXJhY3Rlcml6YWNpb25cRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Formulario_Caracterizacion/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybXVsYXJpb19DYXJhY3Rlcml6YWNpb25cRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Formulario_Caracterizacion/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybXVsYXJpb19DYXJhY3Rlcml6YWNpb25cRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Formulario_Caracterizacion/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRm9ybXVsYXJpb19DYXJhY3Rlcml6YWNpb25cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Gbx_inmaduras/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2J4X2lubWFkdXJhc1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Gbx_inmaduras/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2J4X2lubWFkdXJhc1xEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Gbx_inmaduras/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2J4X2lubWFkdXJhc1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Gbx_inmaduras/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2J4X2lubWFkdXJhc1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Gbx_inmaduras/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2J4X2lubWFkdXJhc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Gbx_maduras/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2J4X21hZHVyYXNcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Gbx_maduras/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2J4X21hZHVyYXNcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Gbx_maduras/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2J4X21hZHVyYXNcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Gbx_maduras/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2J4X21hZHVyYXNcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Gbx_maduras/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2J4X21hZHVyYXNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Gbx_sobremaduras/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2J4X3NvYnJlbWFkdXJhc1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Gbx_sobremaduras/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2J4X3NvYnJlbWFkdXJhc1xEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Gbx_sobremaduras/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2J4X3NvYnJlbWFkdXJhc1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Gbx_sobremaduras/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2J4X3NvYnJlbWFkdXJhc1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Gbx_sobremaduras/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR2J4X3NvYnJlbWFkdXJhc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Guardar_Cafe/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR3VhcmRhcl9DYWZlXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Guardar_Cafe/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR3VhcmRhcl9DYWZlXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Guardar_Cafe/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR3VhcmRhcl9DYWZlXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Guardar_Cafe/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR3VhcmRhcl9DYWZlXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Guardar_Cafe/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcR3VhcmRhcl9DYWZlXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Humedad/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSHVtZWRhZFxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Humedad/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSHVtZWRhZFxEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Humedad/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSHVtZWRhZFxEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Humedad/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSHVtZWRhZFxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Humedad/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSHVtZWRhZFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Ncama/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTmNhbWFcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Ncama/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTmNhbWFcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Ncama/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTmNhbWFcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Ncama/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTmNhbWFcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Ncama/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTmNhbWFcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/PesoVerde/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVzb1ZlcmRlXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/PesoVerde/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVzb1ZlcmRlXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/PesoVerde/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVzb1ZlcmRlXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/PesoVerde/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVzb1ZlcmRlXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/PesoVerde/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVzb1ZlcmRlXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/RCinmaduras/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUkNpbm1hZHVyYXNcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/RCinmaduras/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUkNpbm1hZHVyYXNcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/RCinmaduras/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUkNpbm1hZHVyYXNcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/RCinmaduras/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUkNpbm1hZHVyYXNcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/RCinmaduras/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUkNpbm1hZHVyYXNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/RCmaduras/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUkNtYWR1cmFzXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/RCmaduras/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUkNtYWR1cmFzXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/RCmaduras/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUkNtYWR1cmFzXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/RCmaduras/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUkNtYWR1cmFzXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/RCmaduras/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUkNtYWR1cmFzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/RCsobremaduras/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUkNzb2JyZW1hZHVyYXNcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/RCsobremaduras/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUkNzb2JyZW1hZHVyYXNcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/RCsobremaduras/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUkNzb2JyZW1hZHVyYXNcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/RCsobremaduras/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUkNzb2JyZW1hZHVyYXNcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/RCsobremaduras/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUkNzb2JyZW1hZHVyYXNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Registro_Formulario/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0cm9fRm9ybXVsYXJpb1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Registro_Formulario/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0cm9fRm9ybXVsYXJpb1xEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Registro_Formulario/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0cm9fRm9ybXVsYXJpb1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Registro_Formulario/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0cm9fRm9ybXVsYXJpb1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Registro_Formulario/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVnaXN0cm9fRm9ybXVsYXJpb1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Rondas/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9uZGFzXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Rondas/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9uZGFzXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Rondas/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9uZGFzXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Rondas/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9uZGFzXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Rondas/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9uZGFzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Secado/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VjYWRvXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Secado/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VjYWRvXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Secado/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VjYWRvXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Secado/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VjYWRvXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Secado/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VjYWRvXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Suministra/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3VtaW5pc3RyYVxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Suministra/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3VtaW5pc3RyYVxEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Suministra/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3VtaW5pc3RyYVxEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Suministra/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3VtaW5pc3RyYVxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Suministra/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3VtaW5pc3RyYVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/TemperaturaSecado/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVtcGVyYXR1cmFTZWNhZG9cQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/TemperaturaSecado/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVtcGVyYXR1cmFTZWNhZG9cRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/TemperaturaSecado/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVtcGVyYXR1cmFTZWNhZG9cRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/TemperaturaSecado/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVtcGVyYXR1cmFTZWNhZG9cRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/TemperaturaSecado/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVtcGVyYXR1cmFTZWNhZG9cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/TermoHigrometria/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVybW9IaWdyb21ldHJpYVxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/TermoHigrometria/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVybW9IaWdyb21ldHJpYVxEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/TermoHigrometria/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVybW9IaWdyb21ldHJpYVxEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/TermoHigrometria/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVybW9IaWdyb21ldHJpYVxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/TermoHigrometria/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVybW9IaWdyb21ldHJpYVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Trilla/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJpbGxhXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Trilla/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJpbGxhXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Trilla/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJpbGxhXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Trilla/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJpbGxhXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/noemi/OneDrive/Documentos/Repo-Coffee/CoffeeBeanFlow-Project/CoffeBeanFlowDB/Views/Trilla/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJpbGxhXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
