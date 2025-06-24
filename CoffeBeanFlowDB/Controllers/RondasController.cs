@@ -1,152 +1,85 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CoffeBeanFlowDB.Contexts;
 using CoffeBeanFlowDB.Models;
 
+
 namespace CoffeBeanFlowDB.Controllers
 {
-    public class RondasController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class RondasApiController : ControllerBase
     {
         private readonly RondasContext _context;
 
-        public RondasController(RondasContext context)
+        public RondasApiController(RondasContext context)
         {
             _context = context;
         }
 
-        // GET: Rondas
-        public async Task<IActionResult> Index()
+        // GET: api/RondasApi
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<RondasItem>>> GetAll()
         {
-            return View(await _context.Rondas.ToListAsync());
+            return await _context.Rondas.ToListAsync();
         }
 
-        // GET: Rondas/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/RondasApi/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<RondasItem>> GetById(int id)
         {
-            if (id == null)
-            {
+            var item = await _context.Rondas.FindAsync(id);
+            if (item == null)
                 return NotFound();
-            }
-
-            var rondasItem = await _context.Rondas
-                .FirstOrDefaultAsync(m => m.ID_Rondas == id);
-            if (rondasItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(rondasItem);
+            return item;
         }
 
-        // GET: Rondas/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Rondas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: api/RondasApi
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID_Rondas,Valor_calidad,ID_catacion")] RondasItem rondasItem)
+        public async Task<ActionResult<RondasItem>> Create(RondasItem item)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(rondasItem);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(rondasItem);
-        }
-
-        // GET: Rondas/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var rondasItem = await _context.Rondas.FindAsync(id);
-            if (rondasItem == null)
-            {
-                return NotFound();
-            }
-            return View(rondasItem);
-        }
-
-        // POST: Rondas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID_Rondas,Valor_calidad,ID_catacion")] RondasItem rondasItem)
-        {
-            if (id != rondasItem.ID_Rondas)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(rondasItem);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RondasItemExists(rondasItem.ID_Rondas))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(rondasItem);
-        }
-
-        // GET: Rondas/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var rondasItem = await _context.Rondas
-                .FirstOrDefaultAsync(m => m.ID_Rondas == id);
-            if (rondasItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(rondasItem);
-        }
-
-        // POST: Rondas/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var rondasItem = await _context.Rondas.FindAsync(id);
-            if (rondasItem != null)
-            {
-                _context.Rondas.Remove(rondasItem);
-            }
-
+            _context.Rondas.Add(item);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return CreatedAtAction(nameof(GetById), new { id = item.ID_Rondas }, item);
+        }
+
+        // PUT: api/RondasApi/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, RondasItem item)
+        {
+            if (id != item.ID_Rondas)
+                return BadRequest();
+
+            _context.Entry(item).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!RondasItemExists(id))
+                    return NotFound();
+                else
+                    throw;
+            }
+
+            return NoContent();
+        }
+
+        // DELETE: api/RondasApi/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var item = await _context.Rondas.FindAsync(id);
+            if (item == null)
+                return NotFound();
+
+            _context.Rondas.Remove(item);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
         private bool RondasItemExists(int id)

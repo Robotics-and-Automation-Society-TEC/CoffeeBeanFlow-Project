@@ -1,152 +1,96 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CoffeBeanFlowDB.Contexts;
 using CoffeBeanFlowDB.Models;
 
 namespace CoffeBeanFlowDB.Controllers
 {
-    public class HumedadController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class HumedadApiController : ControllerBase
     {
         private readonly HumedadContext _context;
 
-        public HumedadController(HumedadContext context)
+        public HumedadApiController(HumedadContext context)
         {
             _context = context;
         }
 
-        // GET: Humedad
-        public async Task<IActionResult> Index()
+        // GET: api/HumedadApi
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<HumedadItem>>> GetAll()
         {
-            return View(await _context.Humedad.ToListAsync());
+            return await _context.Humedad.ToListAsync();
         }
 
-        // GET: Humedad/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/HumedadApi/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<HumedadItem>> GetById(int id)
         {
-            if (id == null)
+            var item = await _context.Humedad.FindAsync(id);
+
+            if (item == null)
             {
                 return NotFound();
             }
 
-            var humedadItem = await _context.Humedad
-                .FirstOrDefaultAsync(m => m.ID_Humedad == id);
-            if (humedadItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(humedadItem);
+            return item;
         }
 
-        // GET: Humedad/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Humedad/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: api/HumedadApi
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID_Humedad,PHumedad,Temperatura,ID_Secado")] HumedadItem humedadItem)
+        public async Task<ActionResult<HumedadItem>> Create(HumedadItem item)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(humedadItem);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(humedadItem);
-        }
-
-        // GET: Humedad/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var humedadItem = await _context.Humedad.FindAsync(id);
-            if (humedadItem == null)
-            {
-                return NotFound();
-            }
-            return View(humedadItem);
-        }
-
-        // POST: Humedad/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID_Humedad,PHumedad,Temperatura,ID_Secado")] HumedadItem humedadItem)
-        {
-            if (id != humedadItem.ID_Humedad)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(humedadItem);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!HumedadItemExists(humedadItem.ID_Humedad))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(humedadItem);
-        }
-
-        // GET: Humedad/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var humedadItem = await _context.Humedad
-                .FirstOrDefaultAsync(m => m.ID_Humedad == id);
-            if (humedadItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(humedadItem);
-        }
-
-        // POST: Humedad/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var humedadItem = await _context.Humedad.FindAsync(id);
-            if (humedadItem != null)
-            {
-                _context.Humedad.Remove(humedadItem);
-            }
-
+            _context.Humedad.Add(item);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return CreatedAtAction(nameof(GetById), new { id = item.ID_Humedad }, item);
+        }
+
+        // PUT: api/HumedadApi/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, HumedadItem item)
+        {
+            if (id != item.ID_Humedad)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(item).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!HumedadItemExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // DELETE: api/HumedadApi/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var item = await _context.Humedad.FindAsync(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            _context.Humedad.Remove(item);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
         private bool HumedadItemExists(int id)

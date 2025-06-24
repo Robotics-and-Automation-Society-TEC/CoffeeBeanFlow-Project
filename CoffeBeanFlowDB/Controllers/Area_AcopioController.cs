@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CoffeBeanFlowDB.Contexts;
 using CoffeBeanFlowDB.Models;
 
 namespace CoffeBeanFlowDB.Controllers
 {
-    public class Area_AcopioController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class Area_AcopioController : ControllerBase
     {
         private readonly Area_AcopioContext _context;
 
@@ -19,134 +20,107 @@ namespace CoffeBeanFlowDB.Controllers
             _context = context;
         }
 
-        // GET: Area_Acopio
-        public async Task<IActionResult> Index()
+        // GET: api/Area_Acopio
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Area_AcopioItem>>> GetArea_Acopio()
         {
-            return View(await _context.Area_Acopio.ToListAsync());
+            return await _context.Area_Acopio.ToListAsync();
         }
 
-        // GET: Area_Acopio/Details/5
-        public async Task<IActionResult> Details(string id)
+        // GET: api/Area_Acopio/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Area_AcopioItem>> GetArea_AcopioItem(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var area_AcopioItem = await _context.Area_Acopio
                 .FirstOrDefaultAsync(m => m.Nlote == id);
+
             if (area_AcopioItem == null)
             {
                 return NotFound();
             }
 
-            return View(area_AcopioItem);
+            return area_AcopioItem;
         }
 
-        // GET: Area_Acopio/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Area_Acopio/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: api/Area_Acopio
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Nlote,Rtotal,Robjetivo,Rsobreobjetivo,Vendido,Disponible,Enproceso,Altura,Zona,Nrecibo,Nproductor,Nfinca,Despulpado,Psegundas,PDmecanicos,PPulpaPergamino,PPergaminoPulpa,DFruta,Dpergamino_humedo,ID_Secado")] Area_AcopioItem area_AcopioItem)
+        public async Task<ActionResult<Area_AcopioItem>> PostArea_AcopioItem(Area_AcopioItem area_AcopioItem)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(area_AcopioItem);
+                return BadRequest(ModelState);
+            }
+
+            _context.Area_Acopio.Add(area_AcopioItem);
+            
+            try
+            {
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
             }
-            return View(area_AcopioItem);
+            catch (DbUpdateException)
+            {
+                if (Area_AcopioItemExists(area_AcopioItem.Nlote))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return CreatedAtAction(nameof(GetArea_AcopioItem), new { id = area_AcopioItem.Nlote }, area_AcopioItem);
         }
 
-        // GET: Area_Acopio/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var area_AcopioItem = await _context.Area_Acopio.FindAsync(id);
-            if (area_AcopioItem == null)
-            {
-                return NotFound();
-            }
-            return View(area_AcopioItem);
-        }
-
-        // POST: Area_Acopio/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Nlote,Rtotal,Robjetivo,Rsobreobjetivo,Vendido,Disponible,Enproceso,Altura,Zona,Nrecibo,Nproductor,Nfinca,Despulpado,Psegundas,PDmecanicos,PPulpaPergamino,PPergaminoPulpa,DFruta,Dpergamino_humedo,ID_Secado")] Area_AcopioItem area_AcopioItem)
+        // PUT: api/Area_Acopio/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutArea_AcopioItem(string id, Area_AcopioItem area_AcopioItem)
         {
             if (id != area_AcopioItem.Nlote)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(area_AcopioItem);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!Area_AcopioItemExists(area_AcopioItem.Nlote))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return BadRequest(ModelState);
             }
-            return View(area_AcopioItem);
+
+            _context.Entry(area_AcopioItem).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!Area_AcopioItemExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
-        // GET: Area_Acopio/Delete/5
-        public async Task<IActionResult> Delete(string id)
+        // DELETE: api/Area_Acopio/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteArea_AcopioItem(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var area_AcopioItem = await _context.Area_Acopio
-                .FirstOrDefaultAsync(m => m.Nlote == id);
+            var area_AcopioItem = await _context.Area_Acopio.FindAsync(id);
             if (area_AcopioItem == null)
             {
                 return NotFound();
             }
 
-            return View(area_AcopioItem);
-        }
-
-        // POST: Area_Acopio/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            var area_AcopioItem = await _context.Area_Acopio.FindAsync(id);
-            if (area_AcopioItem != null)
-            {
-                _context.Area_Acopio.Remove(area_AcopioItem);
-            }
-
+            _context.Area_Acopio.Remove(area_AcopioItem);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return NoContent();
         }
 
         private bool Area_AcopioItemExists(string id)

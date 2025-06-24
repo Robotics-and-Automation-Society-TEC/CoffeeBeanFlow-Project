@@ -1,155 +1,99 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CoffeBeanFlowDB.Contexts;
 using CoffeBeanFlowDB.Models;
 
 namespace CoffeBeanFlowDB.Controllers
 {
-    public class Gbx_inmadurasController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class GbxInmadurasApiController : ControllerBase
     {
         private readonly Gbx_inmadurasContext _context;
 
-        public Gbx_inmadurasController(Gbx_inmadurasContext context)
+        public GbxInmadurasApiController(Gbx_inmadurasContext context)
         {
             _context = context;
         }
 
-        // GET: Gbx_inmaduras
-        public async Task<IActionResult> Index()
+        // GET: api/GbxInmadurasApi
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Gbx_inmadurasItem>>> GetGbxInmaduras()
         {
-            return View(await _context.Gbx_inmaduras.ToListAsync());
+            return await _context.Gbx_inmaduras.ToListAsync();
         }
 
-        // GET: Gbx_inmaduras/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/GbxInmadurasApi/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Gbx_inmadurasItem>> GetGbxInmadurasItem(int id)
         {
-            if (id == null)
+            var item = await _context.Gbx_inmaduras.FindAsync(id);
+
+            if (item == null)
             {
                 return NotFound();
             }
 
-            var gbx_inmadurasItem = await _context.Gbx_inmaduras
-                .FirstOrDefaultAsync(m => m.ID_Gbx_inmaduras == id);
-            if (gbx_inmadurasItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(gbx_inmadurasItem);
+            return item;
         }
 
-        // GET: Gbx_inmaduras/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Gbx_inmaduras/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: api/GbxInmadurasApi
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID_Gbx_inmaduras,Valor,ID_inmaduras")] Gbx_inmadurasItem gbx_inmadurasItem)
+        public async Task<ActionResult<Gbx_inmadurasItem>> PostGbxInmadurasItem(Gbx_inmadurasItem item)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(gbx_inmadurasItem);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(gbx_inmadurasItem);
-        }
-
-        // GET: Gbx_inmaduras/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var gbx_inmadurasItem = await _context.Gbx_inmaduras.FindAsync(id);
-            if (gbx_inmadurasItem == null)
-            {
-                return NotFound();
-            }
-            return View(gbx_inmadurasItem);
-        }
-
-        // POST: Gbx_inmaduras/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID_Gbx_inmaduras,Valor,ID_inmaduras")] Gbx_inmadurasItem gbx_inmadurasItem)
-        {
-            if (id != gbx_inmadurasItem.ID_Gbx_inmaduras)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(gbx_inmadurasItem);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!Gbx_inmadurasItemExists(gbx_inmadurasItem.ID_Gbx_inmaduras))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(gbx_inmadurasItem);
-        }
-
-        // GET: Gbx_inmaduras/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var gbx_inmadurasItem = await _context.Gbx_inmaduras
-                .FirstOrDefaultAsync(m => m.ID_Gbx_inmaduras == id);
-            if (gbx_inmadurasItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(gbx_inmadurasItem);
-        }
-
-        // POST: Gbx_inmaduras/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var gbx_inmadurasItem = await _context.Gbx_inmaduras.FindAsync(id);
-            if (gbx_inmadurasItem != null)
-            {
-                _context.Gbx_inmaduras.Remove(gbx_inmadurasItem);
-            }
-
+            _context.Gbx_inmaduras.Add(item);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return CreatedAtAction(nameof(GetGbxInmadurasItem), new { id = item.ID_Gbx_inmaduras }, item);
         }
 
-        private bool Gbx_inmadurasItemExists(int id)
+        // PUT: api/GbxInmadurasApi/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutGbxInmadurasItem(int id, Gbx_inmadurasItem item)
+        {
+            if (id != item.ID_Gbx_inmaduras)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(item).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!GbxInmadurasItemExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // DELETE: api/GbxInmadurasApi/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteGbxInmadurasItem(int id)
+        {
+            var item = await _context.Gbx_inmaduras.FindAsync(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            _context.Gbx_inmaduras.Remove(item);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool GbxInmadurasItemExists(int id)
         {
             return _context.Gbx_inmaduras.Any(e => e.ID_Gbx_inmaduras == id);
         }

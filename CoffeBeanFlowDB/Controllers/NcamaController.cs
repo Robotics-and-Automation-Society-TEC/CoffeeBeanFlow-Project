@@ -1,152 +1,94 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CoffeBeanFlowDB.Contexts;
 using CoffeBeanFlowDB.Models;
 
 namespace CoffeBeanFlowDB.Controllers
 {
-    public class NcamaController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class NcamaApiController : ControllerBase
     {
         private readonly NcamaContext _context;
 
-        public NcamaController(NcamaContext context)
+        public NcamaApiController(NcamaContext context)
         {
             _context = context;
         }
 
-        // GET: Ncama
-        public async Task<IActionResult> Index()
+        // GET: api/NcamaApi
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<NcamaItem>>> GetAll()
         {
-            return View(await _context.Ncama.ToListAsync());
+            return await _context.Ncama.ToListAsync();
         }
 
-        // GET: Ncama/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/NcamaApi/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<NcamaItem>> GetById(int id)
         {
-            if (id == null)
+            var item = await _context.Ncama.FindAsync(id);
+            if (item == null)
             {
                 return NotFound();
             }
-
-            var ncamaItem = await _context.Ncama
-                .FirstOrDefaultAsync(m => m.ID_Ncama == id);
-            if (ncamaItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(ncamaItem);
+            return item;
         }
 
-        // GET: Ncama/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Ncama/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: api/NcamaApi
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID_Ncama,ID_Secado")] NcamaItem ncamaItem)
+        public async Task<ActionResult<NcamaItem>> Create(NcamaItem item)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(ncamaItem);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(ncamaItem);
-        }
-
-        // GET: Ncama/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var ncamaItem = await _context.Ncama.FindAsync(id);
-            if (ncamaItem == null)
-            {
-                return NotFound();
-            }
-            return View(ncamaItem);
-        }
-
-        // POST: Ncama/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID_Ncama,ID_Secado")] NcamaItem ncamaItem)
-        {
-            if (id != ncamaItem.ID_Ncama)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(ncamaItem);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!NcamaItemExists(ncamaItem.ID_Ncama))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(ncamaItem);
-        }
-
-        // GET: Ncama/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var ncamaItem = await _context.Ncama
-                .FirstOrDefaultAsync(m => m.ID_Ncama == id);
-            if (ncamaItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(ncamaItem);
-        }
-
-        // POST: Ncama/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var ncamaItem = await _context.Ncama.FindAsync(id);
-            if (ncamaItem != null)
-            {
-                _context.Ncama.Remove(ncamaItem);
-            }
-
+            _context.Ncama.Add(item);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return CreatedAtAction(nameof(GetById), new { id = item.ID_Ncama }, item);
+        }
+
+        // PUT: api/NcamaApi/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, NcamaItem item)
+        {
+            if (id != item.ID_Ncama)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(item).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!NcamaItemExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // DELETE: api/NcamaApi/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var item = await _context.Ncama.FindAsync(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            _context.Ncama.Remove(item);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
         private bool NcamaItemExists(int id)

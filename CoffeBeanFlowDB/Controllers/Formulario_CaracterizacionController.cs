@@ -1,155 +1,99 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CoffeBeanFlowDB.Contexts;
 using CoffeBeanFlowDB.Models;
 
 namespace CoffeBeanFlowDB.Controllers
 {
-    public class Formulario_CaracterizacionController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class FormularioCaracterizacionApiController : ControllerBase
     {
         private readonly Formulario_CaracterizacionContext _context;
 
-        public Formulario_CaracterizacionController(Formulario_CaracterizacionContext context)
+        public FormularioCaracterizacionApiController(Formulario_CaracterizacionContext context)
         {
             _context = context;
         }
 
-        // GET: Formulario_Caracterizacion
-        public async Task<IActionResult> Index()
+        // GET: api/FormularioCaracterizacionApi
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Formulario_CaracterizacionItem>>> GetFormularioCaracterizacion()
         {
-            return View(await _context.Formulario_Caracterizacion.ToListAsync());
+            return await _context.Formulario_Caracterizacion.ToListAsync();
         }
 
-        // GET: Formulario_Caracterizacion/Details/5
-        public async Task<IActionResult> Details(DateTime? id)
+        // GET: api/FormularioCaracterizacionApi/2025-06-24T10:00:00
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Formulario_CaracterizacionItem>> GetFormularioCaracterizacionItem(DateTime id)
         {
-            if (id == null)
+            var item = await _context.Formulario_Caracterizacion.FindAsync(id);
+
+            if (item == null)
             {
                 return NotFound();
             }
 
-            var formulario_CaracterizacionItem = await _context.Formulario_Caracterizacion
-                .FirstOrDefaultAsync(m => m.Tiempo == id);
-            if (formulario_CaracterizacionItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(formulario_CaracterizacionItem);
+            return item;
         }
 
-        // GET: Formulario_Caracterizacion/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Formulario_Caracterizacion/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: api/FormularioCaracterizacionApi
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Tiempo,Cinmaduras,Csobremaduras,Csecas,Cobjetivo,Cverdes,PCdebajo,Proceso,DRmaduras,Mtabla,PCverdes,PCsecas,PCencima,Emaduracion,Broca,Densidad,Vanos,PCobjetivo,Secos,Nlote_AreaAcopio")] Formulario_CaracterizacionItem formulario_CaracterizacionItem)
+        public async Task<ActionResult<Formulario_CaracterizacionItem>> PostFormularioCaracterizacionItem(Formulario_CaracterizacionItem item)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(formulario_CaracterizacionItem);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(formulario_CaracterizacionItem);
-        }
-
-        // GET: Formulario_Caracterizacion/Edit/5
-        public async Task<IActionResult> Edit(DateTime? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var formulario_CaracterizacionItem = await _context.Formulario_Caracterizacion.FindAsync(id);
-            if (formulario_CaracterizacionItem == null)
-            {
-                return NotFound();
-            }
-            return View(formulario_CaracterizacionItem);
-        }
-
-        // POST: Formulario_Caracterizacion/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(DateTime id, [Bind("Tiempo,Cinmaduras,Csobremaduras,Csecas,Cobjetivo,Cverdes,PCdebajo,Proceso,DRmaduras,Mtabla,PCverdes,PCsecas,PCencima,Emaduracion,Broca,Densidad,Vanos,PCobjetivo,Secos,Nlote_AreaAcopio")] Formulario_CaracterizacionItem formulario_CaracterizacionItem)
-        {
-            if (id != formulario_CaracterizacionItem.Tiempo)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(formulario_CaracterizacionItem);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!Formulario_CaracterizacionItemExists(formulario_CaracterizacionItem.Tiempo))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(formulario_CaracterizacionItem);
-        }
-
-        // GET: Formulario_Caracterizacion/Delete/5
-        public async Task<IActionResult> Delete(DateTime? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var formulario_CaracterizacionItem = await _context.Formulario_Caracterizacion
-                .FirstOrDefaultAsync(m => m.Tiempo == id);
-            if (formulario_CaracterizacionItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(formulario_CaracterizacionItem);
-        }
-
-        // POST: Formulario_Caracterizacion/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(DateTime id)
-        {
-            var formulario_CaracterizacionItem = await _context.Formulario_Caracterizacion.FindAsync(id);
-            if (formulario_CaracterizacionItem != null)
-            {
-                _context.Formulario_Caracterizacion.Remove(formulario_CaracterizacionItem);
-            }
-
+            _context.Formulario_Caracterizacion.Add(item);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return CreatedAtAction(nameof(GetFormularioCaracterizacionItem), new { id = item.Tiempo }, item);
         }
 
-        private bool Formulario_CaracterizacionItemExists(DateTime id)
+        // PUT: api/FormularioCaracterizacionApi/2025-06-24T10:00:00
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutFormularioCaracterizacionItem(DateTime id, Formulario_CaracterizacionItem item)
+        {
+            if (id != item.Tiempo)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(item).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!FormularioCaracterizacionItemExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // DELETE: api/FormularioCaracterizacionApi/2025-06-24T10:00:00
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteFormularioCaracterizacionItem(DateTime id)
+        {
+            var item = await _context.Formulario_Caracterizacion.FindAsync(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            _context.Formulario_Caracterizacion.Remove(item);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool FormularioCaracterizacionItemExists(DateTime id)
         {
             return _context.Formulario_Caracterizacion.Any(e => e.Tiempo == id);
         }

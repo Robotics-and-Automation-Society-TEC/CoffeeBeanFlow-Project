@@ -1,152 +1,86 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CoffeBeanFlowDB.Contexts;
 using CoffeBeanFlowDB.Models;
 
+
 namespace CoffeBeanFlowDB.Controllers
 {
-    public class TemperaturaSecadoController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class TemperaturaSecadoApiController : ControllerBase
     {
         private readonly TemperaturaSecadoContext _context;
 
-        public TemperaturaSecadoController(TemperaturaSecadoContext context)
+        public TemperaturaSecadoApiController(TemperaturaSecadoContext context)
         {
             _context = context;
         }
 
-        // GET: TemperaturaSecado
-        public async Task<IActionResult> Index()
+        // GET: api/TemperaturaSecadoApi
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TemperaturaSecadoItem>>> GetAll()
         {
-            return View(await _context.TemperaturaSecado.ToListAsync());
+            return await _context.TemperaturaSecado.ToListAsync();
         }
 
-        // GET: TemperaturaSecado/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/TemperaturaSecadoApi/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<TemperaturaSecadoItem>> GetById(int id)
         {
-            if (id == null)
-            {
+            var item = await _context.TemperaturaSecado.FindAsync(id);
+            if (item == null)
                 return NotFound();
-            }
 
-            var temperaturaSecadoItem = await _context.TemperaturaSecado
-                .FirstOrDefaultAsync(m => m.ID_Temperatura == id);
-            if (temperaturaSecadoItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(temperaturaSecadoItem);
+            return item;
         }
 
-        // GET: TemperaturaSecado/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: TemperaturaSecado/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: api/TemperaturaSecadoApi
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID_Temperatura,Lectura,ID_Secado")] TemperaturaSecadoItem temperaturaSecadoItem)
+        public async Task<ActionResult<TemperaturaSecadoItem>> Create(TemperaturaSecadoItem item)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(temperaturaSecadoItem);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(temperaturaSecadoItem);
-        }
-
-        // GET: TemperaturaSecado/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var temperaturaSecadoItem = await _context.TemperaturaSecado.FindAsync(id);
-            if (temperaturaSecadoItem == null)
-            {
-                return NotFound();
-            }
-            return View(temperaturaSecadoItem);
-        }
-
-        // POST: TemperaturaSecado/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID_Temperatura,Lectura,ID_Secado")] TemperaturaSecadoItem temperaturaSecadoItem)
-        {
-            if (id != temperaturaSecadoItem.ID_Temperatura)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(temperaturaSecadoItem);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TemperaturaSecadoItemExists(temperaturaSecadoItem.ID_Temperatura))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(temperaturaSecadoItem);
-        }
-
-        // GET: TemperaturaSecado/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var temperaturaSecadoItem = await _context.TemperaturaSecado
-                .FirstOrDefaultAsync(m => m.ID_Temperatura == id);
-            if (temperaturaSecadoItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(temperaturaSecadoItem);
-        }
-
-        // POST: TemperaturaSecado/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var temperaturaSecadoItem = await _context.TemperaturaSecado.FindAsync(id);
-            if (temperaturaSecadoItem != null)
-            {
-                _context.TemperaturaSecado.Remove(temperaturaSecadoItem);
-            }
-
+            _context.TemperaturaSecado.Add(item);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return CreatedAtAction(nameof(GetById), new { id = item.ID_Temperatura }, item);
+        }
+
+        // PUT: api/TemperaturaSecadoApi/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, TemperaturaSecadoItem item)
+        {
+            if (id != item.ID_Temperatura)
+                return BadRequest();
+
+            _context.Entry(item).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TemperaturaSecadoItemExists(id))
+                    return NotFound();
+                else
+                    throw;
+            }
+
+            return NoContent();
+        }
+
+        // DELETE: api/TemperaturaSecadoApi/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var item = await _context.TemperaturaSecado.FindAsync(id);
+            if (item == null)
+                return NotFound();
+
+            _context.TemperaturaSecado.Remove(item);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
         private bool TemperaturaSecadoItemExists(int id)

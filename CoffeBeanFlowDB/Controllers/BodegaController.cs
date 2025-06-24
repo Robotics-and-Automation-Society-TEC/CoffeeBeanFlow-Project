@@ -1,152 +1,96 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CoffeBeanFlowDB.Contexts;
 using CoffeBeanFlowDB.Models;
 
 namespace CoffeBeanFlowDB.Controllers
 {
-    public class BodegaController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class BodegaApiController : ControllerBase
     {
         private readonly BodegaContext _context;
 
-        public BodegaController(BodegaContext context)
+        public BodegaApiController(BodegaContext context)
         {
             _context = context;
         }
 
-        // GET: Bodega
-        public async Task<IActionResult> Index()
+        // GET: api/BodegaApi
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<BodegaItem>>> GetBodega()
         {
-            return View(await _context.Bodega.ToListAsync());
+            return await _context.Bodega.ToListAsync();
         }
 
-        // GET: Bodega/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/BodegaApi/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<BodegaItem>> GetBodegaItem(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var bodegaItem = await _context.Bodega
-                .FirstOrDefaultAsync(m => m.ID_Bodega == id);
-            if (bodegaItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(bodegaItem);
-        }
-
-        // GET: Bodega/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Bodega/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID_Bodega,D_Bellota,D_Pergamino,Hinicial,Hfinal,W_pergamino,W_bellota,FinicioReposo,CantidadSacos,PMTexterna,PMTinterna,PMH_relativa,Nlote")] BodegaItem bodegaItem)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(bodegaItem);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(bodegaItem);
-        }
-
-        // GET: Bodega/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var bodegaItem = await _context.Bodega.FindAsync(id);
+
             if (bodegaItem == null)
             {
                 return NotFound();
             }
-            return View(bodegaItem);
+
+            return bodegaItem;
         }
 
-        // POST: Bodega/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: api/BodegaApi
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID_Bodega,D_Bellota,D_Pergamino,Hinicial,Hfinal,W_pergamino,W_bellota,FinicioReposo,CantidadSacos,PMTexterna,PMTinterna,PMH_relativa,Nlote")] BodegaItem bodegaItem)
+        public async Task<ActionResult<BodegaItem>> PostBodegaItem(BodegaItem bodegaItem)
+        {
+            _context.Bodega.Add(bodegaItem);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetBodegaItem), new { id = bodegaItem.ID_Bodega }, bodegaItem);
+        }
+
+        // PUT: api/BodegaApi/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutBodegaItem(int id, BodegaItem bodegaItem)
         {
             if (id != bodegaItem.ID_Bodega)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            if (ModelState.IsValid)
+            _context.Entry(bodegaItem).State = EntityState.Modified;
+
+            try
             {
-                try
-                {
-                    _context.Update(bodegaItem);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!BodegaItemExists(bodegaItem.ID_Bodega))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
             }
-            return View(bodegaItem);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!BodegaItemExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent(); // 204
         }
 
-        // GET: Bodega/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // DELETE: api/BodegaApi/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBodegaItem(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var bodegaItem = await _context.Bodega
-                .FirstOrDefaultAsync(m => m.ID_Bodega == id);
+            var bodegaItem = await _context.Bodega.FindAsync(id);
             if (bodegaItem == null)
             {
                 return NotFound();
             }
 
-            return View(bodegaItem);
-        }
-
-        // POST: Bodega/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var bodegaItem = await _context.Bodega.FindAsync(id);
-            if (bodegaItem != null)
-            {
-                _context.Bodega.Remove(bodegaItem);
-            }
-
+            _context.Bodega.Remove(bodegaItem);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return NoContent(); // 204
         }
 
         private bool BodegaItemExists(int id)

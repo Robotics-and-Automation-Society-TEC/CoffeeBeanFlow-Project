@@ -1,152 +1,86 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CoffeBeanFlowDB.Contexts;
 using CoffeBeanFlowDB.Models;
 
 namespace CoffeBeanFlowDB.Controllers
 {
-    public class PesoVerdeController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class PesoVerdeApiController : ControllerBase
     {
         private readonly PesoVerdeContext _context;
 
-        public PesoVerdeController(PesoVerdeContext context)
+        public PesoVerdeApiController(PesoVerdeContext context)
         {
             _context = context;
         }
 
-        // GET: PesoVerde
-        public async Task<IActionResult> Index()
+        // GET: api/PesoVerdeApi
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<PesoVerdeItem>>> GetAll()
         {
-            return View(await _context.PesoVerde.ToListAsync());
+            return await _context.PesoVerde.ToListAsync();
         }
 
-        // GET: PesoVerde/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/PesoVerdeApi/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<PesoVerdeItem>> GetById(int id)
         {
-            if (id == null)
-            {
+            var item = await _context.PesoVerde.FindAsync(id);
+
+            if (item == null)
                 return NotFound();
-            }
 
-            var pesoVerdeItem = await _context.PesoVerde
-                .FirstOrDefaultAsync(m => m.ID_PesoVerde == id);
-            if (pesoVerdeItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(pesoVerdeItem);
+            return item;
         }
 
-        // GET: PesoVerde/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: PesoVerde/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: api/PesoVerdeApi
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID_PesoVerde,Winferiores,Wfinal,WFinferior,ID_PesoTrilla")] PesoVerdeItem pesoVerdeItem)
+        public async Task<ActionResult<PesoVerdeItem>> Create(PesoVerdeItem item)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(pesoVerdeItem);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(pesoVerdeItem);
-        }
-
-        // GET: PesoVerde/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var pesoVerdeItem = await _context.PesoVerde.FindAsync(id);
-            if (pesoVerdeItem == null)
-            {
-                return NotFound();
-            }
-            return View(pesoVerdeItem);
-        }
-
-        // POST: PesoVerde/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID_PesoVerde,Winferiores,Wfinal,WFinferior,ID_PesoTrilla")] PesoVerdeItem pesoVerdeItem)
-        {
-            if (id != pesoVerdeItem.ID_PesoVerde)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(pesoVerdeItem);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PesoVerdeItemExists(pesoVerdeItem.ID_PesoVerde))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(pesoVerdeItem);
-        }
-
-        // GET: PesoVerde/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var pesoVerdeItem = await _context.PesoVerde
-                .FirstOrDefaultAsync(m => m.ID_PesoVerde == id);
-            if (pesoVerdeItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(pesoVerdeItem);
-        }
-
-        // POST: PesoVerde/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var pesoVerdeItem = await _context.PesoVerde.FindAsync(id);
-            if (pesoVerdeItem != null)
-            {
-                _context.PesoVerde.Remove(pesoVerdeItem);
-            }
-
+            _context.PesoVerde.Add(item);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return CreatedAtAction(nameof(GetById), new { id = item.ID_PesoVerde }, item);
+        }
+
+        // PUT: api/PesoVerdeApi/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, PesoVerdeItem item)
+        {
+            if (id != item.ID_PesoVerde)
+                return BadRequest();
+
+            _context.Entry(item).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!PesoVerdeItemExists(id))
+                    return NotFound();
+                else
+                    throw;
+            }
+
+            return NoContent();
+        }
+
+        // DELETE: api/PesoVerdeApi/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var item = await _context.PesoVerde.FindAsync(id);
+            if (item == null)
+                return NotFound();
+
+            _context.PesoVerde.Remove(item);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
         private bool PesoVerdeItemExists(int id)

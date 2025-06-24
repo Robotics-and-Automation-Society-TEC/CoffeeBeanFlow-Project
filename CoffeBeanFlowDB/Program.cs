@@ -4,7 +4,12 @@ using CoffeBeanFlowDB.Contexts;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+// Cambiar de AddControllersWithViews() a AddControllers() para API
+builder.Services.AddControllers();
+
+// Agregar configuración de API Explorer y Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 // Configurar Entity Framework con PostgreSQL
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
@@ -80,6 +85,13 @@ builder.Services.AddDbContext<TrillaContext>(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    // Habilitar Swagger solo en desarrollo
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -93,8 +105,7 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+// Cambiar el enrutamiento para API
+app.MapControllers();
 
 app.Run();

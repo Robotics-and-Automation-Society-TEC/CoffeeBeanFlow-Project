@@ -1,155 +1,99 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CoffeBeanFlowDB.Contexts;
 using CoffeBeanFlowDB.Models;
 
 namespace CoffeBeanFlowDB.Controllers
 {
-    public class Guardar_CafeController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class GuardarCafeApiController : ControllerBase
     {
         private readonly Guardar_CafeContext _context;
 
-        public Guardar_CafeController(Guardar_CafeContext context)
+        public GuardarCafeApiController(Guardar_CafeContext context)
         {
             _context = context;
         }
 
-        // GET: Guardar_Cafe
-        public async Task<IActionResult> Index()
+        // GET: api/GuardarCafeApi
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Guardar_CafeItem>>> GetAll()
         {
-            return View(await _context.Guardar_Cafe.ToListAsync());
+            return await _context.Guardar_Cafe.ToListAsync();
         }
 
-        // GET: Guardar_Cafe/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/GuardarCafeApi/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Guardar_CafeItem>> GetById(int id)
         {
-            if (id == null)
+            var item = await _context.Guardar_Cafe.FindAsync(id);
+
+            if (item == null)
             {
                 return NotFound();
             }
 
-            var guardar_CafeItem = await _context.Guardar_Cafe
-                .FirstOrDefaultAsync(m => m.ID_Secado == id);
-            if (guardar_CafeItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(guardar_CafeItem);
+            return item;
         }
 
-        // GET: Guardar_Cafe/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Guardar_Cafe/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: api/GuardarCafeApi
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID_Secado,ID_Bodega")] Guardar_CafeItem guardar_CafeItem)
+        public async Task<ActionResult<Guardar_CafeItem>> Create(Guardar_CafeItem item)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(guardar_CafeItem);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(guardar_CafeItem);
-        }
-
-        // GET: Guardar_Cafe/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var guardar_CafeItem = await _context.Guardar_Cafe.FindAsync(id);
-            if (guardar_CafeItem == null)
-            {
-                return NotFound();
-            }
-            return View(guardar_CafeItem);
-        }
-
-        // POST: Guardar_Cafe/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID_Secado,ID_Bodega")] Guardar_CafeItem guardar_CafeItem)
-        {
-            if (id != guardar_CafeItem.ID_Secado)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(guardar_CafeItem);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!Guardar_CafeItemExists(guardar_CafeItem.ID_Secado))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(guardar_CafeItem);
-        }
-
-        // GET: Guardar_Cafe/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var guardar_CafeItem = await _context.Guardar_Cafe
-                .FirstOrDefaultAsync(m => m.ID_Secado == id);
-            if (guardar_CafeItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(guardar_CafeItem);
-        }
-
-        // POST: Guardar_Cafe/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var guardar_CafeItem = await _context.Guardar_Cafe.FindAsync(id);
-            if (guardar_CafeItem != null)
-            {
-                _context.Guardar_Cafe.Remove(guardar_CafeItem);
-            }
-
+            _context.Guardar_Cafe.Add(item);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return CreatedAtAction(nameof(GetById), new { id = item.ID_Secado }, item);
         }
 
-        private bool Guardar_CafeItemExists(int id)
+        // PUT: api/GuardarCafeApi/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, Guardar_CafeItem item)
+        {
+            if (id != item.ID_Secado)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(item).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!GuardarCafeItemExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // DELETE: api/GuardarCafeApi/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var item = await _context.Guardar_Cafe.FindAsync(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            _context.Guardar_Cafe.Remove(item);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool GuardarCafeItemExists(int id)
         {
             return _context.Guardar_Cafe.Any(e => e.ID_Secado == id);
         }

@@ -1,152 +1,86 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CoffeBeanFlowDB.Contexts;
 using CoffeBeanFlowDB.Models;
 
+
 namespace CoffeBeanFlowDB.Controllers
 {
-    public class SuministraController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class SuministraApiController : ControllerBase
     {
         private readonly SuministraContext _context;
 
-        public SuministraController(SuministraContext context)
+        public SuministraApiController(SuministraContext context)
         {
             _context = context;
         }
 
-        // GET: Suministra
-        public async Task<IActionResult> Index()
+        // GET: api/SuministraApi
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<SuministraItem>>> GetAll()
         {
-            return View(await _context.Suministra.ToListAsync());
+            return await _context.Suministra.ToListAsync();
         }
 
-        // GET: Suministra/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/SuministraApi/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<SuministraItem>> GetById(int id)
         {
-            if (id == null)
-            {
+            var item = await _context.Suministra.FindAsync(id);
+            if (item == null)
                 return NotFound();
-            }
 
-            var suministraItem = await _context.Suministra
-                .FirstOrDefaultAsync(m => m.ID_Bodega == id);
-            if (suministraItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(suministraItem);
+            return item;
         }
 
-        // GET: Suministra/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Suministra/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: api/SuministraApi
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID_Bodega,ID_Trilla")] SuministraItem suministraItem)
+        public async Task<ActionResult<SuministraItem>> Create(SuministraItem item)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(suministraItem);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(suministraItem);
-        }
-
-        // GET: Suministra/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var suministraItem = await _context.Suministra.FindAsync(id);
-            if (suministraItem == null)
-            {
-                return NotFound();
-            }
-            return View(suministraItem);
-        }
-
-        // POST: Suministra/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID_Bodega,ID_Trilla")] SuministraItem suministraItem)
-        {
-            if (id != suministraItem.ID_Bodega)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(suministraItem);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SuministraItemExists(suministraItem.ID_Bodega))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(suministraItem);
-        }
-
-        // GET: Suministra/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var suministraItem = await _context.Suministra
-                .FirstOrDefaultAsync(m => m.ID_Bodega == id);
-            if (suministraItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(suministraItem);
-        }
-
-        // POST: Suministra/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var suministraItem = await _context.Suministra.FindAsync(id);
-            if (suministraItem != null)
-            {
-                _context.Suministra.Remove(suministraItem);
-            }
-
+            _context.Suministra.Add(item);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return CreatedAtAction(nameof(GetById), new { id = item.ID_Bodega }, item);
+        }
+
+        // PUT: api/SuministraApi/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, SuministraItem item)
+        {
+            if (id != item.ID_Bodega)
+                return BadRequest();
+
+            _context.Entry(item).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!SuministraItemExists(id))
+                    return NotFound();
+                else
+                    throw;
+            }
+
+            return NoContent();
+        }
+
+        // DELETE: api/SuministraApi/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var item = await _context.Suministra.FindAsync(id);
+            if (item == null)
+                return NotFound();
+
+            _context.Suministra.Remove(item);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
         private bool SuministraItemExists(int id)

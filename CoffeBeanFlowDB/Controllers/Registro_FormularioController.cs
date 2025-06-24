@@ -1,152 +1,85 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CoffeBeanFlowDB.Contexts;
 using CoffeBeanFlowDB.Models;
 
+
 namespace CoffeBeanFlowDB.Controllers
 {
-    public class Registro_FormularioController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class Registro_FormularioApiController : ControllerBase
     {
         private readonly Registro_FormularioContext _context;
 
-        public Registro_FormularioController(Registro_FormularioContext context)
+        public Registro_FormularioApiController(Registro_FormularioContext context)
         {
             _context = context;
         }
 
-        // GET: Registro_Formulario
-        public async Task<IActionResult> Index()
+        // GET: api/Registro_FormularioApi
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Registro_FormularioItem>>> GetAll()
         {
-            return View(await _context.Registro_Formulario.ToListAsync());
+            return await _context.Registro_Formulario.ToListAsync();
         }
 
-        // GET: Registro_Formulario/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/Registro_FormularioApi/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Registro_FormularioItem>> GetById(int id)
         {
-            if (id == null)
-            {
+            var item = await _context.Registro_Formulario.FindAsync(id);
+            if (item == null)
                 return NotFound();
-            }
-
-            var registro_FormularioItem = await _context.Registro_Formulario
-                .FirstOrDefaultAsync(m => m.ID_Formulario == id);
-            if (registro_FormularioItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(registro_FormularioItem);
+            return item;
         }
 
-        // GET: Registro_Formulario/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Registro_Formulario/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: api/Registro_FormularioApi
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID_Formulario,ID_sobremaduras,ID_maduras,ID_inmaduras")] Registro_FormularioItem registro_FormularioItem)
+        public async Task<ActionResult<Registro_FormularioItem>> Create(Registro_FormularioItem item)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(registro_FormularioItem);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(registro_FormularioItem);
-        }
-
-        // GET: Registro_Formulario/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var registro_FormularioItem = await _context.Registro_Formulario.FindAsync(id);
-            if (registro_FormularioItem == null)
-            {
-                return NotFound();
-            }
-            return View(registro_FormularioItem);
-        }
-
-        // POST: Registro_Formulario/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID_Formulario,ID_sobremaduras,ID_maduras,ID_inmaduras")] Registro_FormularioItem registro_FormularioItem)
-        {
-            if (id != registro_FormularioItem.ID_Formulario)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(registro_FormularioItem);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!Registro_FormularioItemExists(registro_FormularioItem.ID_Formulario))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(registro_FormularioItem);
-        }
-
-        // GET: Registro_Formulario/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var registro_FormularioItem = await _context.Registro_Formulario
-                .FirstOrDefaultAsync(m => m.ID_Formulario == id);
-            if (registro_FormularioItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(registro_FormularioItem);
-        }
-
-        // POST: Registro_Formulario/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var registro_FormularioItem = await _context.Registro_Formulario.FindAsync(id);
-            if (registro_FormularioItem != null)
-            {
-                _context.Registro_Formulario.Remove(registro_FormularioItem);
-            }
-
+            _context.Registro_Formulario.Add(item);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return CreatedAtAction(nameof(GetById), new { id = item.ID_Formulario }, item);
+        }
+
+        // PUT: api/Registro_FormularioApi/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, Registro_FormularioItem item)
+        {
+            if (id != item.ID_Formulario)
+                return BadRequest();
+
+            _context.Entry(item).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!Registro_FormularioItemExists(id))
+                    return NotFound();
+                else
+                    throw;
+            }
+
+            return NoContent();
+        }
+
+        // DELETE: api/Registro_FormularioApi/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var item = await _context.Registro_Formulario.FindAsync(id);
+            if (item == null)
+                return NotFound();
+
+            _context.Registro_Formulario.Remove(item);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
         private bool Registro_FormularioItemExists(int id)

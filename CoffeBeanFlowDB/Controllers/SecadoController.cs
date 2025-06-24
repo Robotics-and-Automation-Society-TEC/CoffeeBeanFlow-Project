@@ -1,152 +1,85 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CoffeBeanFlowDB.Contexts;
 using CoffeBeanFlowDB.Models;
 
+
 namespace CoffeBeanFlowDB.Controllers
 {
-    public class SecadoController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class SecadoApiController : ControllerBase
     {
         private readonly SecadoContext _context;
 
-        public SecadoController(SecadoContext context)
+        public SecadoApiController(SecadoContext context)
         {
             _context = context;
         }
 
-        // GET: Secado
-        public async Task<IActionResult> Index()
+        // GET: api/SecadoApi
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<SecadoItem>>> GetAll()
         {
-            return View(await _context.Secado.ToListAsync());
+            return await _context.Secado.ToListAsync();
         }
 
-        // GET: Secado/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/SecadoApi/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<SecadoItem>> GetById(int id)
         {
-            if (id == null)
-            {
+            var item = await _context.Secado.FindAsync(id);
+            if (item == null)
                 return NotFound();
-            }
-
-            var secadoItem = await _context.Secado
-                .FirstOrDefaultAsync(m => m.ID_Secado == id);
-            if (secadoItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(secadoItem);
+            return item;
         }
 
-        // GET: Secado/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Secado/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: api/SecadoApi
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID_Secado,Finicio,Dsecado,Psolar,Pmecanico,Ffinal,Nlote")] SecadoItem secadoItem)
+        public async Task<ActionResult<SecadoItem>> Create(SecadoItem item)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(secadoItem);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(secadoItem);
-        }
-
-        // GET: Secado/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var secadoItem = await _context.Secado.FindAsync(id);
-            if (secadoItem == null)
-            {
-                return NotFound();
-            }
-            return View(secadoItem);
-        }
-
-        // POST: Secado/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID_Secado,Finicio,Dsecado,Psolar,Pmecanico,Ffinal,Nlote")] SecadoItem secadoItem)
-        {
-            if (id != secadoItem.ID_Secado)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(secadoItem);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SecadoItemExists(secadoItem.ID_Secado))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(secadoItem);
-        }
-
-        // GET: Secado/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var secadoItem = await _context.Secado
-                .FirstOrDefaultAsync(m => m.ID_Secado == id);
-            if (secadoItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(secadoItem);
-        }
-
-        // POST: Secado/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var secadoItem = await _context.Secado.FindAsync(id);
-            if (secadoItem != null)
-            {
-                _context.Secado.Remove(secadoItem);
-            }
-
+            _context.Secado.Add(item);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return CreatedAtAction(nameof(GetById), new { id = item.ID_Secado }, item);
+        }
+
+        // PUT: api/SecadoApi/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, SecadoItem item)
+        {
+            if (id != item.ID_Secado)
+                return BadRequest();
+
+            _context.Entry(item).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!SecadoItemExists(id))
+                    return NotFound();
+                else
+                    throw;
+            }
+
+            return NoContent();
+        }
+
+        // DELETE: api/SecadoApi/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var item = await _context.Secado.FindAsync(id);
+            if (item == null)
+                return NotFound();
+
+            _context.Secado.Remove(item);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
         private bool SecadoItemExists(int id)

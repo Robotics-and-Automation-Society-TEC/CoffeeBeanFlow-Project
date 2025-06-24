@@ -1,152 +1,83 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CoffeBeanFlowDB.Contexts;
 using CoffeBeanFlowDB.Models;
 
 namespace CoffeBeanFlowDB.Controllers
 {
-    public class RCmadurasController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class RCmadurasApiController : ControllerBase
     {
         private readonly RCmadurasContext _context;
 
-        public RCmadurasController(RCmadurasContext context)
+        public RCmadurasApiController(RCmadurasContext context)
         {
             _context = context;
         }
 
-        // GET: RCmaduras
-        public async Task<IActionResult> Index()
+        // GET: api/RCmadurasApi
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<RCmadurasItem>>> GetAll()
         {
-            return View(await _context.RCmaduras.ToListAsync());
+            return await _context.RCmaduras.ToListAsync();
         }
 
-        // GET: RCmaduras/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/RCmadurasApi/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<RCmadurasItem>> GetById(int id)
         {
-            if (id == null)
-            {
+            var item = await _context.RCmaduras.FindAsync(id);
+            if (item == null)
                 return NotFound();
-            }
-
-            var rCmadurasItem = await _context.RCmaduras
-                .FirstOrDefaultAsync(m => m.ID_maduras == id);
-            if (rCmadurasItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(rCmadurasItem);
+            return item;
         }
 
-        // GET: RCmaduras/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: RCmaduras/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: api/RCmadurasApi
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID_maduras,Promedio,Observaciones,Gbx,Tiempo")] RCmadurasItem rCmadurasItem)
+        public async Task<ActionResult<RCmadurasItem>> Create(RCmadurasItem item)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(rCmadurasItem);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(rCmadurasItem);
-        }
-
-        // GET: RCmaduras/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var rCmadurasItem = await _context.RCmaduras.FindAsync(id);
-            if (rCmadurasItem == null)
-            {
-                return NotFound();
-            }
-            return View(rCmadurasItem);
-        }
-
-        // POST: RCmaduras/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID_maduras,Promedio,Observaciones,Gbx,Tiempo")] RCmadurasItem rCmadurasItem)
-        {
-            if (id != rCmadurasItem.ID_maduras)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(rCmadurasItem);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RCmadurasItemExists(rCmadurasItem.ID_maduras))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(rCmadurasItem);
-        }
-
-        // GET: RCmaduras/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var rCmadurasItem = await _context.RCmaduras
-                .FirstOrDefaultAsync(m => m.ID_maduras == id);
-            if (rCmadurasItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(rCmadurasItem);
-        }
-
-        // POST: RCmaduras/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var rCmadurasItem = await _context.RCmaduras.FindAsync(id);
-            if (rCmadurasItem != null)
-            {
-                _context.RCmaduras.Remove(rCmadurasItem);
-            }
-
+            _context.RCmaduras.Add(item);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return CreatedAtAction(nameof(GetById), new { id = item.ID_maduras }, item);
+        }
+
+        // PUT: api/RCmadurasApi/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, RCmadurasItem item)
+        {
+            if (id != item.ID_maduras)
+                return BadRequest();
+
+            _context.Entry(item).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!RCmadurasItemExists(id))
+                    return NotFound();
+                else
+                    throw;
+            }
+
+            return NoContent();
+        }
+
+        // DELETE: api/RCmadurasApi/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var item = await _context.RCmaduras.FindAsync(id);
+            if (item == null)
+                return NotFound();
+
+            _context.RCmaduras.Remove(item);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
 
         private bool RCmadurasItemExists(int id)
