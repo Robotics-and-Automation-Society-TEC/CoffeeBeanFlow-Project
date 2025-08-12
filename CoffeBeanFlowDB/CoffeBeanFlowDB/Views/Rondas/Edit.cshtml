@@ -1,0 +1,39 @@
+@model CoffeBeanFlowDB.Models.RondasItem
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>RondasItem</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID_Rondas" />
+            <div class="form-group">
+                <label asp-for="Valor_calidad" class="control-label"></label>
+                <input asp-for="Valor_calidad" class="form-control" />
+                <span asp-validation-for="Valor_calidad" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ID_catacion" class="control-label"></label>
+                <input asp-for="ID_catacion" class="form-control" />
+                <span asp-validation-for="ID_catacion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

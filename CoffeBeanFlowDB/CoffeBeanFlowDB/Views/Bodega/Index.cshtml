@@ -1,0 +1,101 @@
+@model IEnumerable<CoffeBeanFlowDB.Models.BodegaItem>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.D_Bellota)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.D_Pergamino)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Hinicial)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Hfinal)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.W_pergamino)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.W_bellota)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FinicioReposo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CantidadSacos)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PMTexterna)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PMTinterna)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PMH_relativa)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nlote)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.D_Bellota)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.D_Pergamino)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Hinicial)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Hfinal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.W_pergamino)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.W_bellota)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FinicioReposo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CantidadSacos)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PMTexterna)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PMTinterna)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PMH_relativa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nlote)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID_Bodega">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ID_Bodega">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ID_Bodega">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

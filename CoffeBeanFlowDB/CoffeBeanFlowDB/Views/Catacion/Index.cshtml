@@ -1,0 +1,257 @@
+@model IEnumerable<CoffeBeanFlowDB.Models.CatacionItem>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FFreposo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nlote)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Defectuoso)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Limpio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Overde)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CCcverde)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quaker)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rtostado)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Dtueste)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CCcalidad)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pfinales)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TAgtron)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.C1negro)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.C1ME)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.C1insectos)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.C1cerezaseca)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.C1hongos)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.C1agrio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.C2pergamino)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.C2inmaduro)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.C2negroP)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.C2agrioP)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.C2cascara_pulpa)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.C2insectos)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.C2averanado)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.C2partido_cortado_mordido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.C2concha)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.C2flotador)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Trece)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Catorce)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quince)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Dieciseis)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Diecisiete)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Dieciocho)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Diecinueve)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Veinte)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TresSobreDieciseis)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Residuo)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FFreposo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nlote)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Defectuoso)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Limpio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Overde)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CCcverde)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quaker)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rtostado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Dtueste)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CCcalidad)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Pfinales)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TAgtron)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.C1negro)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.C1ME)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.C1insectos)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.C1cerezaseca)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.C1hongos)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.C1agrio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.C2pergamino)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.C2inmaduro)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.C2negroP)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.C2agrioP)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.C2cascara_pulpa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.C2insectos)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.C2averanado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.C2partido_cortado_mordido)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.C2concha)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.C2flotador)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Trece)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Catorce)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quince)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Dieciseis)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Diecisiete)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Dieciocho)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Diecinueve)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Veinte)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TresSobreDieciseis)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Residuo)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID_catacion">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ID_catacion">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ID_catacion">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
