@@ -30,27 +30,27 @@
           <h3><i class="section-icon">📋</i>Información General</h3>
           <div class="form-grid">
             <div class="input-group">
-              <label>Número de Lote</label>
+              <label>Número de Lote *</label>
               <input type="text" v-model="form.lote" required class="input-field" placeholder="Ej: L001-2025" />
             </div>
             <div class="input-group">
-              <label>Número de Recibo</label>
-              <input type="text" v-model="form.recibo" required class="input-field" placeholder="Ej: R001234" />
+              <label>Número de Recibo *</label>
+              <input type="number" v-model.number="form.recibo" required class="input-field" placeholder="Ej: 1234" />
             </div>
             <div class="input-group">
-              <label>Productor</label>
+              <label>Productor *</label>
               <input type="text" v-model="form.productor" required class="input-field" placeholder="Nombre del productor" />
             </div>
             <div class="input-group">
-              <label>Finca</label>
+              <label>Finca *</label>
               <input type="text" v-model="form.finca" required class="input-field" placeholder="Nombre de la finca" />
             </div>
             <div class="input-group">
-              <label>Zona</label>
+              <label>Zona *</label>
               <input type="text" v-model="form.zona" required class="input-field" placeholder="Zona geográfica" />
             </div>
             <div class="input-group">
-              <label>Altura (msnm)</label>
+              <label>Altura (msnm) *</label>
               <input type="number" v-model.number="form.altura" min="0" required class="input-field" placeholder="1200" />
             </div>
           </div>
@@ -61,26 +61,32 @@
           <h3><i class="section-icon">🍒</i>Rango de Maduración</h3>
           <div class="form-grid">
             <div class="input-group">
-              <label>Rango Objetivo</label>
-              <input type="text" v-model="form.rangoObjetivo" required class="input-field" placeholder="Especificar rango" />
+              <label>Rendimiento Objetivo *</label>
+              <input type="number" v-model.number="form.rangoObjetivo" step="0.01" min="0" required class="input-field" placeholder="85.5" />
             </div>
             <div class="input-group">
-              <label>Sobre Objetivo</label>
-              <input type="text" v-model="form.sobreObjetivo" class="input-field" placeholder="Opcional" />
+              <label>Rendimiento Sobre Objetivo</label>
+              <input type="number" v-model.number="form.sobreObjetivo" step="0.01" min="0" class="input-field" placeholder="90.0" />
             </div>
             <div class="input-group">
-              <label>Rango</label>
-              <input type="text" v-model="form.rango" class="input-field" placeholder="Rango general" />
+              <label>Rendimiento Total</label>
+              <input type="number" v-model.number="form.rendimientoTotal" step="0.01" min="0" class="input-field" placeholder="88.2" />
             </div>
             <div class="input-group">
-              <label>pH Miel</label>
-              <input type="number" v-model.number="form.phMiel" step="0.01" min="0" max="14" 
-                     @blur="validarPH" class="input-field" placeholder="6.5" />
+              <label>Tipo de Despulpado</label>
+              <select v-model="form.tipoDespulpado" class="input-field select-field">
+                <option value="">Seleccionar tipo</option>
+                <option value="tradicional">Tradicional</option>
+                <option value="ecologico">Ecológico</option>
+                <option value="mecanico">Mecánico</option>
+                <option value="manual">Manual</option>
+                <option value="automatico">Automático</option>
+              </select>
             </div>
           </div>
 
           <!-- Porcentajes en grid separado -->
-          <h4>Porcentajes de Calidad</h4>
+          <h4>Porcentajes de Calidad (Opcional)</h4>
           <div class="percentage-grid">
             <div class="input-group">
               <label>% Flote</label>
@@ -112,7 +118,7 @@
 
         <!-- Estado del Producto -->
         <div class="section-card status">
-          <h3><i class="section-icon">📦</i>Estado del Producto</h3>
+          <h3><i class="section-icon">📦</i>Estado del Producto *</h3>
           <div class="status-selector">
             <div class="input-group">
               <label>Estado Actual</label>
@@ -122,6 +128,10 @@
                 <option value="vendido">Vendido</option>
                 <option value="en_proceso">En Proceso</option>
               </select>
+            </div>
+            <div class="input-group" v-if="form.estadoProducto === 'disponible'">
+              <label>Cantidad Disponible (kg)</label>
+              <input type="number" v-model.number="form.cantidadDisponible" min="0" step="0.01" class="input-field" placeholder="1000.5" />
             </div>
           </div>
         </div>
@@ -167,21 +177,25 @@
               <input type="number" v-model.number="form.densidadPergamino" step="0.01" min="0" 
                      class="input-field" placeholder="0.85" />
             </div>
+            <div class="input-group">
+              <label>ID Secado</label>
+              <input type="number" v-model.number="form.idSecado" min="1" class="input-field" placeholder="1" />
+            </div>
           </div>
         </div>
         
         <!-- Botones -->
         <div class="form-buttons">
-          <button type="submit" class="btn-base btn-primary" :disabled="!formularioValido">
+          <button type="submit" class="btn-base btn-primary" :disabled="!formularioValido || guardandoRegistro">
             <i class="btn-icon" v-if="!guardandoRegistro">💾</i>
             <i class="btn-icon loading-spinner" v-else>⏳</i>
             {{ guardandoRegistro ? 'Guardando...' : 'Guardar Registro' }}
           </button>
-          <button type="button" @click="limpiarFormulario" class="btn-base btn-secondary">
+          <button type="button" @click="limpiarFormulario" class="btn-base btn-secondary" :disabled="guardandoRegistro">
             <i class="btn-icon">🔄</i>
             Limpiar
           </button>
-          <button type="button" @click="cancelar" class="btn-base btn-cancel">
+          <button type="button" @click="cancelar" class="btn-base btn-cancel" :disabled="guardandoRegistro">
             <i class="btn-icon">✕</i>
             Cancelar
           </button>
@@ -192,33 +206,50 @@
 </template>
 
 <script>
+import apiService from '@/services/apiService';
+
 export default {
   name: "RegistroAcopio",
   data() {
     return {
       form: {
+        // Campos principales
         lote: "",
-        recibo: "",
+        recibo: null,
         productor: "",
         finca: "",
         zona: "",
         altura: null,
-        rangoObjetivo: "",
-        sobreObjetivo: "",
-        rango: "",
+        
+        // Rendimientos
+        rangoObjetivo: null,
+        sobreObjetivo: null,
+        rendimientoTotal: null,
+        tipoDespulpado: "",
+        
+        // Porcentajes de calidad (opcionales)
         porcentajeFlote: null,
         porcentajeVano: null,
         porcentajeBroca: null,
-        phMiel: null,
         porcentajeVerde: null,
         porcentajeSecos: null,
+        
+        // Estado del producto
         estadoProducto: "",
+        cantidadDisponible: null,
+        
+        // Pruebas físicas
         porcentajeSegundas: null,
         danosMecanicos: null,
         pulpaEnPergamino: null,
         pergaminoEnPulpa: null,
+        
+        // Densidades
         densidadFruta: null,
         densidadPergamino: null,
+        
+        // Campo adicional
+        idSecado: 1 // Valor por defecto
       },
       showSuccess: false,
       showError: false,
@@ -230,14 +261,13 @@ export default {
     formularioValido() {
       // Validamos los campos obligatorios
       return this.form.lote.trim() !== '' && 
-             this.form.recibo.trim() !== '' && 
+             this.form.recibo !== null && 
              this.form.productor.trim() !== '' && 
              this.form.finca.trim() !== '' && 
              this.form.zona.trim() !== '' && 
              this.form.altura !== null && 
-             this.form.rangoObjetivo.trim() !== '' && 
-             this.form.estadoProducto !== '' &&
-             !this.guardandoRegistro;
+             this.form.rangoObjetivo !== null && 
+             this.form.estadoProducto !== '';
     }
   },
   methods: {
@@ -248,21 +278,12 @@ export default {
       }
     },
 
-    validarPH() {
-      if (this.form.phMiel !== null && this.form.phMiel !== undefined) {
-        if (this.form.phMiel < 0 || this.form.phMiel > 14) {
-          this.mostrarError('El pH debe estar entre 0 y 14');
-          this.form.phMiel = null;
-        }
-      }
-    },
-
     mostrarError(mensaje) {
       this.errorMessage = mensaje;
       this.showError = true;
       setTimeout(() => {
         this.showError = false;
-      }, 3000);
+      }, 5000);
     },
 
     mostrarExito() {
@@ -281,9 +302,49 @@ export default {
           this.form[key] = null;
         }
       });
+      // Restaurar valor por defecto
+      this.form.idSecado = 1;
     },
 
-    submitForm() {
+    mapearDatosParaAPI() {
+      // Mapear los datos del formulario al modelo de la API
+      const datos = {
+        nlote: this.form.lote,
+        nrecibo: this.form.recibo || 0,
+        nproductor: this.form.productor,
+        nfinca: this.form.finca,
+        zona: this.form.zona,
+        altura: this.form.altura || 0,
+        
+        // Rendimientos
+        robjetivo: this.form.rangoObjetivo || 0,
+        rsobreobjetivo: this.form.sobreObjetivo || 0,
+        rtotal: this.form.rendimientoTotal || 0,
+        despulpado: this.form.tipoDespulpado || "",
+        
+        // Estado del producto
+        vendido: this.form.estadoProducto === 'vendido',
+        disponible: this.form.estadoProducto === 'disponible' ? (this.form.cantidadDisponible || 0) : 0,
+        enproceso: this.form.estadoProducto === 'en_proceso' ? "Si" : "No",
+        
+        // Pruebas físicas
+        psegundas: this.form.porcentajeSegundas || 0,
+        pdmecanicos: this.form.danosMecanicos || 0,
+        ppulpaPergamino: this.form.pulpaEnPergamino || 0,
+        ppergaminoPulpa: this.form.pergaminoEnPulpa || 0,
+        
+        // Densidades
+        dfruta: this.form.densidadFruta || 0,
+        dpergamino_humedo: this.form.densidadPergamino || 0,
+        
+        // ID Secado
+        id_Secado: this.form.idSecado || 1
+      };
+      
+      return datos;
+    },
+
+    async submitForm() {
       // Prevenir doble envío
       if (this.guardandoRegistro || !this.formularioValido) {
         return;
@@ -291,19 +352,56 @@ export default {
 
       // Activar estado de guardado
       this.guardandoRegistro = true;
+      this.showError = false;
+      this.showSuccess = false;
 
-      console.log("📋 Datos Centro de Acopio:", this.form);
-      this.mostrarExito();
-      
-      // Simulamos un retraso de guardado
-      setTimeout(() => {
-        this.guardandoRegistro = false;
+      try {
+        // Mapear datos para la API
+        const datosAPI = this.mapearDatosParaAPI();
         
-        // Redirigir después de guardar
-        if (this.$router) {
-          this.$router.push({ name: "HomeView" });
+        console.log("📋 Enviando datos a API:", datosAPI);
+        
+        // Llamar a la API
+        const resultado = await apiService.crear('Area_Acopio', datosAPI);
+        
+        console.log("✅ Respuesta de la API:", resultado);
+        
+        this.mostrarExito();
+        
+        // Limpiar formulario después de guardar exitosamente
+        setTimeout(() => {
+          this.limpiarFormulario();
+        }, 1500);
+        
+        // Redirigir después de guardar (opcional)
+        setTimeout(() => {
+          if (this.$router) {
+            this.$router.push({ name: "HomeView" });
+          }
+        }, 3000);
+        
+      } catch (error) {
+        console.error("❌ Error al guardar:", error);
+        
+        let mensajeError = "Error al guardar el registro de acopio";
+        
+        // Manejar diferentes tipos de errores
+        if (error.title) {
+          mensajeError = error.title;
+        } else if (error.errors) {
+          // Errores de validación del modelo
+          const errores = Object.values(error.errors).flat();
+          mensajeError = errores.join(', ');
+        } else if (typeof error === 'string') {
+          mensajeError = error;
+        } else if (error.message) {
+          mensajeError = error.message;
         }
-      }, 2000);
+        
+        this.mostrarError(mensajeError);
+      } finally {
+        this.guardandoRegistro = false;
+      }
     },
 
     cancelar() {
@@ -571,11 +669,14 @@ export default {
 /* Status selector especial */
 .status-selector {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
 }
 
 .status-selector .input-group {
   max-width: 300px;
+  width: 100%;
 }
 
 /* Botones */
@@ -625,13 +726,14 @@ export default {
   transform: none;
   box-shadow: none;
 }
+
 .btn-secondary {
   background: linear-gradient(135deg, #C8956F, #8B5A3C);
   color: white;
   box-shadow: 0 6px 15px rgba(200, 149, 111, 0.4);
 }
 
-.btn-secondary:hover {
+.btn-secondary:hover:not(:disabled) {
   background: linear-gradient(135deg, #8B5A3C, #4A2D1A);
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(200, 149, 111, 0.5);
@@ -643,7 +745,7 @@ export default {
   box-shadow: 0 6px 15px rgba(165, 42, 61, 0.4);
 }
 
-.btn-cancel:hover {
+.btn-cancel:hover:not(:disabled) {
   background: linear-gradient(135deg, #8B2332, #6B1B26);
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(165, 42, 61, 0.5);
@@ -651,6 +753,11 @@ export default {
 
 .btn-base:active {
   transform: translateY(0);
+}
+
+.btn-base:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .btn-icon {

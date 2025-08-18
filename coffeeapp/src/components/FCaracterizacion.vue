@@ -30,12 +30,18 @@
           <h3><i class="section-icon">📋</i>Información Básica</h3>
           <div class="form-grid">
             <div class="input-group">
-              <label>Número de Lote</label>
-              <input type="text" v-model="form.lote" required class="input-field" 
-                     placeholder="Ingrese el número de lote" />
+              <label>Número de Lote *</label>
+              <select v-model="form.lote" required class="input-field select-field" @change="onLoteChange">
+                <option disabled value="">Seleccione un lote existente</option>
+                <option v-for="lote in lotesDisponibles" :key="getLoteId(lote)" :value="getLoteId(lote)">
+                  {{ formatearLoteOpcion(lote) }}
+                </option>
+              </select>
+              <small v-if="cargandoLotes" class="loading-text">Cargando lotes disponibles...</small>
+              <small v-else-if="lotesDisponibles.length === 0" class="loading-text">No hay lotes disponibles</small>
             </div>
             <div class="input-group">
-              <label>Proceso</label>
+              <label>Proceso *</label>
               <select v-model="form.proceso" required class="input-field select-field">
                 <option disabled value="">Selecciona un proceso</option>
                 <option value="despulpado">Despulpado</option>
@@ -77,9 +83,9 @@
                      class="input-field" placeholder="Cantidad" />
             </div>
             <div class="input-group">
-              <label>Rango Óptimo de Maduras</label>
-              <input type="text" v-model="form.rangoOptimo" 
-                     class="input-field" placeholder="Ej: 18-22 °Brix" />
+              <label>Rango Óptimo de Maduras (°Brix)</label>
+              <input type="number" v-model.number="form.rangoOptimo" step="0.1" min="0" 
+                     class="input-field" placeholder="20.5" />
             </div>
           </div>
         </div>
@@ -112,6 +118,12 @@
                      step="0.1" @blur="validarPorcentaje('porcDebajoObjetivo')" 
                      class="input-field" placeholder="%" />
             </div>
+            <div class="input-group">
+              <label>% Por Encima de Madurez</label>
+              <input type="number" v-model.number="form.porcEncimaObjetivo" min="0" max="100" 
+                     step="0.1" @blur="validarPorcentaje('porcEncimaObjetivo')" 
+                     class="input-field" placeholder="%" />
+            </div>
           </div>
         </div>
 
@@ -120,9 +132,9 @@
           <h3><i class="section-icon">🔍</i>Estado y Defectos</h3>
           <div class="form-grid">
             <div class="input-group">
-              <label>Estado de Maduración</label>
-              <input type="text" v-model="form.estadoMaduracion" 
-                     class="input-field" placeholder="Ej: Óptimo, Inmaduro, Sobremaduro" />
+              <label>Escala de Maduración (1-10)</label>
+              <input type="number" v-model.number="form.escalaMaduracion" min="1" max="10" 
+                     step="0.1" class="input-field" placeholder="8.5" />
             </div>
             <div class="input-group">
               <label>% Broca</label>
@@ -142,6 +154,11 @@
                      step="0.1" @blur="validarPorcentaje('secos')" 
                      class="input-field" placeholder="%" />
             </div>
+            <div class="input-group">
+              <label>Muestreo Tabla</label>
+              <input type="number" v-model.number="form.muestreoTabla" step="0.01" min="0" 
+                     class="input-field" placeholder="100.0" />
+            </div>
           </div>
         </div>
 
@@ -159,16 +176,16 @@
 
          <!-- Botones -->
         <div class="form-buttons">
-          <button type="submit" class="btn-base btn-primary" :disabled="!formularioValido">
+          <button type="submit" class="btn-base btn-primary" :disabled="!formularioValido || guardandoRegistro">
             <i class="btn-icon" v-if="!guardandoRegistro">💾</i>
             <i class="btn-icon loading-spinner" v-else>⏳</i>
             {{ guardandoRegistro ? 'Guardando...' : 'Guardar Registro' }}
           </button>
-          <button type="button" @click="limpiarFormulario" class="btn-base btn-secondary">
+          <button type="button" @click="limpiarFormulario" class="btn-base btn-secondary" :disabled="guardandoRegistro">
             <i class="btn-icon">🔄</i>
             Limpiar
           </button>
-          <button type="button" @click="cancelar" class="btn-base btn-cancel">
+          <button type="button" @click="cancelar" class="btn-base btn-cancel" :disabled="guardandoRegistro">
             <i class="btn-icon">✕</i>
             Cancelar
           </button>
@@ -179,6 +196,8 @@
 </template>
 
 <script>
+import apiService from '@/services/apiService'
+
 export default {
   name: "FCaracterizacion",
   data() {
@@ -191,17 +210,21 @@ export default {
         verdes: null,
         objetivo: null,
         secas: null,
-        rangoOptimo: "",
+        rangoOptimo: null,
         porcVerdes: null,
         porcSecas: null,
         porcObjetivo: null,
         porcDebajoObjetivo: null,
-        estadoMaduracion: "",
+        porcEncimaObjetivo: null,
+        escalaMaduracion: null,
         broca: null,
         vanos: null,
         secos: null,
         densidadGrano: null,
+        muestreoTabla: 100.0, // Valor por defecto
       },
+      lotesDisponibles: [],
+      cargandoLotes: false,
       showSuccess: false,
       showError: false,
       errorMessage: '',
@@ -211,12 +234,70 @@ export default {
   computed: {
     formularioValido() {
       // Validación básica: lote y proceso son obligatorios
-      return this.form.lote.trim() !== '' && 
+      return (this.form.lote && this.form.lote.trim() !== '') && 
              this.form.proceso !== '' && 
              !this.guardandoRegistro;
     }
   },
+  async mounted() {
+    await this.cargarLotesDisponibles();
+    
+    // Diagnosticar estructura de datos
+    setTimeout(() => {
+      console.log('🔍 DIAGNÓSTICO DE LOTES:');
+      console.log('Total de lotes:', this.lotesDisponibles.length);
+      
+      if (this.lotesDisponibles.length > 0) {
+        const primerLote = this.lotesDisponibles[0];
+        console.log('Primer lote completo:', primerLote);
+        console.log('Propiedades disponibles:', Object.keys(primerLote));
+        console.log('Valor nlote:', primerLote.nlote);
+        console.log('Valor Nlote:', primerLote.Nlote);
+        console.log('Valor nproductor:', primerLote.nproductor);
+        console.log('Valor Nproductor:', primerLote.Nproductor);
+      }
+    }, 1000);
+  },
   methods: {
+    getLoteId(lote) {
+      // Intentar diferentes variaciones del nombre de la propiedad
+      return lote.nlote || lote.Nlote || lote.id || lote.Id || lote.lote || 'Sin ID';
+    },
+
+    formatearLoteOpcion(lote) {
+      const id = this.getLoteId(lote);
+      const productor = lote.nproductor || lote.Nproductor || lote.productor || lote.Productor || 'Sin productor';
+      const finca = lote.nfinca || lote.Nfinca || lote.finca || lote.Finca || 'Sin finca';
+      
+      return `${id} - ${productor} (${finca})`;
+    },
+
+    async cargarLotesDisponibles() {
+      this.cargandoLotes = true;
+      try {
+        console.log('🔍 Cargando lotes disponibles...');
+        const lotes = await apiService.obtenerTodos('Area_Acopio');
+        this.lotesDisponibles = lotes || [];
+        
+        // Debug: mostrar la estructura de los datos
+        console.log('✅ Lotes cargados:', this.lotesDisponibles.length);
+        console.log('📋 Estructura del primer lote:', this.lotesDisponibles[0]);
+        console.log('📋 Todas las propiedades del primer lote:', 
+                   this.lotesDisponibles[0] ? Object.keys(this.lotesDisponibles[0]) : 'No hay lotes');
+        
+      } catch (error) {
+        console.error('❌ Error al cargar lotes:', error);
+        this.mostrarError('Error al cargar los lotes disponibles');
+        this.lotesDisponibles = [];
+      } finally {
+        this.cargandoLotes = false;
+      }
+    },
+
+    onLoteChange() {
+      console.log('📋 Lote seleccionado:', this.form.lote);
+    },
+
     validarPorcentaje(campo) {
       const valor = this.form[campo];
       if (valor !== null && valor !== undefined) {
@@ -229,7 +310,7 @@ export default {
       this.showError = true;
       setTimeout(() => {
         this.showError = false;
-      }, 4000);
+      }, 5000);
     },
 
     mostrarExito() {
@@ -239,14 +320,52 @@ export default {
       }, 3000);
     },
 
-    submitForm() {
+    mapearDatosParaAPI() {
+      // Mapear los datos del formulario al modelo de la API
+      const datos = {
+        tiempo: new Date().toISOString(), // Timestamp actual
+        nlote_AreaAcopio: this.form.lote,
+        proceso: this.form.proceso,
+        
+        // Cantidades de cerezas
+        cinmaduras: this.form.inmaduras || 0,
+        csobremaduras: this.form.sobremaduras || 0,
+        cverdes: this.form.verdes || 0,
+        cobjetivo: this.form.objetivo || 0,
+        csecas: this.form.secas || 0,
+        
+        // Rango óptimo y muestreo
+        drMaduras: this.form.rangoOptimo || 0,
+        mtabla: this.form.muestreoTabla || 100.0,
+        
+        // Porcentajes
+        pcverdes: this.form.porcVerdes || 0,
+        pcsecas: this.form.porcSecas || 0,
+        pcobjetivo: this.form.porcObjetivo || 0,
+        pcdebajo: this.form.porcDebajoObjetivo || 0,
+        pcencima: this.form.porcEncimaObjetivo || 0,
+        
+        // Escala de maduración y defectos
+        emaduracion: this.form.escalaMaduracion || 0,
+        broca: this.form.broca || 0,
+        vanos: this.form.vanos || 0,
+        secos: this.form.secos || 0,
+        
+        // Densidad
+        densidad: this.form.densidadGrano || 0
+      };
+      
+      return datos;
+    },
+
+    async submitForm() {
       // Prevenir doble envío
-      if (this.guardandoRegistro) {
+      if (this.guardandoRegistro || !this.formularioValido) {
         return;
       }
 
       // Validaciones básicas
-      if (!this.form.lote.trim()) {
+      if (!this.form.lote || !this.form.lote.trim()) {
         this.mostrarError('El número de lote es obligatorio');
         return;
       }
@@ -258,35 +377,65 @@ export default {
 
       // Activar estado de guardado
       this.guardandoRegistro = true;
+      this.showError = false;
+      this.showSuccess = false;
 
-      // =========================================================================
-      // CÓDIGO DE BACKEND:
-      // Aquí es donde harías la llamada a tu API para guardar los datos.
-      // El siguiente código es un ejemplo y DEBE ser reemplazado por tu lógica
-      // de conexión a la base de datos.
-      // =========================================================================
-
-      console.log("📋 Datos Refractómetro guardados:", {
-        ...this.form,
-        fechaRegistro: new Date().toISOString()
-      });
-      
-      this.mostrarExito();
-      
-      // Opcional: redirigir después de un delay
-      setTimeout(() => {
-        this.guardandoRegistro = false;
-        if (this.$router) {
-          this.$router.push({ name: "HomeView" });
+      try {
+        // Mapear datos para la API
+        const datosAPI = this.mapearDatosParaAPI();
+        
+        console.log("📋 Enviando datos de caracterización a API:", datosAPI);
+        
+        // Llamar a la API
+        const resultado = await apiService.crear('FormularioCaracterizacionApi', datosAPI);
+        
+        console.log("✅ Respuesta de la API:", resultado);
+        
+        this.mostrarExito();
+        
+        // Limpiar formulario después de guardar exitosamente
+        setTimeout(() => {
+          this.limpiarFormulario();
+        }, 1500);
+        
+        // Redirigir después de guardar (opcional)
+        setTimeout(() => {
+          if (this.$router) {
+            this.$router.push({ name: "HomeView" });
+          }
+        }, 4000);
+        
+      } catch (error) {
+        console.error("❌ Error al guardar caracterización:", error);
+        
+        let mensajeError = "Error al guardar el registro de caracterización";
+        
+        // Manejar diferentes tipos de errores
+        if (error.title) {
+          mensajeError = error.title;
+        } else if (error.errors) {
+          // Errores de validación del modelo
+          const errores = Object.values(error.errors).flat();
+          mensajeError = errores.join(', ');
+        } else if (typeof error === 'string') {
+          mensajeError = error;
+        } else if (error.message) {
+          mensajeError = error.message;
         }
-      }, 4000);
+        
+        this.mostrarError(mensajeError);
+      } finally {
+        this.guardandoRegistro = false;
+      }
     },
 
     limpiarFormulario() {
-      // Limpiar todos los campos
+      // Limpiar todos los campos excepto valores por defecto
       Object.keys(this.form).forEach(key => {
-        if (key === 'lote' || key === 'proceso' || key === 'rangoOptimo' || key === 'estadoMaduracion') {
+        if (key === 'lote' || key === 'proceso') {
           this.form[key] = '';
+        } else if (key === 'muestreoTabla') {
+          this.form[key] = 100.0; // Mantener valor por defecto
         } else {
           this.form[key] = null;
         }
@@ -444,6 +593,13 @@ export default {
 .icon {
   font-size: 1.2rem;
   font-weight: bold;
+}
+
+.loading-text {
+  color: var(--cafe-medio);
+  font-style: italic;
+  font-size: 0.85rem;
+  margin-top: 4px;
 }
 
 /* Secciones de formulario */
@@ -613,7 +769,7 @@ export default {
   box-shadow: 0 6px 15px rgba(200, 149, 111, 0.4);
 }
 
-.btn-secondary:hover {
+.btn-secondary:hover:not(:disabled) {
   background: linear-gradient(135deg, #8B5A3C, #4A2D1A);
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(200, 149, 111, 0.5);
@@ -625,7 +781,7 @@ export default {
   box-shadow: 0 6px 15px rgba(165, 42, 61, 0.4);
 }
 
-.btn-cancel:hover {
+.btn-cancel:hover:not(:disabled) {
   background: linear-gradient(135deg, #8B2332, #6B1B26);
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(165, 42, 61, 0.5);
@@ -633,6 +789,11 @@ export default {
 
 .btn-base:active {
   transform: translateY(0);
+}
+
+.btn-base:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .btn-icon {

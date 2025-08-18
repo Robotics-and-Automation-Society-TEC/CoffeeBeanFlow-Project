@@ -1,65 +1,54 @@
-dotnet ef migrations add InitialCreate_Area_AcopioContext --context Area_AcopioContext
+1. Primero, limpia y compila el proyecto
+
+dotnet clean
+dotnet build
+
+2. Crear todas las migraciones
+
+dotnet ef migrations add InitialCreate_AreaAcopio --context Area_AcopioContext
+dotnet ef migrations add InitialCreate_Bodega --context BodegaContext
+dotnet ef migrations add InitialCreate_Catacion --context CatacionContext
+dotnet ef migrations add InitialCreate_EnviarMuestras --context Enviar_muestrasContext
+dotnet ef migrations add InitialCreate_FormularioCaracterizacion --context Formulario_CaracterizacionContext
+dotnet ef migrations add InitialCreate_GbxInmaduras --context Gbx_inmadurasContext
+dotnet ef migrations add InitialCreate_GbxMaduras --context Gbx_madurasContext
+dotnet ef migrations add InitialCreate_GbxSobremaduras --context Gbx_sobremadurasContext
+dotnet ef migrations add InitialCreate_GuardarCafe --context Guardar_CafeContext
+dotnet ef migrations add InitialCreate_Humedad --context HumedadContext
+dotnet ef migrations add InitialCreate_Ncama --context NcamaContext
+dotnet ef migrations add InitialCreate_PesoVerde --context PesoVerdeContext
+dotnet ef migrations add InitialCreate_RCInmaduras --context RCinmadurasContext
+dotnet ef migrations add InitialCreate_RCMaduras --context RCmadurasContext
+dotnet ef migrations add InitialCreate_RCSobremaduras --context RCsobremadurasContext
+dotnet ef migrations add InitialCreate_RegistroFormulario --context Registro_FormularioContext
+dotnet ef migrations add InitialCreate_Rondas --context RondasContext
+dotnet ef migrations add InitialCreate_Secado --context SecadoContext
+dotnet ef migrations add InitialCreate_Suministra --context SuministraContext
+dotnet ef migrations add InitialCreate_TemperaturaSecado --context TemperaturaSecadoContext
+dotnet ef migrations add InitialCreate_TermoHigrometria --context TermoHigrometriaContext
+dotnet ef migrations add InitialCreate_Trilla --context TrillaContext
+
+3. Aplicar todas las migraciones a la base de datos
+
 dotnet ef database update --context Area_AcopioContext
-
-dotnet ef migrations add InitialCreate_BodegaContext --context BodegaContext
 dotnet ef database update --context BodegaContext
-
-dotnet ef migrations add InitialCreate_CatacionContext --context CatacionContext
 dotnet ef database update --context CatacionContext
-
-dotnet ef migrations add InitialCreate_Enviar_muestrasContext --context Enviar_muestrasContext
 dotnet ef database update --context Enviar_muestrasContext
-
-dotnet ef migrations add InitialCreate_Formulario_CaracterizacionContext --context Formulario_CaracterizacionContext
 dotnet ef database update --context Formulario_CaracterizacionContext
-
-dotnet ef migrations add InitialCreate_Gbx_inmadurasContext --context Gbx_inmadurasContext
 dotnet ef database update --context Gbx_inmadurasContext
-
-dotnet ef migrations add InitialCreate_Gbx_madurasContext --context Gbx_madurasContext
 dotnet ef database update --context Gbx_madurasContext
-
-dotnet ef migrations add InitialCreate_Gbx_sobremadurasContext --context Gbx_sobremadurasContext
 dotnet ef database update --context Gbx_sobremadurasContext
-
-dotnet ef migrations add InitialCreate_Guardar_CafeContext --context Guardar_CafeContext
 dotnet ef database update --context Guardar_CafeContext
-
-dotnet ef migrations add InitialCreate_HumedadContext --context HumedadContext
 dotnet ef database update --context HumedadContext
-
-dotnet ef migrations add InitialCreate_NcamaContext --context NcamaContext
 dotnet ef database update --context NcamaContext
-
-dotnet ef migrations add InitialCreate_PesoVerdeContext --context PesoVerdeContext
 dotnet ef database update --context PesoVerdeContext
-
-dotnet ef migrations add InitialCreate_RCinmadurasContext --context RCinmadurasContext
 dotnet ef database update --context RCinmadurasContext
-
-dotnet ef migrations add InitialCreate_RCmadurasContext --context RCmadurasContext
 dotnet ef database update --context RCmadurasContext
-
-dotnet ef migrations add InitialCreate_RCsobremadurasContext --context RCsobremadurasContext
 dotnet ef database update --context RCsobremadurasContext
-
-dotnet ef migrations add InitialCreate_Registro_FormularioContext --context Registro_FormularioContext
 dotnet ef database update --context Registro_FormularioContext
-
-dotnet ef migrations add InitialCreate_RondasContext --context RondasContext
 dotnet ef database update --context RondasContext
-
-dotnet ef migrations add InitialCreate_SecadoContext --context SecadoContext
 dotnet ef database update --context SecadoContext
-
-dotnet ef migrations add InitialCreate_SuministraContext --context SuministraContext
 dotnet ef database update --context SuministraContext
-
-dotnet ef migrations add InitialCreate_TemperaturaSecadoContext --context TemperaturaSecadoContext
 dotnet ef database update --context TemperaturaSecadoContext
-
-dotnet ef migrations add InitialCreate_TermoHigrometriaContext --context TermoHigrometriaContext
 dotnet ef database update --context TermoHigrometriaContext
-
-dotnet ef migrations add InitialCreate_TrillaContext --context TrillaContext
 dotnet ef database update --context TrillaContext

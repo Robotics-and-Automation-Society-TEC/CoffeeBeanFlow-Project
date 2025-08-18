@@ -1,15 +1,40 @@
 using Microsoft.EntityFrameworkCore;
 using CoffeBeanFlowDB.Contexts;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-// Cambiar de AddControllersWithViews() a AddControllers() para API
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Configurar JSON para manejar mejor las propiedades
+        options.JsonSerializerOptions.PropertyNamingPolicy = null; // Mantener nombres originales
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    });
 
 // Agregar configuración de API Explorer y Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// *** CONFIGURAR CORS PARA VUE.JS ***
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowVueApp", policy =>
+    {
+        policy.WithOrigins(
+                "http://localhost:8080",    // Vue CLI default
+                "http://localhost:3000",    // Vite default
+                "http://localhost:5173",    // Vite alternate
+                "http://127.0.0.1:8080",
+                "http://127.0.0.1:3000"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials(); // Permitir cookies si las necesitas
+    });
+});
 
 // Configurar Entity Framework con PostgreSQL
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
@@ -90,6 +115,9 @@ if (app.Environment.IsDevelopment())
     // Habilitar Swagger solo en desarrollo
     app.UseSwagger();
     app.UseSwaggerUI();
+    
+    // En desarrollo, mostrar errores detallados
+    app.UseDeveloperExceptionPage();
 }
 
 if (!app.Environment.IsDevelopment())
@@ -103,9 +131,19 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// *** IMPORTANTE: USAR CORS ANTES DE AUTHORIZATION ***
+app.UseCors("AllowVueApp");
+
 app.UseAuthorization();
 
 // Cambiar el enrutamiento para API
 app.MapControllers();
+
+// *** OPCIONAL: Endpoint de prueba para verificar conectividad ***
+app.MapGet("/api/health", () => new { 
+    status = "OK", 
+    timestamp = DateTime.UtcNow,
+    message = "API is running" 
+});
 
 app.Run();

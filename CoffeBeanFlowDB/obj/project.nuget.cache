@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ddbKFbYbaVw=",
+  "dgSpecHash": "gIqA7rMdPlI=",
   "success": true,
-  "projectFilePath": "C:\\Users\\josev\\OneDrive\\Documentos\\Semestre II 2025\\CoffeeBeanFlow-Project\\CoffeBeanFlowDB\\CoffeBeanFlowDB.csproj",
+  "projectFilePath": "C:\\Users\\josev\\OneDrive\\Documentos\\CoffeeBeanFlow-Project\\CoffeBeanFlowDB\\CoffeBeanFlowDB.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\josev\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\josev\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
