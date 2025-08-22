@@ -40,16 +40,6 @@
               <small v-if="cargandoLotes" class="loading-text">Cargando lotes disponibles...</small>
               <small v-else-if="lotesDisponibles.length === 0" class="loading-text">No hay lotes disponibles</small>
             </div>
-            <div class="input-group">
-              <label>Proceso *</label>
-              <select v-model="form.proceso" required class="input-field select-field">
-                <option disabled value="">Selecciona un proceso</option>
-                <option value="despulpado">Despulpado</option>
-                <option value="miel">Miel</option>
-                <option value="lavado">Lavado</option>
-                <option value="natural">Natural</option>
-              </select>
-            </div>
           </div>
         </div>
 

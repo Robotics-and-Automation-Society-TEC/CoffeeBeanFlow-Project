@@ -76,14 +76,14 @@
               <label>Tipo de Despulpado</label>
               <select v-model="form.tipoDespulpado" class="input-field select-field">
                 <option value="">Seleccionar tipo</option>
-                <option value="tradicional">Tradicional</option>
-                <option value="ecologico">Ecológico</option>
-                <option value="mecanico">Mecánico</option>
-                <option value="manual">Manual</option>
-                <option value="automatico">Automático</option>
+                <option value="despulpado">Despulpado</option>
+                <option value="miel">Miel</option>
+                <option value="lavado">Lavado</option>
+                <option value="natural">Natural</option>
               </select>
             </div>
           </div>
+          
 
           <!-- Porcentajes en grid separado -->
           <h4>Porcentajes de Calidad (Opcional)</h4>
@@ -219,6 +219,7 @@ export default {
         productor: "",
         finca: "",
         zona: "",
+        proceso: "",
         altura: null,
         
         // Rendimientos
