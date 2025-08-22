@@ -25,6 +25,7 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(
                 "http://localhost:8080",    // Vue CLI default
+                "http://localhost:8081",    // Vue CLI default
                 "http://localhost:3000",    // Vite default
                 "http://localhost:5173",    // Vite alternate
                 "http://127.0.0.1:8080",
