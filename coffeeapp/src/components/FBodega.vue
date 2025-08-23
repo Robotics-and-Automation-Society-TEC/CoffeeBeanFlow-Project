@@ -31,28 +31,72 @@
           <div class="form-grid">
             <div class="input-group">
               <label class="required-label">Número de Lote *</label>
-              <input 
-                type="text" 
-                v-model="form.lote" 
+              
+              <!-- Select cuando hay lotes cargados -->
+              <select 
+                v-if="lotes.length > 0"
+                v-model="form.nlote" 
                 required 
-                class="input-base"
-                placeholder="Ej: 001 o LOTE-2024-001"
+                class="input-field"
+                @change="validarCampo('nlote')"
+                :disabled="cargandoLotes"
+              >
+                <option value="" disabled>
+                  {{ cargandoLotes ? 'Cargando lotes...' : 'Seleccione un lote' }}
+                </option>
+                <option 
+                  v-for="lote in lotes" 
+                  :key="lote" 
+                  :value="lote"
+                >
+                  {{ lote }}
+                </option>
+              </select>
+              
+              <!-- Input manual cuando no hay lotes o falla la API -->
+              <input 
+                v-else
+                type="text" 
+                v-model="form.nlote" 
+                required 
+                class="input-field"
+                placeholder="Ej: LOTE-001, LOTE-2024-001"
                 maxlength="50"
-                @blur="validarCampo('lote')"
+                @blur="validarCampo('nlote')"
+                :disabled="cargandoLotes"
               />
-              <span v-if="errors.lote" class="error-text">{{ errors.lote }}</span>
+              
+              <span v-if="errors.nlote" class="error-text">{{ errors.nlote }}</span>
+              
+              <!-- Mensajes informativos -->
+              <small v-if="cargandoLotes" class="info-text">
+                <i class="info-icon">⏳</i>
+                Cargando lotes disponibles...
+              </small>
+              <small v-else-if="!apiLotesDisponible && lotes.length === 0" class="info-text" style="color: var(--color-warning);">
+                <i class="info-icon">⚠️</i>
+                API de lotes no disponible. Ingrese el número de lote manualmente.
+              </small>
+              <small v-else-if="lotes.length === 0" class="info-text" style="color: var(--color-info);">
+                <i class="info-icon">ℹ️</i>
+                No hay lotes disponibles. Ingrese el número de lote manualmente.
+              </small>
+              <small v-else class="info-text" style="color: var(--color-success);">
+                <i class="info-icon">✅</i>
+                {{ lotes.length }} lote(s) disponible(s)
+              </small>
             </div>
             <div class="input-group">
               <label class="required-label">Fecha Inicio de Reposo *</label>
               <input 
                 type="date" 
-                v-model="form.fechaInicioReposo" 
+                v-model="form.finicioReposo" 
                 required 
-                class="input-base"
+                class="input-field"
                 :max="fechaMaxima"
-                @blur="validarCampo('fechaInicioReposo')"
+                @blur="validarCampo('finicioReposo')"
               />
-              <span v-if="errors.fechaInicioReposo" class="error-text">{{ errors.fechaInicioReposo }}</span>
+              <span v-if="errors.finicioReposo" class="error-text">{{ errors.finicioReposo }}</span>
             </div>
             <div class="input-group">
               <label class="required-label">Cantidad de Sacos *</label>
@@ -61,7 +105,7 @@
                 v-model.number="form.cantidadSacos" 
                 required
                 min="0" 
-                class="input-base"
+                class="input-field"
                 placeholder="0"
                 @blur="validarNumero('cantidadSacos')"
               />
@@ -81,29 +125,29 @@
                   <label class="required-label">Densidad Bellota (g/ml) *</label>
                   <input 
                     type="number" 
-                    v-model.number="form.densidadBellota" 
+                    v-model.number="form.dBellota" 
                     required
                     step="0.01" 
                     min="0" 
-                    class="input-base"
+                    class="input-field"
                     placeholder="0.00"
-                    @blur="validarNumero('densidadBellota')"
+                    @blur="validarNumero('dBellota')"
                   />
-                  <span v-if="errors.densidadBellota" class="error-text">{{ errors.densidadBellota }}</span>
+                  <span v-if="errors.dBellota" class="error-text">{{ errors.dBellota }}</span>
                 </div>
                 <div class="input-group">
                   <label class="required-label">Densidad Pergamino (g/ml) *</label>
                   <input 
                     type="number" 
-                    v-model.number="form.densidadPergamino" 
+                    v-model.number="form.dPergamino" 
                     required
                     step="0.01" 
                     min="0" 
-                    class="input-base"
+                    class="input-field"
                     placeholder="0.00"
-                    @blur="validarNumero('densidadPergamino')"
+                    @blur="validarNumero('dPergamino')"
                   />
-                  <span v-if="errors.densidadPergamino" class="error-text">{{ errors.densidadPergamino }}</span>
+                  <span v-if="errors.dPergamino" class="error-text">{{ errors.dPergamino }}</span>
                 </div>
               </div>
             </div>
@@ -127,31 +171,31 @@
                   <label class="required-label">Humedad Inicial (%) *</label>
                   <input 
                     type="number" 
-                    v-model.number="form.humedadInicial" 
+                    v-model.number="form.hinicial" 
                     required
                     min="0" 
                     max="100" 
                     step="0.1" 
-                    @blur="validarPorcentaje('humedadInicial')" 
+                    @blur="validarPorcentaje('hinicial')" 
                     placeholder="0.0" 
-                    class="input-base" 
+                    class="input-field" 
                   />
-                  <span v-if="errors.humedadInicial" class="error-text">{{ errors.humedadInicial }}</span>
+                  <span v-if="errors.hinicial" class="error-text">{{ errors.hinicial }}</span>
                 </div>
                 <div class="input-group">
                   <label class="required-label">Humedad Final (%) *</label>
                   <input 
                     type="number" 
-                    v-model.number="form.humedadFinal" 
+                    v-model.number="form.hfinal" 
                     required
                     min="0" 
                     max="100" 
                     step="0.1" 
-                    @blur="validarPorcentaje('humedadFinal')" 
+                    @blur="validarPorcentaje('hfinal')" 
                     placeholder="0.0" 
-                    class="input-base" 
+                    class="input-field" 
                   />
-                  <span v-if="errors.humedadFinal" class="error-text">{{ errors.humedadFinal }}</span>
+                  <span v-if="errors.hfinal" class="error-text">{{ errors.hfinal }}</span>
                 </div>
               </div>
             </div>
@@ -169,29 +213,29 @@
                   <label class="required-label">Peso Pergamino (kg) *</label>
                   <input 
                     type="number" 
-                    v-model.number="form.pesoPergamino" 
+                    v-model.number="form.wPergamino" 
                     required
                     step="0.01" 
                     min="0" 
-                    class="input-base"
+                    class="input-field"
                     placeholder="0.00"
-                    @blur="validarNumero('pesoPergamino')"
+                    @blur="validarNumero('wPergamino')"
                   />
-                  <span v-if="errors.pesoPergamino" class="error-text">{{ errors.pesoPergamino }}</span>
+                  <span v-if="errors.wPergamino" class="error-text">{{ errors.wPergamino }}</span>
                 </div>
                 <div class="input-group">
                   <label class="required-label">Peso Bellota (kg) *</label>
                   <input 
                     type="number" 
-                    v-model.number="form.pesoBellota" 
+                    v-model.number="form.wBellota" 
                     required
                     step="0.01" 
                     min="0" 
-                    class="input-base"
+                    class="input-field"
                     placeholder="0.00"
-                    @blur="validarNumero('pesoBellota')"
+                    @blur="validarNumero('wBellota')"
                   />
-                  <span v-if="errors.pesoBellota" class="error-text">{{ errors.pesoBellota }}</span>
+                  <span v-if="errors.wBellota" class="error-text">{{ errors.wBellota }}</span>
                 </div>
               </div>
             </div>
@@ -207,16 +251,16 @@
                 <label class="required-label">Humedad Relativa (%) *</label>
                 <input 
                   type="number" 
-                  v-model.number="form.promHumedadRelativa" 
+                  v-model.number="form.pmhRelativa" 
                   required
                   min="0" 
                   max="100" 
                   step="0.1" 
-                  @blur="validarPorcentaje('promHumedadRelativa')" 
+                  @blur="validarPorcentaje('pmhRelativa')" 
                   placeholder="0.0" 
-                  class="input-base" 
+                  class="input-field" 
                 />
-                <span v-if="errors.promHumedadRelativa" class="error-text">{{ errors.promHumedadRelativa }}</span>
+                <span v-if="errors.pmhRelativa" class="error-text">{{ errors.pmhRelativa }}</span>
               </div>
             </div>
             <div class="environmental-item">
@@ -224,14 +268,14 @@
                 <label class="required-label">Temperatura Interna (°C) *</label>
                 <input 
                   type="number" 
-                  v-model.number="form.promTempInterna" 
+                  v-model.number="form.pmtInterna" 
                   required
                   step="0.1" 
                   placeholder="0.0" 
-                  class="input-base"
-                  @blur="validarNumero('promTempInterna')"
+                  class="input-field"
+                  @blur="validarNumero('pmtInterna')"
                 />
-                <span v-if="errors.promTempInterna" class="error-text">{{ errors.promTempInterna }}</span>
+                <span v-if="errors.pmtInterna" class="error-text">{{ errors.pmtInterna }}</span>
               </div>
             </div>
             <div class="environmental-item">
@@ -239,14 +283,14 @@
                 <label class="required-label">Temperatura Externa (°C) *</label>
                 <input 
                   type="number" 
-                  v-model.number="form.promTempExterna" 
+                  v-model.number="form.pmtExterna" 
                   required
                   step="0.1" 
                   placeholder="0.0" 
-                  class="input-base"
-                  @blur="validarNumero('promTempExterna')"
+                  class="input-field"
+                  @blur="validarNumero('pmtExterna')"
                 />
-                <span v-if="errors.promTempExterna" class="error-text">{{ errors.promTempExterna }}</span>
+                <span v-if="errors.pmtExterna" class="error-text">{{ errors.pmtExterna }}</span>
               </div>
             </div>
           </div>
@@ -254,16 +298,16 @@
 
         <!-- Botones -->
         <div class="form-buttons">
-          <button type="submit" class="btn-base btn-primary" :disabled="!formularioValido">
+          <button type="submit" class="btn btn-submit" :disabled="!formularioValido">
             <i class="btn-icon" v-if="!guardandoRegistro">💾</i>
             <i class="btn-icon loading-spinner" v-else>⏳</i>
             {{ guardandoRegistro ? 'Guardando...' : 'Guardar Registro' }}
           </button>
-          <button type="button" @click="limpiarFormulario" class="btn-base btn-secondary">
+          <button type="button" @click="limpiarFormulario" class="btn btn-secondary">
             <i class="btn-icon">🔄</i>
             Limpiar
           </button>
-          <button type="button" @click="cancelar" class="btn-base btn-cancel">
+          <button type="button" @click="cancelar" class="btn btn-cancel">
             <i class="btn-icon">✕</i>
             Cancelar
           </button>
@@ -274,29 +318,34 @@
 </template>
 
 <script>
+import apiService from '@/services/apiService' // Ajusta la ruta según tu estructura
+
 export default {
   name: "RegistroBodega",
   data() {
     return {
       form: {
-        lote: "",
-        densidadBellota: null,
-        densidadPergamino: null,
-        humedadInicial: null,
-        humedadFinal: null,
-        pesoPergamino: null,
-        pesoBellota: null,
-        fechaInicioReposo: "",
+        nlote: "",
+        dBellota: null,
+        dPergamino: null,
+        hinicial: null,
+        hfinal: null,
+        wPergamino: null,
+        wBellota: null,
+        finicioReposo: "",
         cantidadSacos: null,
-        promHumedadRelativa: null,
-        promTempInterna: null,
-        promTempExterna: null,
+        pmhRelativa: null,
+        pmtInterna: null,
+        pmtExterna: null,
       },
       errors: {},
       showSuccess: false,
       showError: false,
       errorMessage: '',
-      guardandoRegistro: false
+      guardandoRegistro: false,
+      lotes: [], // Lista de lotes disponibles
+      cargandoLotes: false,
+      apiLotesDisponible: true // Flag para saber si la API de lotes funciona
     };
   },
   computed: {
@@ -304,18 +353,110 @@ export default {
       return new Date().toISOString().split('T')[0];
     },
     formularioValido() {
-      return Object.keys(this.errors).length === 0 && !this.guardandoRegistro;
+      return Object.keys(this.errors).length === 0 && 
+             !this.guardandoRegistro && 
+             !this.cargandoLotes;
     }
   },
   methods: {
+    // Método para cargar lotes desde Area_Acopio
+    async cargarLotes() {
+      this.cargandoLotes = true;
+      try {
+        console.log("📦 Cargando lotes desde Area_Acopio...");
+        
+        // Obtener todos los registros de Area_Acopio
+        const registrosAreaAcopio = await apiService.obtenerTodos('Area_Acopio');
+        
+        console.log("📊 Registros de Area_Acopio obtenidos:", registrosAreaAcopio);
+        
+        // Extraer números de lote únicos y válidos
+        const lotesUnicos = [...new Set(
+          registrosAreaAcopio
+            .map(registro => registro.Nlote || registro.nlote) // CORREGIDO: priorizar Nlote en mayúsculas
+            .filter(nlote => nlote && nlote.toString().trim() !== '') // Filtrar valores vacíos
+        )];
+        
+        this.lotes = lotesUnicos.sort(); // Ordenar alfabéticamente
+        this.apiLotesDisponible = true;
+        
+        console.log("✅ Lotes cargados desde Area_Acopio:", this.lotes.length, this.lotes);
+        
+      } catch (error) {
+        console.error("❌ Error al cargar lotes desde Area_Acopio:", error);
+        this.lotes = [];
+        this.apiLotesDisponible = false;
+        console.log("🔄 Cambiando a modo de entrada manual de lotes");
+      } finally {
+        this.cargandoLotes = false;
+      }
+    },
+
+    // Método para crear registro de Bodega
+    async crearBodega() {
+      const bodegaData = {
+        Nlote: this.form.nlote,
+        D_Bellota: this.form.dBellota,
+        D_Pergamino: this.form.dPergamino,
+        Hinicial: this.form.hinicial,
+        Hfinal: this.form.hfinal,
+        W_pergamino: this.form.wPergamino,
+        W_bellota: this.form.wBellota,
+        FinicioReposo: new Date(this.form.finicioReposo).toISOString(),
+        CantidadSacos: this.form.cantidadSacos,
+        PMTexterna: this.form.pmtExterna,
+        PMTinterna: this.form.pmtInterna,
+        PMH_relativa: this.form.pmhRelativa
+      };
+
+      console.log("📋 Creando bodega:", bodegaData);
+
+      try {
+        return await apiService.crear('BodegaApi', bodegaData);
+      } catch (error) {
+        console.error("❌ Error al crear bodega:", bodegaData, error);
+        throw new Error(`Error al crear bodega: ${error.message || error}`);
+      }
+    },
+
     // Validación de campos de texto y fecha
     validarCampo(campo) {
-      if (!this.form[campo] || this.form[campo].toString().trim() === '') {
-        this.errors[campo] = 'El campo es requerido';
-      } else if (campo === 'fechaInicioReposo' && new Date(this.form[campo]) > new Date()) {
-        this.errors[campo] = 'La fecha no puede ser futura';
+      if (campo === 'nlote') {
+        if (!this.form[campo] || this.form[campo].toString().trim() === '') {
+          this.errors[campo] = 'Debe seleccionar o ingresar un lote';
+        } else if (this.lotes.length > 0 && this.apiLotesDisponible) {
+          // Validación estricta cuando hay lotes disponibles en la API
+          const loteValido = this.lotes.includes(this.form[campo]);
+          if (!loteValido) {
+            this.errors[campo] = 'El lote seleccionado no es válido';
+          } else {
+            delete this.errors[campo];
+          }
+        } else {
+          // Validación básica para entrada manual
+          const lote = this.form[campo].toString().trim();
+          if (lote.length < 2) {
+            this.errors[campo] = 'El número de lote debe tener al menos 2 caracteres';
+          } else if (lote.length > 50) {
+            this.errors[campo] = 'El número de lote no puede exceder 50 caracteres';
+          } else {
+            delete this.errors[campo];
+          }
+        }
+      } else if (campo === 'finicioReposo') {
+        if (!this.form[campo] || this.form[campo].toString().trim() === '') {
+          this.errors[campo] = 'El campo es requerido';
+        } else if (new Date(this.form[campo]) > new Date()) {
+          this.errors[campo] = 'La fecha no puede ser futura';
+        } else {
+          delete this.errors[campo];
+        }
       } else {
-        delete this.errors[campo];
+        if (!this.form[campo] || this.form[campo].toString().trim() === '') {
+          this.errors[campo] = 'El campo es requerido';
+        } else {
+          delete this.errors[campo];
+        }
       }
     },
 
@@ -348,25 +489,25 @@ export default {
       this.errors = {};
       
       // Campos de texto/fecha
-      ['lote', 'fechaInicioReposo'].forEach(campo => {
+      ['nlote', 'finicioReposo'].forEach(campo => {
         this.validarCampo(campo);
       });
 
       // Campos de porcentaje
-      ['humedadInicial', 'humedadFinal', 'promHumedadRelativa'].forEach(campo => {
+      ['hinicial', 'hfinal', 'pmhRelativa'].forEach(campo => {
         this.validarPorcentaje(campo);
       });
 
       // Campos numéricos
-      ['densidadBellota', 'densidadPergamino', 'pesoPergamino', 'pesoBellota', 
-       'cantidadSacos', 'promTempInterna', 'promTempExterna'].forEach(campo => {
+      ['dBellota', 'dPergamino', 'wPergamino', 'wBellota', 
+       'cantidadSacos', 'pmtInterna', 'pmtExterna'].forEach(campo => {
         this.validarNumero(campo);
       });
 
       return Object.keys(this.errors).length === 0;
     },
 
-    submitForm() {
+    async submitForm() {
       // Prevenir doble envío
       if (this.guardandoRegistro) {
         return;
@@ -381,27 +522,54 @@ export default {
       // Activar estado de guardado
       this.guardandoRegistro = true;
 
-      // =========================================================================
-      // CÓDIGO DE BACKEND:
-      // Aquí es donde harías la llamada a tu API para guardar los datos.
-      // El siguiente código es un ejemplo y DEBE ser reemplazado por tu lógica
-      // de conexión a la base de datos.
-      // =========================================================================
+      try {
+        console.log("📋 Iniciando guardado de datos de bodega...");
 
-      console.log("📋 Datos de Bodega guardados:", {
-        ...this.form,
-        fechaRegistro: new Date().toISOString()
-      });
-      
-      this.mostrarExito();
-      
-      // Simulación de guardado
-      setTimeout(() => {
-        this.guardandoRegistro = false;
-        if (this.$router) {
-          this.$router.push({ name: "HomeView" });
+        // Crear el registro de Bodega
+        const bodegaCreada = await this.crearBodega();
+        
+        // Verificar diferentes posibles nombres de la llave primaria
+        const idBodega = bodegaCreada.ID_Bodega || bodegaCreada.id_Bodega || bodegaCreada.idBodega;
+        
+        if (!idBodega) {
+          console.error("❌ No se pudo obtener el ID de la bodega creada:", bodegaCreada);
+          throw new Error("No se pudo obtener el ID del registro de bodega creado");
         }
-      }, 4000);
+        
+        console.log("✅ Bodega creada con ID:", idBodega);
+        console.log("🔍 Objeto completo de la bodega:", bodegaCreada);
+
+        console.log("🎉 Datos de bodega guardados exitosamente");
+        this.mostrarExito();
+        
+        // Limpiar formulario después de 3 segundos
+        setTimeout(() => {
+          this.limpiarFormulario();
+          this.guardandoRegistro = false;
+          if (this.$router) {
+            this.$router.push({ name: "HomeView" });
+          }
+        }, 3000);
+
+      } catch (error) {
+        console.error("❌ Error al guardar:", error);
+        
+        // Manejar diferentes tipos de errores
+        let mensajeError = "Error desconocido";
+        
+        if (typeof error === 'string') {
+          mensajeError = error;
+        } else if (error.message) {
+          mensajeError = error.message;
+        } else if (error.response?.data) {
+          mensajeError = error.response.data.message || JSON.stringify(error.response.data);
+        } else if (error.data) {
+          mensajeError = error.data.message || JSON.stringify(error.data);
+        }
+        
+        this.mostrarError(`Error al guardar los datos: ${mensajeError}`);
+        this.guardandoRegistro = false;
+      }
     },
 
     mostrarError(mensaje) {
@@ -409,7 +577,7 @@ export default {
       this.showError = true;
       setTimeout(() => {
         this.showError = false;
-      }, 4000);
+      }, 6000);
     },
 
     mostrarExito() {
@@ -422,7 +590,7 @@ export default {
     limpiarFormulario() {
       // Limpiar todos los campos
       Object.keys(this.form).forEach(key => {
-        if (key === 'lote' || key === 'fechaInicioReposo') {
+        if (key === 'nlote' || key === 'finicioReposo') {
           this.form[key] = '';
         } else {
           this.form[key] = null;
@@ -431,6 +599,11 @@ export default {
       
       // Limpiar errores
       this.errors = {};
+      
+      // Recargar lotes solo si la API estaba disponible anteriormente
+      if (this.apiLotesDisponible && this.lotes.length === 0) {
+        this.cargarLotes();
+      }
     },
 
     cancelar() {
@@ -438,6 +611,10 @@ export default {
         this.$router.push({ name: "HomeView" });
       }
     }
+  },
+
+  mounted() {
+    this.cargarLotes(); // Cargar lotes al montar el componente
   }
 };
 </script>
@@ -626,19 +803,19 @@ export default {
   border-left: 4px solid var(--burgundy);
 }
 
-.cherries {
+.densities {
   border-left: 4px solid var(--cafe-oscuro);
 }
 
-.percentages {
+.humidity {
   border-left: 4px solid var(--verde-oscuro);
 }
 
-.defects {
+.weights {
   border-left: 4px solid var(--cafe-medio);
 }
 
-.density {
+.environmental {
   border-left: 4px solid var(--cafe-muy-oscuro);
 }
 
@@ -646,6 +823,12 @@ export default {
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.environmental-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 20px;
 }
 
@@ -662,6 +845,12 @@ export default {
   font-size: 0.9rem;
 }
 
+.required-label::after {
+  content: " *";
+  color: var(--color-error);
+  font-weight: bold;
+}
+
 .input-field {
   padding: 12px 16px;
   border: 2px solid #E5C29F;
@@ -672,6 +861,23 @@ export default {
   color: #2C1810;
   width: 100%;
   box-sizing: border-box;
+}
+
+/* Estilos específicos para select */
+select.input-field {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+}
+
+select.input-field:disabled {
+  background-color: var(--beige-claro);
+  color: var(--cafe-medio);
+  cursor: not-allowed;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23C8956F' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
 }
 
 .input-field:focus {
@@ -690,14 +896,74 @@ export default {
   font-style: italic;
 }
 
-.select-field {
-  cursor: pointer;
+/* Mensajes de error */
+.error-text {
+  color: var(--color-error);
+  font-size: var(--text-xs);
+  margin-top: var(--space-xs);
+  display: block;
 }
 
-.select-field option {
-  color: #2C1810;
-  background: white;
-  padding: 8px;
+/* Información adicional */
+.humidity-info {
+  background: var(--beige-claro);
+  padding: var(--space-md);
+  border-radius: 8px;
+  margin-bottom: var(--space-xl);
+}
+
+.info-text {
+  color: var(--cafe-oscuro);
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--text-sm);
+}
+
+.info-icon {
+  font-size: var(--text-sm);
+}
+
+/* Mediciones */
+.density-measurements, .humidity-measurements, .weight-measurements {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-xl);
+}
+
+.density-pair, .humidity-pair, .weight-pair {
+  background: linear-gradient(145deg, #ffffff, var(--beige-claro));
+  padding: var(--space-lg);
+  border-radius: 12px;
+  border: 1px solid var(--cafe-claro);
+  transition: var(--transition-all);
+}
+
+.density-pair:hover, .humidity-pair:hover, .weight-pair:hover {
+  border-color: var(--cafe-medio);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(74, 45, 26, 0.15);
+}
+
+.pair-header {
+  font-weight: 600;
+  color: var(--cafe-oscuro);
+  margin-bottom: var(--space-md);
+  text-align: center;
+  font-size: var(--text-sm);
+}
+
+.pair-inputs-horizontal {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  align-items: end;
+}
+
+.environmental-item {
+  display: flex;
+  flex-direction: column;
 }
 
 /* Botones */
@@ -710,7 +976,7 @@ export default {
   border-top: 2px solid #E5C29F;
 }
 
-.btn-base {
+.btn {
   padding: 14px 28px;
   border: none;
   border-radius: 12px;
@@ -727,19 +993,19 @@ export default {
   justify-content: center;
 }
 
-.btn-primary {
+.btn-submit {
   background: linear-gradient(135deg, #8FAD5A, #4A5D2E);
   color: white;
   box-shadow: 0 6px 15px rgba(143, 173, 90, 0.4);
 }
 
-.btn-primary:hover:not(:disabled) {
+.btn-submit:hover:not(:disabled) {
   background: linear-gradient(135deg, #4A5D2E, #2e3d1a);
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(143, 173, 90, 0.5);
 }
 
-.btn-primary:disabled {
+.btn-submit:disabled {
   background: var(--cafe-claro);
   color: #8B5A3C;
   cursor: not-allowed;
@@ -771,7 +1037,7 @@ export default {
   box-shadow: 0 8px 20px rgba(165, 42, 61, 0.5);
 }
 
-.btn-base:active {
+.btn:active {
   transform: translateY(0);
 }
 
@@ -850,13 +1116,22 @@ export default {
     grid-template-columns: 1fr;
   }
 
+  .environmental-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pair-inputs-horizontal {
+    grid-template-columns: 1fr;
+    gap: var(--space-sm);
+  }
+
   .form-buttons {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
   }
 
-  .btn-base {
+  .btn {
     flex: 1;
     min-width: 120px;
     max-width: 150px;
@@ -869,8 +1144,31 @@ export default {
     align-items: stretch;
   }
 
-  .btn-base {
+  .btn {
     width: 100%;
   }
+
+  .pair-inputs-horizontal {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Scroll personalizado */
+.modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: var(--beige-claro);
+  border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(var(--cafe-medio), var(--cafe-oscuro));
+  border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(var(--cafe-oscuro), var(--cafe-muy-oscuro));
 }
 </style>

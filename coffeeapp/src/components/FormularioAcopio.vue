@@ -14,6 +14,9 @@
         <div v-if="showSuccess" class="success-message">
           <i class="icon">✓</i>
           ¡Registro guardado exitosamente!
+          <div v-if="idSecadoCreado" class="success-detail">
+            ID de Secado asignado: {{ idSecadoCreado }}
+          </div>
         </div>
       </transition>
 
@@ -30,28 +33,77 @@
           <h3><i class="section-icon">📋</i>Información General</h3>
           <div class="form-grid">
             <div class="input-group">
-              <label>Número de Lote *</label>
-              <input type="text" v-model="form.lote" required class="input-field" placeholder="Ej: L001-2025" />
+              <label class="required-label">Número de Lote *</label>
+              <input 
+                type="text" 
+                v-model="form.lote" 
+                required 
+                class="input-field" 
+                placeholder="Ej: L001-2025"
+                @blur="validarCampo('lote')"
+              />
+              <span v-if="errors.lote" class="error-text">{{ errors.lote }}</span>
             </div>
             <div class="input-group">
-              <label>Número de Recibo *</label>
-              <input type="number" v-model.number="form.recibo" required class="input-field" placeholder="Ej: 1234" />
+              <label class="required-label">Número de Recibo *</label>
+              <input 
+                type="number" 
+                v-model.number="form.recibo" 
+                required 
+                class="input-field" 
+                placeholder="Ej: 1234"
+                @blur="validarCampo('recibo')"
+              />
+              <span v-if="errors.recibo" class="error-text">{{ errors.recibo }}</span>
             </div>
             <div class="input-group">
-              <label>Productor *</label>
-              <input type="text" v-model="form.productor" required class="input-field" placeholder="Nombre del productor" />
+              <label class="required-label">Productor *</label>
+              <input 
+                type="text" 
+                v-model="form.productor" 
+                required 
+                class="input-field" 
+                placeholder="Nombre del productor"
+                @blur="validarCampo('productor')"
+              />
+              <span v-if="errors.productor" class="error-text">{{ errors.productor }}</span>
             </div>
             <div class="input-group">
-              <label>Finca *</label>
-              <input type="text" v-model="form.finca" required class="input-field" placeholder="Nombre de la finca" />
+              <label class="required-label">Finca *</label>
+              <input 
+                type="text" 
+                v-model="form.finca" 
+                required 
+                class="input-field" 
+                placeholder="Nombre de la finca"
+                @blur="validarCampo('finca')"
+              />
+              <span v-if="errors.finca" class="error-text">{{ errors.finca }}</span>
             </div>
             <div class="input-group">
-              <label>Zona *</label>
-              <input type="text" v-model="form.zona" required class="input-field" placeholder="Zona geográfica" />
+              <label class="required-label">Zona *</label>
+              <input 
+                type="text" 
+                v-model="form.zona" 
+                required 
+                class="input-field" 
+                placeholder="Zona geográfica"
+                @blur="validarCampo('zona')"
+              />
+              <span v-if="errors.zona" class="error-text">{{ errors.zona }}</span>
             </div>
             <div class="input-group">
-              <label>Altura (msnm) *</label>
-              <input type="number" v-model.number="form.altura" min="0" required class="input-field" placeholder="1200" />
+              <label class="required-label">Altura (msnm) *</label>
+              <input 
+                type="number" 
+                v-model.number="form.altura" 
+                min="0" 
+                required 
+                class="input-field" 
+                placeholder="1200"
+                @blur="validarCampo('altura')"
+              />
+              <span v-if="errors.altura" class="error-text">{{ errors.altura }}</span>
             </div>
           </div>
         </div>
@@ -61,16 +113,40 @@
           <h3><i class="section-icon">🍒</i>Rango de Maduración</h3>
           <div class="form-grid">
             <div class="input-group">
-              <label>Rendimiento Objetivo *</label>
-              <input type="number" v-model.number="form.rangoObjetivo" step="0.01" min="0" required class="input-field" placeholder="85.5" />
+              <label class="required-label">Rendimiento Objetivo *</label>
+              <input 
+                type="number" 
+                v-model.number="form.rangoObjetivo" 
+                step="0.01" 
+                min="0" 
+                required 
+                class="input-field" 
+                placeholder="85.5"
+                @blur="validarCampo('rangoObjetivo')"
+              />
+              <span v-if="errors.rangoObjetivo" class="error-text">{{ errors.rangoObjetivo }}</span>
             </div>
             <div class="input-group">
               <label>Rendimiento Sobre Objetivo</label>
-              <input type="number" v-model.number="form.sobreObjetivo" step="0.01" min="0" class="input-field" placeholder="90.0" />
+              <input 
+                type="number" 
+                v-model.number="form.sobreObjetivo" 
+                step="0.01" 
+                min="0" 
+                class="input-field" 
+                placeholder="90.0" 
+              />
             </div>
             <div class="input-group">
               <label>Rendimiento Total</label>
-              <input type="number" v-model.number="form.rendimientoTotal" step="0.01" min="0" class="input-field" placeholder="88.2" />
+              <input 
+                type="number" 
+                v-model.number="form.rendimientoTotal" 
+                step="0.01" 
+                min="0" 
+                class="input-field" 
+                placeholder="88.2" 
+              />
             </div>
             <div class="input-group">
               <label>Tipo de Despulpado</label>
@@ -83,35 +159,74 @@
               </select>
             </div>
           </div>
-          
 
           <!-- Porcentajes en grid separado -->
           <h4>Porcentajes de Calidad (Opcional)</h4>
           <div class="percentage-grid">
             <div class="input-group">
               <label>% Flote</label>
-              <input type="number" v-model.number="form.porcentajeFlote" min="0" max="100" step="0.1"
-                     @blur="validarPorcentaje('porcentajeFlote')" class="input-field" placeholder="%" />
+              <input 
+                type="number" 
+                v-model.number="form.porcentajeFlote" 
+                min="0" 
+                max="100" 
+                step="0.1"
+                @blur="validarPorcentaje('porcentajeFlote')" 
+                class="input-field" 
+                placeholder="%" 
+              />
             </div>
             <div class="input-group">
               <label>% Vano</label>
-              <input type="number" v-model.number="form.porcentajeVano" min="0" max="100" step="0.1"
-                     @blur="validarPorcentaje('porcentajeVano')" class="input-field" placeholder="%" />
+              <input 
+                type="number" 
+                v-model.number="form.porcentajeVano" 
+                min="0" 
+                max="100" 
+                step="0.1"
+                @blur="validarPorcentaje('porcentajeVano')" 
+                class="input-field" 
+                placeholder="%" 
+              />
             </div>
             <div class="input-group">
               <label>% Broca</label>
-              <input type="number" v-model.number="form.porcentajeBroca" min="0" max="100" step="0.1"
-                     @blur="validarPorcentaje('porcentajeBroca')" class="input-field" placeholder="%" />
+              <input 
+                type="number" 
+                v-model.number="form.porcentajeBroca" 
+                min="0" 
+                max="100" 
+                step="0.1"
+                @blur="validarPorcentaje('porcentajeBroca')" 
+                class="input-field" 
+                placeholder="%" 
+              />
             </div>
             <div class="input-group">
               <label>% Verde</label>
-              <input type="number" v-model.number="form.porcentajeVerde" min="0" max="100" step="0.1"
-                     @blur="validarPorcentaje('porcentajeVerde')" class="input-field" placeholder="%" />
+              <input 
+                type="number" 
+                v-model.number="form.porcentajeVerde" 
+                min="0" 
+                max="100" 
+                step="0.1"
+                @blur="validarPorcentaje('porcentajeVerde')" 
+                class="input-field" 
+                placeholder="%" 
+              />
             </div>
             <div class="input-group">
               <label>% Secos</label>
-              <input type="number" v-model.number="form.porcentajeSecos" min="0" max="100" step="0.1"
-                     @blur="validarPorcentaje('porcentajeSecos')" class="input-field" placeholder="%" />
+              <input 
+                type="number" 
+                v-model.number="form.porcentajeSecos" 
+                min="0" 
+                max="100" 
+                step="0.1"
+                @blur="validarPorcentaje('porcentajeSecos')" 
+                class="input-field" 
+                placeholder="%" 
+              />
             </div>
           </div>
         </div>
@@ -121,17 +236,30 @@
           <h3><i class="section-icon">📦</i>Estado del Producto *</h3>
           <div class="status-selector">
             <div class="input-group">
-              <label>Estado Actual</label>
-              <select v-model="form.estadoProducto" required class="input-field select-field">
+              <label class="required-label">Estado Actual</label>
+              <select 
+                v-model="form.estadoProducto" 
+                required 
+                class="input-field select-field"
+                @change="validarCampo('estadoProducto')"
+              >
                 <option disabled value="">Seleccionar estado</option>
                 <option value="disponible">Disponible</option>
                 <option value="vendido">Vendido</option>
                 <option value="en_proceso">En Proceso</option>
               </select>
+              <span v-if="errors.estadoProducto" class="error-text">{{ errors.estadoProducto }}</span>
             </div>
             <div class="input-group" v-if="form.estadoProducto === 'disponible'">
               <label>Cantidad Disponible (kg)</label>
-              <input type="number" v-model.number="form.cantidadDisponible" min="0" step="0.01" class="input-field" placeholder="1000.5" />
+              <input 
+                type="number" 
+                v-model.number="form.cantidadDisponible" 
+                min="0" 
+                step="0.01" 
+                class="input-field" 
+                placeholder="1000.5" 
+              />
             </div>
           </div>
         </div>
@@ -142,23 +270,55 @@
           <div class="percentage-grid">
             <div class="input-group">
               <label>% Segundas</label>
-              <input type="number" v-model.number="form.porcentajeSegundas" min="0" max="100" step="0.1"
-                     @blur="validarPorcentaje('porcentajeSegundas')" class="input-field" placeholder="%" />
+              <input 
+                type="number" 
+                v-model.number="form.porcentajeSegundas" 
+                min="0" 
+                max="100" 
+                step="0.1"
+                @blur="validarPorcentaje('porcentajeSegundas')" 
+                class="input-field" 
+                placeholder="%" 
+              />
             </div>
             <div class="input-group">
               <label>% Daños Mecánicos</label>
-              <input type="number" v-model.number="form.danosMecanicos" min="0" max="100" step="0.1"
-                     @blur="validarPorcentaje('danosMecanicos')" class="input-field" placeholder="%" />
+              <input 
+                type="number" 
+                v-model.number="form.danosMecanicos" 
+                min="0" 
+                max="100" 
+                step="0.1"
+                @blur="validarPorcentaje('danosMecanicos')" 
+                class="input-field" 
+                placeholder="%" 
+              />
             </div>
             <div class="input-group">
               <label>% Pulpa en Pergamino</label>
-              <input type="number" v-model.number="form.pulpaEnPergamino" min="0" max="100" step="0.1"
-                     @blur="validarPorcentaje('pulpaEnPergamino')" class="input-field" placeholder="%" />
+              <input 
+                type="number" 
+                v-model.number="form.pulpaEnPergamino" 
+                min="0" 
+                max="100" 
+                step="0.1"
+                @blur="validarPorcentaje('pulpaEnPergamino')" 
+                class="input-field" 
+                placeholder="%" 
+              />
             </div>
             <div class="input-group">
               <label>% Pergamino en Pulpa</label>
-              <input type="number" v-model.number="form.pergaminoEnPulpa" min="0" max="100" step="0.1"
-                     @blur="validarPorcentaje('pergaminoEnPulpa')" class="input-field" placeholder="%" />
+              <input 
+                type="number" 
+                v-model.number="form.pergaminoEnPulpa" 
+                min="0" 
+                max="100" 
+                step="0.1"
+                @blur="validarPorcentaje('pergaminoEnPulpa')" 
+                class="input-field" 
+                placeholder="%" 
+              />
             </div>
           </div>
         </div>
@@ -169,17 +329,36 @@
           <div class="form-grid">
             <div class="input-group">
               <label>Densidad de Fruta (g/cm³)</label>
-              <input type="number" v-model.number="form.densidadFruta" step="0.01" min="0" 
-                     class="input-field" placeholder="1.05" />
+              <input 
+                type="number" 
+                v-model.number="form.densidadFruta" 
+                step="0.01" 
+                min="0" 
+                class="input-field" 
+                placeholder="1.05" 
+              />
             </div>
             <div class="input-group">
               <label>Densidad Pergamino Húmedo (g/cm³)</label>
-              <input type="number" v-model.number="form.densidadPergamino" step="0.01" min="0" 
-                     class="input-field" placeholder="0.85" />
+              <input 
+                type="number" 
+                v-model.number="form.densidadPergamino" 
+                step="0.01" 
+                min="0" 
+                class="input-field" 
+                placeholder="0.85" 
+              />
             </div>
-            <div class="input-group">
+            <div class="input-group info-secado">
               <label>ID Secado</label>
-              <input type="number" v-model.number="form.idSecado" min="1" class="input-field" placeholder="1" />
+              <div class="id-secado-info">
+                <span class="auto-text">Se generará automáticamente</span>
+                <i class="info-icon">ℹ️</i>
+              </div>
+              <small class="info-description">
+                Se creará automáticamente un registro de secado para este lote. 
+                Podrá completar los datos de secado más tarde.
+              </small>
             </div>
           </div>
         </div>
@@ -247,21 +426,21 @@ export default {
         
         // Densidades
         densidadFruta: null,
-        densidadPergamino: null,
-        
-        // Campo adicional
-        idSecado: 1 // Valor por defecto
+        densidadPergamino: null
       },
+      errors: {},
       showSuccess: false,
       showError: false,
       errorMessage: '',
-      guardandoRegistro: false
+      guardandoRegistro: false,
+      idSecadoCreado: null // Para mostrar el ID creado
     };
   },
   computed: {
     formularioValido() {
       // Validamos los campos obligatorios
-      return this.form.lote.trim() !== '' && 
+      return Object.keys(this.errors).length === 0 &&
+             this.form.lote.trim() !== '' && 
              this.form.recibo !== null && 
              this.form.productor.trim() !== '' && 
              this.form.finca.trim() !== '' && 
@@ -272,6 +451,49 @@ export default {
     }
   },
   methods: {
+    // Validación de campos obligatorios
+    validarCampo(campo) {
+      if (campo === 'lote') {
+        if (!this.form.lote || this.form.lote.trim() === '') {
+          this.errors.lote = 'El número de lote es requerido';
+        } else if (this.form.lote.length > 50) {
+          this.errors.lote = 'El número de lote no puede exceder 50 caracteres';
+        } else {
+          delete this.errors.lote;
+        }
+      } else if (campo === 'recibo') {
+        if (!this.form.recibo || this.form.recibo <= 0) {
+          this.errors.recibo = 'El número de recibo es requerido y debe ser mayor a 0';
+        } else {
+          delete this.errors.recibo;
+        }
+      } else if (['productor', 'finca', 'zona'].includes(campo)) {
+        if (!this.form[campo] || this.form[campo].trim() === '') {
+          this.errors[campo] = 'Este campo es requerido';
+        } else {
+          delete this.errors[campo];
+        }
+      } else if (campo === 'altura') {
+        if (!this.form.altura || this.form.altura <= 0) {
+          this.errors.altura = 'La altura es requerida y debe ser mayor a 0';
+        } else {
+          delete this.errors.altura;
+        }
+      } else if (campo === 'rangoObjetivo') {
+        if (!this.form.rangoObjetivo || this.form.rangoObjetivo <= 0) {
+          this.errors.rangoObjetivo = 'El rendimiento objetivo es requerido';
+        } else {
+          delete this.errors.rangoObjetivo;
+        }
+      } else if (campo === 'estadoProducto') {
+        if (!this.form.estadoProducto) {
+          this.errors.estadoProducto = 'Debe seleccionar un estado del producto';
+        } else {
+          delete this.errors.estadoProducto;
+        }
+      }
+    },
+
     validarPorcentaje(campo) {
       const valor = this.form[campo];
       if (valor !== null && valor !== undefined) {
@@ -279,19 +501,31 @@ export default {
       }
     },
 
+    // Validar todos los campos obligatorios
+    validarFormularioCompleto() {
+      this.errors = {};
+      
+      // Validar todos los campos obligatorios
+      ['lote', 'recibo', 'productor', 'finca', 'zona', 'altura', 'rangoObjetivo', 'estadoProducto'].forEach(campo => {
+        this.validarCampo(campo);
+      });
+      
+      return Object.keys(this.errors).length === 0;
+    },
+
     mostrarError(mensaje) {
       this.errorMessage = mensaje;
       this.showError = true;
       setTimeout(() => {
         this.showError = false;
-      }, 5000);
+      }, 6000);
     },
 
     mostrarExito() {
       this.showSuccess = true;
       setTimeout(() => {
         this.showSuccess = false;
-      }, 3000);
+      }, 4000);
     },
 
     limpiarFormulario() {
@@ -303,11 +537,36 @@ export default {
           this.form[key] = null;
         }
       });
-      // Restaurar valor por defecto
-      this.form.idSecado = 1;
+      
+      // Limpiar errores y estado
+      this.errors = {};
+      this.idSecadoCreado = null;
     },
 
-    mapearDatosParaAPI() {
+    // Método para crear un registro de Secado placeholder
+    async crearSecadoPlaceholder(nlote) {
+      const fechaActual = new Date().toISOString();
+      
+      const secadoPlaceholder = {
+        Nlote: nlote,
+        Finicio: fechaActual, // Fecha placeholder
+        Ffinal: fechaActual,   // Fecha placeholder  
+        Dsecado: 0,           // Valor placeholder
+        Psolar: 0,            // Valor placeholder
+        Pmecanico: 0          // Valor placeholder
+      };
+
+      console.log("📋 Creando secado placeholder:", secadoPlaceholder);
+
+      try {
+        return await apiService.crear('SecadoApi', secadoPlaceholder);
+      } catch (error) {
+        console.error("❌ Error al crear secado placeholder:", error);
+        throw new Error(`Error al crear registro de secado: ${error.message || error}`);
+      }
+    },
+
+    mapearDatosParaAPI(idSecado) {
       // Mapear los datos del formulario al modelo de la API
       const datos = {
         nlote: this.form.lote,
@@ -338,8 +597,8 @@ export default {
         dfruta: this.form.densidadFruta || 0,
         dpergamino_humedo: this.form.densidadPergamino || 0,
         
-        // ID Secado
-        id_Secado: this.form.idSecado || 1
+        // ID Secado generado automáticamente
+        id_Secado: idSecado
       };
       
       return datos;
@@ -347,7 +606,13 @@ export default {
 
     async submitForm() {
       // Prevenir doble envío
-      if (this.guardandoRegistro || !this.formularioValido) {
+      if (this.guardandoRegistro) {
+        return;
+      }
+      
+      // Validar formulario completo
+      if (!this.validarFormularioCompleto()) {
+        this.mostrarError('Por favor, complete todos los campos obligatorios y corrija los errores.');
         return;
       }
 
@@ -357,29 +622,40 @@ export default {
       this.showSuccess = false;
 
       try {
-        // Mapear datos para la API
-        const datosAPI = this.mapearDatosParaAPI();
+        console.log("📋 Iniciando proceso de guardado...");
         
-        console.log("📋 Enviando datos a API:", datosAPI);
+        // 1. Crear primero el registro de Secado placeholder
+        const secadoCreado = await this.crearSecadoPlaceholder(this.form.lote);
+        const idSecado = secadoCreado.ID_Secado || secadoCreado.id_Secado || secadoCreado.idSecado;
         
-        // Llamar a la API
-        const resultado = await apiService.crear('Area_Acopio', datosAPI);
+        if (!idSecado) {
+          throw new Error("No se pudo obtener el ID del registro de secado creado");
+        }
         
-        console.log("✅ Respuesta de la API:", resultado);
+        console.log("✅ Secado placeholder creado con ID:", idSecado);
+        this.idSecadoCreado = idSecado;
         
+        // 2. Crear el registro de Area_Acopio con el ID_Secado
+        const datosAPI = this.mapearDatosParaAPI(idSecado);
+        console.log("📋 Enviando datos de Area_Acopio a API:", datosAPI);
+        
+        const resultadoAcopio = await apiService.crear('Area_Acopio', datosAPI);
+        console.log("✅ Area_Acopio creado:", resultadoAcopio);
+        
+        console.log("🎉 Proceso completado exitosamente");
         this.mostrarExito();
         
         // Limpiar formulario después de guardar exitosamente
         setTimeout(() => {
           this.limpiarFormulario();
-        }, 1500);
+        }, 2000);
         
         // Redirigir después de guardar (opcional)
         setTimeout(() => {
           if (this.$router) {
             this.$router.push({ name: "HomeView" });
           }
-        }, 3000);
+        }, 4000);
         
       } catch (error) {
         console.error("❌ Error al guardar:", error);
@@ -534,8 +810,8 @@ export default {
   border-radius: 12px;
   margin-bottom: 20px;
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  gap: 8px;
   font-weight: 500;
   animation: slideIn 0.5s ease;
 }
@@ -544,6 +820,14 @@ export default {
   background: linear-gradient(135deg, #8FAD5A, #4A5D2E);
   color: white;
   box-shadow: 0 4px 12px rgba(143, 173, 90, 0.4);
+}
+
+.success-detail {
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8px 12px;
+  border-radius: 6px;
+  border-left: 3px solid rgba(255, 255, 255, 0.5);
 }
 
 .error-message {
@@ -628,6 +912,12 @@ export default {
   font-size: 0.9rem;
 }
 
+.required-label::after {
+  content: " *";
+  color: var(--color-error);
+  font-weight: bold;
+}
+
 .input-field {
   padding: 12px 16px;
   border: 2px solid #E5C29F;
@@ -665,6 +955,49 @@ export default {
   padding: 8px;
   background: white;
   color: #2C1810;
+}
+
+/* Información del ID Secado */
+.info-secado {
+  background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+  border: 2px dashed #8FAD5A;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.id-secado-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #8FAD5A, #4A5D2E);
+  color: white;
+  border-radius: 8px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.auto-text {
+  flex: 1;
+}
+
+.info-icon {
+  font-size: 1rem;
+}
+
+.info-description {
+  color: #4A5D2E;
+  font-style: italic;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+/* Mensajes de error */
+.error-text {
+  color: var(--color-error);
+  font-size: var(--text-xs);
+  margin-top: var(--space-xs);
+  display: block;
 }
 
 /* Status selector especial */

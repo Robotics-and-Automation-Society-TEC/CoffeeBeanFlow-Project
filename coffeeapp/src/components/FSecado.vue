@@ -31,42 +31,86 @@
           <div class="form-grid">
             <div class="input-group">
               <label class="required-label">Número de Lote *</label>
-              <input 
-                type="text" 
-                v-model="form.lote" 
+              
+              <!-- Select cuando hay lotes cargados -->
+              <select 
+                v-if="lotes.length > 0"
+                v-model="form.nlote" 
                 required 
                 class="input-field"
-                placeholder="Ej: 001 o LOTE-2024-001"
+                @change="validarCampo('nlote')"
+                :disabled="cargandoLotes"
+              >
+                <option value="" disabled>
+                  {{ cargandoLotes ? 'Cargando lotes...' : 'Seleccione un lote' }}
+                </option>
+                <option 
+                  v-for="lote in lotes" 
+                  :key="lote" 
+                  :value="lote"
+                >
+                  {{ lote }}
+                </option>
+              </select>
+              
+              <!-- Input manual cuando no hay lotes o falla la API -->
+              <input 
+                v-else
+                type="text" 
+                v-model="form.nlote" 
+                required 
+                class="input-field"
+                placeholder="Ej: LOTE-001, LOTE-2024-001"
                 maxlength="50"
-                @blur="validarCampo('lote')"
+                @blur="validarCampo('nlote')"
+                :disabled="cargandoLotes"
               />
-              <span v-if="errors.lote" class="error-text">{{ errors.lote }}</span>
+              
+              <span v-if="errors.nlote" class="error-text">{{ errors.nlote }}</span>
+              
+              <!-- Mensajes informativos -->
+              <small v-if="cargandoLotes" class="info-text">
+                <i class="info-icon">⏳</i>
+                Cargando lotes disponibles...
+              </small>
+              <small v-else-if="!apiLotesDisponible && lotes.length === 0" class="info-text" style="color: var(--color-warning);">
+                <i class="info-icon">⚠️</i>
+                API de lotes no disponible. Ingrese el número de lote manualmente.
+              </small>
+              <small v-else-if="lotes.length === 0" class="info-text" style="color: var(--color-info);">
+                <i class="info-icon">ℹ️</i>
+                No hay lotes disponibles. Ingrese el número de lote manualmente.
+              </small>
+              <small v-else class="info-text" style="color: var(--color-success);">
+                <i class="info-icon">✅</i>
+                {{ lotes.length }} lote(s) disponible(s)
+              </small>
             </div>
             <div class="input-group">
               <label class="required-label">Fecha Inicio de Secado *</label>
               <input 
                 type="date" 
-                v-model="form.fechaInicio" 
+                v-model="form.finicio" 
                 @change="calcularDiasSecado" 
                 required 
                 class="input-field"
                 :max="fechaMaxima"
-                @blur="validarCampo('fechaInicio')"
+                @blur="validarCampo('finicio')"
               />
-              <span v-if="errors.fechaInicio" class="error-text">{{ errors.fechaInicio }}</span>
+              <span v-if="errors.finicio" class="error-text">{{ errors.finicio }}</span>
             </div>
             <div class="input-group">
               <label class="required-label">Fecha Final *</label>
               <input 
                 type="date" 
-                v-model="form.fechaFinal" 
+                v-model="form.ffinal" 
                 @change="calcularDiasSecado" 
                 required 
                 class="input-field"
                 :max="fechaMaxima"
-                @blur="validarCampo('fechaFinal')"
+                @blur="validarCampo('ffinal')"
               />
-              <span v-if="errors.fechaFinal" class="error-text">{{ errors.fechaFinal }}</span>
+              <span v-if="errors.ffinal" class="error-text">{{ errors.ffinal }}</span>
             </div>
             <div class="input-group">
               <label>Días de Secado</label>
@@ -98,33 +142,33 @@
               <label class="required-label">Porcentaje Mecánico (%) *</label>
               <input 
                 type="number" 
-                v-model.number="form.porcMecanico" 
+                v-model.number="form.pmecanico" 
                 required
                 min="0" 
                 max="100" 
                 step="0.1" 
-                @blur="validarPorcentaje('porcMecanico')" 
+                @blur="validarPorcentaje('pmecanico')" 
                 @input="calcularTotalPorcentajes"
                 class="input-field percentage-input"
                 placeholder="0.0"
               />
-              <span v-if="errors.porcMecanico" class="error-text">{{ errors.porcMecanico }}</span>
+              <span v-if="errors.pmecanico" class="error-text">{{ errors.pmecanico }}</span>
             </div>
             <div class="input-group">
               <label class="required-label">Porcentaje Solar (%) *</label>
               <input 
                 type="number" 
-                v-model.number="form.porcSolar" 
+                v-model.number="form.psolar" 
                 required
                 min="0" 
                 max="100" 
                 step="0.1" 
-                @blur="validarPorcentaje('porcSolar')" 
+                @blur="validarPorcentaje('psolar')" 
                 @input="calcularTotalPorcentajes"
                 class="input-field percentage-input"
                 placeholder="0.0"
               />
-              <span v-if="errors.porcSolar" class="error-text">{{ errors.porcSolar }}</span>
+              <span v-if="errors.psolar" class="error-text">{{ errors.psolar }}</span>
             </div>
           </div>
         </div>
@@ -174,11 +218,11 @@
                   <label>Humedad (%)</label>
                   <input 
                     type="number" 
-                    v-model.number="medicion.humedad" 
+                    v-model.number="medicion.phumedad" 
                     min="0" 
                     max="100" 
                     step="0.1" 
-                    @blur="validarHumedadMedicion(index, 'humedad')" 
+                    @blur="validarHumedadMedicion(index, 'phumedad')" 
                     placeholder="0.0%" 
                     class="input-field" 
                   />
@@ -222,7 +266,7 @@
                     <label>Humedad Relativa (%)</label>
                     <input 
                       type="number" 
-                      v-model.number="medicion.humedadRelativa" 
+                      v-model.number="medicion.hrelativa" 
                       min="0" 
                       max="100" 
                       step="0.1" 
@@ -236,7 +280,7 @@
                     <label>Temperatura Interna (°C)</label>
                     <input 
                       type="number" 
-                      v-model.number="medicion.tempInterna" 
+                      v-model.number="medicion.tinterna" 
                       step="0.1" 
                       placeholder="0.0°C" 
                       class="input-field"
@@ -248,7 +292,7 @@
                     <label>Temperatura Externa (°C)</label>
                     <input 
                       type="number" 
-                      v-model.number="medicion.tempExterna" 
+                      v-model.number="medicion.texterna" 
                       step="0.1" 
                       placeholder="0.0°C" 
                       class="input-field"
@@ -284,27 +328,28 @@
 </template>
 
 <script>
+import apiService from '@/services/apiService' // Ajusta la ruta según tu estructura
+
 export default {
   name: "RegistroSecado",
   data() {
     return {
       form: {
-        lote: "",
-        fechaInicio: "",
-        diasSecado: null,
-        fechaFinal: "",
-        porcMecanico: null,
-        porcSolar: null,
+        nlote: "",
+        finicio: "",
+        ffinal: "",
+        pmecanico: null,
+        psolar: null,
         temperaturasSecado: Array.from({ length: 6 }, () => null),
         medicionesHumedad: Array.from({ length: 6 }, () => ({ 
-          humedad: null, 
+          phumedad: null, 
           temperatura: null 
         })),
         termoHigro: {
           mediciones: Array.from({ length: 6 }, () => ({
-            humedadRelativa: null,
-            tempInterna: null,
-            tempExterna: null,
+            hrelativa: null,
+            tinterna: null,
+            texterna: null,
           })),
         },
       },
@@ -313,14 +358,17 @@ export default {
       showError: false,
       errorMessage: '',
       guardandoRegistro: false,
-      totalPorcentajes: 0
+      totalPorcentajes: 0,
+      lotes: [], // Lista de lotes disponibles
+      cargandoLotes: false,
+      apiLotesDisponible: true // Flag para saber si la API de lotes funciona
     };
   },
   computed: {
     diasSecado() {
-      if (this.form.fechaInicio && this.form.fechaFinal) {
-        const inicio = new Date(this.form.fechaInicio);
-        const final = new Date(this.form.fechaFinal);
+      if (this.form.finicio && this.form.ffinal) {
+        const inicio = new Date(this.form.finicio);
+        const final = new Date(this.form.ffinal);
         const diferencia = Math.ceil((final - inicio) / (1000 * 60 * 60 * 24));
         return diferencia >= 0 ? diferencia : '';
       }
@@ -330,18 +378,44 @@ export default {
       return new Date().toISOString().split('T')[0];
     },
     formularioValido() {
-      return Object.keys(this.errors).length === 0 && !this.guardandoRegistro;
+      return Object.keys(this.errors).length === 0 && 
+             !this.guardandoRegistro && 
+             !this.cargandoLotes;
     }
   },
   methods: {
     // Validación de campos básicos
     validarCampo(campo) {
-      if (!this.form[campo] || this.form[campo].toString().trim() === '') {
-        this.errors[campo] = 'El campo es requerido';
-      } else if (campo.includes('fecha') && new Date(this.form[campo]) > new Date()) {
-        this.errors[campo] = 'La fecha no puede ser futura';
+      if (campo === 'nlote') {
+        if (!this.form[campo] || this.form[campo].toString().trim() === '') {
+          this.errors[campo] = 'Debe seleccionar o ingresar un lote';
+        } else if (this.lotes.length > 0 && this.apiLotesDisponible) {
+          // Validación estricta cuando hay lotes disponibles en la API
+          const loteValido = this.lotes.includes(this.form[campo]);
+          if (!loteValido) {
+            this.errors[campo] = 'El lote seleccionado no es válido';
+          } else {
+            delete this.errors[campo];
+          }
+        } else {
+          // Validación básica para entrada manual
+          const lote = this.form[campo].toString().trim();
+          if (lote.length < 2) {
+            this.errors[campo] = 'El número de lote debe tener al menos 2 caracteres';
+          } else if (lote.length > 50) {
+            this.errors[campo] = 'El número de lote no puede exceder 50 caracteres';
+          } else {
+            delete this.errors[campo];
+          }
+        }
       } else {
-        delete this.errors[campo];
+        if (!this.form[campo] || this.form[campo].toString().trim() === '') {
+          this.errors[campo] = 'El campo es requerido';
+        } else if (campo.includes('fecha') && new Date(this.form[campo]) > new Date()) {
+          this.errors[campo] = 'La fecha no puede ser futura';
+        } else {
+          delete this.errors[campo];
+        }
       }
     },
 
@@ -407,7 +481,7 @@ export default {
 
     // Validación de humedad relativa en termohigrometría
     validarHumedadRelativa(index) {
-      const valor = this.form.termoHigro.mediciones[index].humedadRelativa;
+      const valor = this.form.termoHigro.mediciones[index].hrelativa;
       const key = 'hr_' + index;
       
       if (valor !== null && valor !== undefined && valor !== '') {
@@ -423,7 +497,7 @@ export default {
 
     // Validación de temperatura interna
     validarTempInterna(index) {
-      const valor = this.form.termoHigro.mediciones[index].tempInterna;
+      const valor = this.form.termoHigro.mediciones[index].tinterna;
       const key = 'temp_int_' + index;
       
       if (valor !== null && valor !== undefined && valor !== '') {
@@ -439,7 +513,7 @@ export default {
 
     // Validación de temperatura externa
     validarTempExterna(index) {
-      const valor = this.form.termoHigro.mediciones[index].tempExterna;
+      const valor = this.form.termoHigro.mediciones[index].texterna;
       const key = 'temp_ext_' + index;
       
       if (valor !== null && valor !== undefined && valor !== '') {
@@ -454,19 +528,19 @@ export default {
     },
 
     calcularTotalPorcentajes() {
-      this.totalPorcentajes = (this.form.porcMecanico || 0) + (this.form.porcSolar || 0);
+      this.totalPorcentajes = (this.form.pmecanico || 0) + (this.form.psolar || 0);
     },
 
     calcularDiasSecado() {
-      if (this.form.fechaInicio && this.form.fechaFinal) {
-        const inicio = new Date(this.form.fechaInicio);
-        const final = new Date(this.form.fechaFinal);
+      if (this.form.finicio && this.form.ffinal) {
+        const inicio = new Date(this.form.finicio);
+        const final = new Date(this.form.ffinal);
         
         if (final < inicio) {
-          this.errors.fechaFinal = 'La fecha final debe ser posterior a la fecha de inicio';
+          this.errors.ffinal = 'La fecha final debe ser posterior a la fecha de inicio';
         } else {
-          delete this.errors.fechaFinal;
-          delete this.errors.fechaInicio;
+          delete this.errors.ffinal;
+          delete this.errors.finicio;
         }
       }
     },
@@ -476,12 +550,12 @@ export default {
       this.errors = {};
       
       // Validar campos básicos obligatorios
-      ['lote', 'fechaInicio', 'fechaFinal'].forEach(campo => {
+      ['nlote', 'finicio', 'ffinal'].forEach(campo => {
         this.validarCampo(campo);
       });
 
       // Validar porcentajes obligatorios
-      ['porcMecanico', 'porcSolar'].forEach(campo => {
+      ['pmecanico', 'psolar'].forEach(campo => {
         this.validarPorcentaje(campo);
       });
 
@@ -495,7 +569,7 @@ export default {
 
       // Validar mediciones de humedad
       this.form.medicionesHumedad.forEach((medicion, index) => {
-        this.validarHumedadMedicion(index, 'humedad');
+        this.validarHumedadMedicion(index, 'phumedad');
         this.validarTemperaturaMedicion(index);
       });
 
@@ -509,7 +583,142 @@ export default {
       return Object.keys(this.errors).length === 0;
     },
 
-    submitForm() {
+    // Método para cargar lotes desde Area_Acopio
+    async cargarLotes() {
+      this.cargandoLotes = true;
+      try {
+        console.log("📦 Cargando lotes desde Area_Acopio...");
+        
+        // Obtener todos los registros de Area_Acopio
+        const registrosAreaAcopio = await apiService.obtenerTodos('Area_Acopio');
+        
+        console.log("📊 Registros de Area_Acopio obtenidos:", registrosAreaAcopio);
+        
+        // Extraer números de lote únicos y válidos
+        const lotesUnicos = [...new Set(
+          registrosAreaAcopio
+            .map(registro => registro.Nlote || registro.nlote) // CORREGIDO: priorizar Nlote en mayúsculas
+            .filter(nlote => nlote && nlote.toString().trim() !== '') // Filtrar valores vacíos
+        )];
+        
+        this.lotes = lotesUnicos.sort(); // Ordenar alfabéticamente
+        this.apiLotesDisponible = true;
+        
+        console.log("✅ Lotes cargados desde Area_Acopio:", this.lotes.length, this.lotes);
+        
+      } catch (error) {
+        console.error("❌ Error al cargar lotes desde Area_Acopio:", error);
+        this.lotes = [];
+        this.apiLotesDisponible = false;
+        console.log("🔄 Cambiando a modo de entrada manual de lotes");
+      } finally {
+        this.cargandoLotes = false;
+      }
+    },
+
+    // Método para crear registro de Secado
+    async crearSecado() {
+      const secadoData = {
+        Nlote: this.form.nlote, // CORREGIDO: usar Nlote en mayúsculas
+        Finicio: new Date(this.form.finicio).toISOString(), // CORREGIDO: usar Finicio en mayúsculas
+        Ffinal: new Date(this.form.ffinal).toISOString(), // CORREGIDO: usar Ffinal en mayúsculas
+        Dsecado: this.diasSecado, // CORREGIDO: usar Dsecado en mayúsculas
+        Psolar: this.form.psolar, // CORREGIDO: usar Psolar en mayúsculas
+        Pmecanico: this.form.pmecanico // CORREGIDO: usar Pmecanico en mayúsculas
+      };
+
+      console.log("📋 Creando secado:", secadoData);
+
+      try {
+        return await apiService.crear('SecadoApi', secadoData);
+      } catch (error) {
+        console.error("❌ Error al crear secado:", secadoData, error);
+        throw new Error(`Error al crear secado: ${error.message || error}`);
+      }
+    },
+
+    // Método para crear temperaturas de secado
+    async crearTemperaturasSecado(idSecado) {
+      const temperaturas = this.form.temperaturasSecado.filter(temp => 
+        temp !== null && temp !== undefined && temp !== ''
+      );
+
+      const promises = temperaturas.map(async (lectura) => {
+        const tempData = {
+          lectura: parseInt(lectura),
+          ID_Secado: idSecado // CORREGIDO: usar ID_Secado en mayúsculas
+        };
+
+        console.log("🌡️ Creando temperatura:", tempData);
+
+        try {
+          return await apiService.crear('TemperaturaSecadoApi', tempData);
+        } catch (error) {
+          console.error("❌ Error al crear temperatura:", tempData, error);
+          throw new Error(`Error al crear temperatura: ${error.message || error}`);
+        }
+      });
+
+      return Promise.all(promises);
+    },
+
+    // Método para crear mediciones de humedad
+    async crearMedicionesHumedad(idSecado) {
+      const mediciones = this.form.medicionesHumedad.filter(medicion => 
+        (medicion.phumedad !== null && medicion.phumedad !== undefined && medicion.phumedad !== '') ||
+        (medicion.temperatura !== null && medicion.temperatura !== undefined && medicion.temperatura !== '')
+      );
+
+      const promises = mediciones.map(async (medicion) => {
+        const humedadData = {
+          PHumedad: medicion.phumedad || 0, // CORREGIDO: usar PHumedad en mayúsculas
+          Temperatura: parseInt(medicion.temperatura || 0), // CORREGIDO: usar Temperatura en mayúsculas
+          ID_Secado: idSecado // CORREGIDO: usar ID_Secado en mayúsculas
+        };
+
+        console.log("💧 Creando humedad:", humedadData);
+
+        try {
+          return await apiService.crear('HumedadApi', humedadData);
+        } catch (error) {
+          console.error("❌ Error al crear humedad:", humedadData, error);
+          throw new Error(`Error al crear humedad: ${error.message || error}`);
+        }
+      });
+
+      return Promise.all(promises);
+    },
+
+    // Método para crear termohigrometría
+    async crearTermoHigrometria(idSecado) {
+      const mediciones = this.form.termoHigro.mediciones.filter(medicion => 
+        (medicion.hrelativa !== null && medicion.hrelativa !== undefined && medicion.hrelativa !== '') ||
+        (medicion.tinterna !== null && medicion.tinterna !== undefined && medicion.tinterna !== '') ||
+        (medicion.texterna !== null && medicion.texterna !== undefined && medicion.texterna !== '')
+      );
+
+      const promises = mediciones.map(async (medicion) => {
+        const termoData = {
+          Hrelativa: medicion.hrelativa || 0, // CORREGIDO: usar Hrelativa en mayúsculas
+          Tinterna: parseInt(medicion.tinterna || 0), // CORREGIDO: usar Tinterna en mayúsculas
+          Texterna: parseInt(medicion.texterna || 0), // CORREGIDO: usar Texterna en mayúsculas
+          ID_Secado: idSecado // CORREGIDO: usar ID_Secado en mayúsculas
+        };
+
+        console.log("🔬 Creando termohigrometría:", termoData);
+
+        try {
+          return await apiService.crear('TermoHigrometriaApi', termoData);
+        } catch (error) {
+          console.error("❌ Error al crear termohigrometría:", termoData, error);
+          throw new Error(`Error al crear termohigrometría: ${error.message || error}`);
+        }
+      });
+
+      return Promise.all(promises);
+    },
+
+    async submitForm() {
       // Prevenir doble envío
       if (this.guardandoRegistro) {
         return;
@@ -524,29 +733,66 @@ export default {
       // Activar estado de guardado
       this.guardandoRegistro = true;
 
-      // =========================================================================
-      // CÓDIGO DE BACKEND:
-      // Aquí es donde harías la llamada a tu API para guardar los datos.
-      // =========================================================================
+      try {
+        console.log("📋 Iniciando guardado de datos de secado...");
 
-      // Crear objeto con todos los datos
-      const datosRegistro = {
-        ...this.form,
-        diasSecado: this.diasSecado,
-        totalPorcentajes: this.totalPorcentajes,
-        fechaRegistro: new Date().toISOString()
-      };
-
-      console.log("📋 Datos de secado guardados:", datosRegistro);
-      this.mostrarExito();
-      
-      // Simulación de guardado
-      setTimeout(() => {
-        this.guardandoRegistro = false;
-        if (this.$router) {
-          this.$router.push({ name: "HomeView" });
+        // 1. Crear el registro principal de Secado
+        const secadoCreado = await this.crearSecado();
+        
+        // IMPORTANTE: Verificar diferentes posibles nombres de la llave primaria
+        const idSecado = secadoCreado.ID_Secado || secadoCreado.id_Secado || secadoCreado.idSecado;
+        
+        if (!idSecado) {
+          console.error("❌ No se pudo obtener el ID del secado creado:", secadoCreado);
+          throw new Error("No se pudo obtener el ID del registro de secado creado");
         }
-      }, 4000);
+        
+        console.log("✅ Secado creado con ID:", idSecado);
+        console.log("🔍 Objeto completo del secado:", secadoCreado);
+
+        // 2. Crear temperaturas de secado (si existen)
+        const temperaturasCreadas = await this.crearTemperaturasSecado(idSecado);
+        console.log("✅ Temperaturas creadas:", temperaturasCreadas.length);
+
+        // 3. Crear mediciones de humedad (si existen)
+        const humedadesCreadas = await this.crearMedicionesHumedad(idSecado);
+        console.log("✅ Mediciones de humedad creadas:", humedadesCreadas.length);
+
+        // 4. Crear termohigrometría (si existen)
+        const termohigrometriaCreada = await this.crearTermoHigrometria(idSecado);
+        console.log("✅ Termohigrometría creada:", termohigrometriaCreada.length);
+
+        console.log("🎉 Todos los datos guardados exitosamente");
+        this.mostrarExito();
+        
+        // Limpiar formulario después de 3 segundos
+        setTimeout(() => {
+          this.limpiarFormulario();
+          this.guardandoRegistro = false;
+          if (this.$router) {
+            this.$router.push({ name: "HomeView" });
+          }
+        }, 3000);
+
+      } catch (error) {
+        console.error("❌ Error al guardar:", error);
+        
+        // Manejar diferentes tipos de errores
+        let mensajeError = "Error desconocido";
+        
+        if (typeof error === 'string') {
+          mensajeError = error;
+        } else if (error.message) {
+          mensajeError = error.message;
+        } else if (error.response?.data) {
+          mensajeError = error.response.data.message || JSON.stringify(error.response.data);
+        } else if (error.data) {
+          mensajeError = error.data.message || JSON.stringify(error.data);
+        }
+        
+        this.mostrarError(`Error al guardar los datos: ${mensajeError}`);
+        this.guardandoRegistro = false;
+      }
     },
 
     mostrarError(mensaje) {
@@ -554,7 +800,7 @@ export default {
       this.showError = true;
       setTimeout(() => {
         this.showError = false;
-      }, 4000);
+      }, 6000);
     },
 
     mostrarExito() {
@@ -566,32 +812,36 @@ export default {
 
     limpiarFormulario() {
       // Limpiar campos básicos
-      this.form.lote = '';
-      this.form.fechaInicio = '';
-      this.form.fechaFinal = '';
-      this.form.diasSecado = null;
-      this.form.porcMecanico = null;
-      this.form.porcSolar = null;
+      this.form.nlote = '';
+      this.form.finicio = '';
+      this.form.ffinal = '';
+      this.form.pmecanico = null;
+      this.form.psolar = null;
 
       // Limpiar temperaturas de secado
       this.form.temperaturasSecado = Array.from({ length: 6 }, () => null);
 
       // Limpiar mediciones de humedad
       this.form.medicionesHumedad = Array.from({ length: 6 }, () => ({ 
-        humedad: null, 
+        phumedad: null, 
         temperatura: null 
       }));
 
       // Limpiar termohigrometría
       this.form.termoHigro.mediciones = Array.from({ length: 6 }, () => ({
-        humedadRelativa: null,
-        tempInterna: null,
-        tempExterna: null,
+        hrelativa: null,
+        tinterna: null,
+        texterna: null,
       }));
 
       // Limpiar errores y totales
       this.errors = {};
       this.totalPorcentajes = 0;
+      
+      // Recargar lotes solo si la API estaba disponible anteriormente
+      if (this.apiLotesDisponible && this.lotes.length === 0) {
+        this.cargarLotes();
+      }
     },
 
     cancelar() {
@@ -603,6 +853,7 @@ export default {
 
   mounted() {
     this.calcularTotalPorcentajes();
+    this.cargarLotes(); // Cargar lotes al montar el componente
   }
 };
 </script>
@@ -889,6 +1140,23 @@ export default {
   width: 100%;
   box-sizing: border-box;
   min-width: 0;
+}
+
+/* Estilos específicos para select */
+select.input-field {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+}
+
+select.input-field:disabled {
+  background-color: var(--beige-claro);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23C8956F' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
 }
 
 .input-field:focus {

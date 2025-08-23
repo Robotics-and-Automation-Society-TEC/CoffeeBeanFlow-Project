@@ -31,28 +31,72 @@
           <div class="form-grid">
             <div class="input-group">
               <label class="required-label">Número de Lote *</label>
-              <input 
-                type="text" 
-                v-model="form.lote" 
+              
+              <!-- Select cuando hay lotes cargados -->
+              <select 
+                v-if="lotes.length > 0"
+                v-model="form.nlote" 
                 required 
-                class="input-base"
-                placeholder="Ej: 001 o LOTE-2024-001"
+                class="input-field"
+                @change="validarCampo('nlote')"
+                :disabled="cargandoLotes"
+              >
+                <option value="" disabled>
+                  {{ cargandoLotes ? 'Cargando lotes...' : 'Seleccione un lote' }}
+                </option>
+                <option 
+                  v-for="lote in lotes" 
+                  :key="lote" 
+                  :value="lote"
+                >
+                  {{ lote }}
+                </option>
+              </select>
+              
+              <!-- Input manual cuando no hay lotes o falla la API -->
+              <input 
+                v-else
+                type="text" 
+                v-model="form.nlote" 
+                required 
+                class="input-field"
+                placeholder="Ej: LOTE-001, LOTE-2024-001"
                 maxlength="50"
-                @blur="validarCampo('lote')"
+                @blur="validarCampo('nlote')"
+                :disabled="cargandoLotes"
               />
-              <span v-if="errors.lote" class="error-text">{{ errors.lote }}</span>
+              
+              <span v-if="errors.nlote" class="error-text">{{ errors.nlote }}</span>
+              
+              <!-- Mensajes informativos -->
+              <small v-if="cargandoLotes" class="info-text">
+                <i class="info-icon">⏳</i>
+                Cargando lotes disponibles...
+              </small>
+              <small v-else-if="!apiLotesDisponible && lotes.length === 0" class="info-text" style="color: var(--color-warning);">
+                <i class="info-icon">⚠️</i>
+                API de lotes no disponible. Ingrese el número de lote manualmente.
+              </small>
+              <small v-else-if="lotes.length === 0" class="info-text" style="color: var(--color-info);">
+                <i class="info-icon">ℹ️</i>
+                No hay lotes disponibles. Ingrese el número de lote manualmente.
+              </small>
+              <small v-else class="info-text" style="color: var(--color-success);">
+                <i class="info-icon">✅</i>
+                {{ lotes.length }} lote(s) disponible(s)
+              </small>
             </div>
             <div class="input-group">
               <label class="required-label">Fecha Final de Reposo *</label>
               <input 
                 type="date" 
-                v-model="form.fechaReposo" 
+                v-model="form.ffinalReposo" 
                 required 
-                class="input-base"
+                class="input-field"
                 :max="fechaMaxima"
-                @blur="validarCampo('fechaReposo')"
+                @blur="validarCampo('ffinalReposo')"
               />
-              <span v-if="errors.fechaReposo" class="error-text">{{ errors.fechaReposo }}</span>
+              <span v-if="errors.ffinalReposo" class="error-text">{{ errors.ffinalReposo }}</span>
             </div>
           </div>
         </div>
@@ -83,7 +127,7 @@
                   step="0.1"
                   @blur="validarPorcentaje(campo.key)" 
                   @input="calcularTotalPorcentajes"
-                  class="input-base percentage-input" 
+                  class="input-field percentage-input" 
                   placeholder="0.0"
                 />
                 <span v-if="errors[campo.key]" class="error-text">{{ errors[campo.key] }}</span>
@@ -103,31 +147,31 @@
                   <label class="required-label">Teórico (%) *</label>
                   <input 
                     type="number" 
-                    v-model.number="form.rendPeladoTeorico" 
+                    v-model.number="form.rteoricoPelado" 
                     required
                     step="0.01" 
                     min="0" 
                     max="100"
-                    class="input-base" 
+                    class="input-field" 
                     placeholder="0.00"
-                    @blur="validarRendimiento('rendPeladoTeorico')"
+                    @blur="validarRendimiento('rteoricoPelado')"
                   />
-                  <span v-if="errors.rendPeladoTeorico" class="error-text">{{ errors.rendPeladoTeorico }}</span>
+                  <span v-if="errors.rteoricoPelado" class="error-text">{{ errors.rteoricoPelado }}</span>
                 </div>
                 <div class="input-group">
                   <label class="required-label">Final (%) *</label>
                   <input 
                     type="number" 
-                    v-model.number="form.rendPeladoFinal" 
+                    v-model.number="form.rfinalPelado" 
                     required
                     step="0.01" 
                     min="0" 
                     max="100"
-                    class="input-base" 
+                    class="input-field" 
                     placeholder="0.00"
-                    @blur="validarRendimiento('rendPeladoFinal')"
+                    @blur="validarRendimiento('rfinalPelado')"
                   />
-                  <span v-if="errors.rendPeladoFinal" class="error-text">{{ errors.rendPeladoFinal }}</span>
+                  <span v-if="errors.rfinalPelado" class="error-text">{{ errors.rfinalPelado }}</span>
                 </div>
               </div>
             </div>
@@ -139,31 +183,31 @@
                   <label class="required-label">Teórico (%) *</label>
                   <input 
                     type="number" 
-                    v-model.number="form.rendSeleccionTeorico" 
+                    v-model.number="form.rteoricoSeleccion" 
                     required
                     step="0.01" 
                     min="0" 
                     max="100"
-                    class="input-base" 
+                    class="input-field" 
                     placeholder="0.00"
-                    @blur="validarRendimiento('rendSeleccionTeorico')"
+                    @blur="validarRendimiento('rteoricoSeleccion')"
                   />
-                  <span v-if="errors.rendSeleccionTeorico" class="error-text">{{ errors.rendSeleccionTeorico }}</span>
+                  <span v-if="errors.rteoricoSeleccion" class="error-text">{{ errors.rteoricoSeleccion }}</span>
                 </div>
                 <div class="input-group">
                   <label class="required-label">Final (%) *</label>
                   <input 
                     type="number" 
-                    v-model.number="form.rendSeleccionFinal" 
+                    v-model.number="form.rfinalSeleccion" 
                     required
                     step="0.01" 
                     min="0" 
                     max="100"
-                    class="input-base" 
+                    class="input-field" 
                     placeholder="0.00"
-                    @blur="validarRendimiento('rendSeleccionFinal')"
+                    @blur="validarRendimiento('rfinalSeleccion')"
                   />
-                  <span v-if="errors.rendSeleccionFinal" class="error-text">{{ errors.rendSeleccionFinal }}</span>
+                  <span v-if="errors.rfinalSeleccion" class="error-text">{{ errors.rfinalSeleccion }}</span>
                 </div>
               </div>
             </div>
@@ -181,31 +225,31 @@
                   <label class="required-label">Teórico (kg) *</label>
                   <input 
                     type="number" 
-                    v-model.number="form.pesoVerdeTeorico" 
+                    v-model.number="form.wverdeTeorico" 
                     required
                     step="0.01" 
                     min="0" 
                     max="999999"
-                    class="input-base" 
+                    class="input-field" 
                     placeholder="0.00"
-                    @blur="validarPeso('pesoVerdeTeorico')"
+                    @blur="validarPeso('wverdeTeorico')"
                   />
-                  <span v-if="errors.pesoVerdeTeorico" class="error-text">{{ errors.pesoVerdeTeorico }}</span>
+                  <span v-if="errors.wverdeTeorico" class="error-text">{{ errors.wverdeTeorico }}</span>
                 </div>
                 <div class="input-group">
                   <label class="required-label">Final (kg) *</label>
                   <input 
                     type="number" 
-                    v-model.number="form.pesoVerdeFinal" 
+                    v-model.number="form.wverdeFinal" 
                     required
                     step="0.01" 
                     min="0" 
                     max="999999"
-                    class="input-base" 
+                    class="input-field" 
                     placeholder="0.00"
-                    @blur="validarPeso('pesoVerdeFinal')"
+                    @blur="validarPeso('wverdeFinal')"
                   />
-                  <span v-if="errors.pesoVerdeFinal" class="error-text">{{ errors.pesoVerdeFinal }}</span>
+                  <span v-if="errors.wverdeFinal" class="error-text">{{ errors.wverdeFinal }}</span>
                 </div>
               </div>
             </div>
@@ -229,31 +273,31 @@
                   <label class="required-label">Inicial - Pergamino/Bellota (%) *</label>
                   <input 
                     type="number" 
-                    v-model.number="form.humedadInicial" 
+                    v-model.number="form.hinicial" 
                     required
                     min="0" 
                     max="100" 
                     step="0.1" 
-                    @blur="validarHumedad('humedadInicial')" 
+                    @blur="validarHumedad('hinicial')" 
                     placeholder="0.0" 
-                    class="input-base" 
+                    class="input-field" 
                   />
-                  <span v-if="errors.humedadInicial" class="error-text">{{ errors.humedadInicial }}</span>
+                  <span v-if="errors.hinicial" class="error-text">{{ errors.hinicial }}</span>
                 </div>
                 <div class="input-group">
                   <label class="required-label">Final - Verde (%) *</label>
                   <input 
                     type="number" 
-                    v-model.number="form.humedadFinal" 
+                    v-model.number="form.hfinal" 
                     required
                     min="0" 
                     max="100" 
                     step="0.1" 
-                    @blur="validarHumedad('humedadFinal')" 
+                    @blur="validarHumedad('hfinal')" 
                     placeholder="0.0" 
-                    class="input-base" 
+                    class="input-field" 
                   />
-                  <span v-if="errors.humedadFinal" class="error-text">{{ errors.humedadFinal }}</span>
+                  <span v-if="errors.hfinal" class="error-text">{{ errors.hfinal }}</span>
                 </div>
               </div>
             </div>
@@ -268,62 +312,62 @@
               <label class="required-label">Peso Verde Final Exportación (kg) *</label>
               <input 
                 type="number" 
-                v-model.number="form.pesoVerdeExportacion" 
+                v-model.number="form.wfinal" 
                 required
                 step="0.01" 
                 min="0" 
                 max="999999"
-                class="input-base" 
+                class="input-field" 
                 placeholder="0.00"
-                @blur="validarPeso('pesoVerdeExportacion')"
+                @blur="validarPeso('wfinal')"
               />
-              <span v-if="errors.pesoVerdeExportacion" class="error-text">{{ errors.pesoVerdeExportacion }}</span>
+              <span v-if="errors.wfinal" class="error-text">{{ errors.wfinal }}</span>
             </div>
             <div class="input-group">
               <label class="required-label">Peso Verde Inferiores (kg) *</label>
               <input 
                 type="number" 
-                v-model.number="form.pesoVerdeInferiores" 
+                v-model.number="form.winferiores" 
                 required
                 step="0.01" 
                 min="0" 
                 max="999999"
-                class="input-base" 
+                class="input-field" 
                 placeholder="0.00"
-                @blur="validarPeso('pesoVerdeInferiores')"
+                @blur="validarPeso('winferiores')"
               />
-              <span v-if="errors.pesoVerdeInferiores" class="error-text">{{ errors.pesoVerdeInferiores }}</span>
+              <span v-if="errors.winferiores" class="error-text">{{ errors.winferiores }}</span>
             </div>
             <div class="input-group">
               <label class="required-label">Peso Verde Final Inferior (kg) *</label>
               <input 
                 type="number" 
-                v-model.number="form.pesoVerdeFinalInferior" 
+                v-model.number="form.wfInferior" 
                 required
                 step="0.01" 
                 min="0" 
                 max="999999"
-                class="input-base" 
+                class="input-field" 
                 placeholder="0.00"
-                @blur="validarPeso('pesoVerdeFinalInferior')"
+                @blur="validarPeso('wfInferior')"
               />
-              <span v-if="errors.pesoVerdeFinalInferior" class="error-text">{{ errors.pesoVerdeFinalInferior }}</span>
+              <span v-if="errors.wfInferior" class="error-text">{{ errors.wfInferior }}</span>
             </div>
           </div>
         </div>
 
         <!-- Botones -->
         <div class="form-buttons">
-          <button type="submit" class="btn-base btn-primary" :disabled="!formularioValido">
+          <button type="submit" class="btn btn-submit" :disabled="!formularioValido">
             <i class="btn-icon" v-if="!guardandoRegistro">💾</i>
             <i class="btn-icon loading-spinner" v-else>⏳</i>
             {{ guardandoRegistro ? 'Guardando...' : 'Guardar Registro' }}
           </button>
-          <button type="button" @click="limpiarFormulario" class="btn-base btn-secondary">
+          <button type="button" @click="limpiarFormulario" class="btn btn-secondary">
             <i class="btn-icon">🔄</i>
             Limpiar
           </button>
-          <button type="button" @click="cancelar" class="btn-base btn-cancel">
+          <button type="button" @click="cancelar" class="btn btn-cancel">
             <i class="btn-icon">✕</i>
             Cancelar
           </button>
@@ -334,83 +378,203 @@
 </template>
 
 <script>
+import apiService from '@/services/apiService' // Ajusta la ruta según tu estructura
+
 export default {
   name: "RegistroTrilla",
   data() {
     return {
       form: {
         // Datos básicos
-        lote: "",
-        fechaReposo: "",
+        nlote: "",
+        ffinalReposo: "",
 
         // Porcentajes de calidades
-        segundas: null,
-        menudos: null,
-        inferiores: null,
-        madres: null,
-        primera: null,
-        caracolillo: null,
-        escogeduras: null,
-        barreduras: null,
-        caraduras: null,
+        psegundas: null,
+        pmenudos: null,
+        pinferiores: null,
+        pmadres: null,
+        pprimera: null,
+        pcaracolillo: null,
+        pescogeduras: null,
+        pbarreduras: null,
+        pcataduras: null, // CORREGIDO: era "caraduras" ahora es "cataduras"
 
         // Rendimientos
-        rendPeladoTeorico: null,
-        rendSeleccionTeorico: null,
-        rendPeladoFinal: null,
-        rendSeleccionFinal: null,
+        rteoricoPelado: null,
+        rteoricoSeleccion: null,
+        rfinalPelado: null,
+        rfinalSeleccion: null,
 
         // Pesos en verde
-        pesoVerdeTeorico: null,
-        pesoVerdeFinal: null,
+        wverdeTeorico: null,
+        wverdeFinal: null,
 
         // Humedad
-        humedadInicial: null,
-        humedadFinal: null,
+        hinicial: null,
+        hfinal: null,
 
-        // Exportación
-        pesoVerdeExportacion: null,
-        pesoVerdeInferiores: null,
-        pesoVerdeFinalInferior: null,
+        // Exportación (PesoVerde)
+        wfinal: null,
+        winferiores: null,
+        wfInferior: null,
       },
       porcentajesCampos: [
-        { key: 'primera', label: '% Primera' },
-        { key: 'segundas', label: '% Segundas' },
-        { key: 'caracolillo', label: '% Caracolillo' },
-        { key: 'menudos', label: '% Menudos' },
-        { key: 'inferiores', label: '% Inferiores' },
-        { key: 'madres', label: '% Madres' },
-        { key: 'escogeduras', label: '% Escogeduras' },
-        { key: 'barreduras', label: '% Barreduras' },
-        { key: 'caraduras', label: '% Caraduras' }
+        { key: 'pprimera', label: '% Primera' },
+        { key: 'psegundas', label: '% Segundas' },
+        { key: 'pcaracolillo', label: '% Caracolillo' },
+        { key: 'pmenudos', label: '% Menudos' },
+        { key: 'pinferiores', label: '% Inferiores' },
+        { key: 'pmadres', label: '% Madres' },
+        { key: 'pescogeduras', label: '% Escogeduras' },
+        { key: 'pbarreduras', label: '% Barreduras' },
+        { key: 'pcataduras', label: '% Cataduras' } // CORREGIDO
       ],
       errors: {},
       showSuccess: false,
       showError: false,
       errorMessage: '',
       totalPorcentajes: 0,
-      guardandoRegistro: false
+      guardandoRegistro: false,
+      lotes: [], // Lista de lotes disponibles
+      cargandoLotes: false,
+      apiLotesDisponible: true // Flag para saber si la API de lotes funciona
     };
   },
   computed: {
     fechaMaxima() {
       return new Date().toISOString().split('T')[0];
     },
-    // La validez del formulario ahora depende de que no haya errores
     formularioValido() {
-      return Object.keys(this.errors).length === 0 && !this.guardandoRegistro;
+      return Object.keys(this.errors).length === 0 && 
+             !this.guardandoRegistro && 
+             !this.cargandoLotes;
     }
   },
   methods: {
-    // Método genérico para validar campos de texto y fecha
+    // Método para cargar lotes desde Area_Acopio
+    async cargarLotes() {
+      this.cargandoLotes = true;
+      try {
+        console.log("📦 Cargando lotes desde Area_Acopio...");
+        
+        // Obtener todos los registros de Area_Acopio
+        const registrosAreaAcopio = await apiService.obtenerTodos('Area_Acopio');
+        
+        console.log("📊 Registros de Area_Acopio obtenidos:", registrosAreaAcopio);
+        
+        // Extraer números de lote únicos y válidos
+        const lotesUnicos = [...new Set(
+          registrosAreaAcopio
+            .map(registro => registro.Nlote || registro.nlote)
+            .filter(nlote => nlote && nlote.toString().trim() !== '')
+        )];
+        
+        this.lotes = lotesUnicos.sort();
+        this.apiLotesDisponible = true;
+        
+        console.log("✅ Lotes cargados desde Area_Acopio:", this.lotes.length, this.lotes);
+        
+      } catch (error) {
+        console.error("❌ Error al cargar lotes desde Area_Acopio:", error);
+        this.lotes = [];
+        this.apiLotesDisponible = false;
+        console.log("🔄 Cambiando a modo de entrada manual de lotes");
+      } finally {
+        this.cargandoLotes = false;
+      }
+    },
+
+    // Método para crear registro de Trilla
+    async crearTrilla() {
+      const trillaData = {
+        Nlote: this.form.nlote,
+        FFinalReposo: new Date(this.form.ffinalReposo).toISOString(),
+        Psegundas: this.form.psegundas,
+        Pmenudos: this.form.pmenudos,
+        Pinferiores: this.form.pinferiores,
+        Pmadres: this.form.pmadres,
+        Pprimera: this.form.pprimera,
+        Pcaracolillo: this.form.pcaracolillo,
+        Pescogeduras: this.form.pescogeduras,
+        Pbarreduras: this.form.pbarreduras,
+        Pcataduras: this.form.pcataduras,
+        POinferiores: 0, // Campo que existe en el backend pero no en el formulario
+        RTeoricoSeleccion: this.form.rteoricoSeleccion,
+        RTeoricoPelado: this.form.rteoricoPelado,
+        RfinalPelado: this.form.rfinalPelado,
+        RfinalSeleccion: this.form.rfinalSeleccion,
+        WVerdeFinal: this.form.wverdeFinal,
+        WVerdeTeorico: this.form.wverdeTeorico,
+        HFinal: this.form.hfinal,
+        HInicial: this.form.hinicial
+      };
+
+      console.log("📋 Creando trilla:", trillaData);
+
+      try {
+        return await apiService.crear('TrillaApi', trillaData);
+      } catch (error) {
+        console.error("❌ Error al crear trilla:", trillaData, error);
+        throw new Error(`Error al crear trilla: ${error.message || error}`);
+      }
+    },
+
+    // Método para crear registro de PesoVerde
+    async crearPesoVerde(idTrilla) {
+      const pesoVerdeData = {
+        Winferiores: this.form.winferiores,
+        Wfinal: this.form.wfinal,
+        WFinferior: this.form.wfInferior,
+        ID_PesoTrilla: idTrilla
+      };
+
+      console.log("📦 Creando peso verde:", pesoVerdeData);
+
+      try {
+        return await apiService.crear('PesoVerdeApi', pesoVerdeData);
+      } catch (error) {
+        console.error("❌ Error al crear peso verde:", pesoVerdeData, error);
+        throw new Error(`Error al crear peso verde: ${error.message || error}`);
+      }
+    },
+
+    // Validación de campos de texto y fecha
     validarCampo(campo) {
-      if (!this.form[campo] || this.form[campo].toString().trim() === '') {
-        this.errors[campo] = `El campo es requerido`;
-      } else if (campo === 'fechaReposo' && new Date(this.form[campo]) > new Date()) {
-        this.errors[campo] = 'La fecha no puede ser futura';
+      if (campo === 'nlote') {
+        if (!this.form[campo] || this.form[campo].toString().trim() === '') {
+          this.errors[campo] = 'Debe seleccionar o ingresar un lote';
+        } else if (this.lotes.length > 0 && this.apiLotesDisponible) {
+          const loteValido = this.lotes.includes(this.form[campo]);
+          if (!loteValido) {
+            this.errors[campo] = 'El lote seleccionado no es válido';
+          } else {
+            delete this.errors[campo];
+          }
+        } else {
+          const lote = this.form[campo].toString().trim();
+          if (lote.length < 2) {
+            this.errors[campo] = 'El número de lote debe tener al menos 2 caracteres';
+          } else if (lote.length > 50) {
+            this.errors[campo] = 'El número de lote no puede exceder 50 caracteres';
+          } else {
+            delete this.errors[campo];
+          }
+        }
+      } else if (campo === 'ffinalReposo') {
+        if (!this.form[campo] || this.form[campo].toString().trim() === '') {
+          this.errors[campo] = 'El campo es requerido';
+        } else if (new Date(this.form[campo]) > new Date()) {
+          this.errors[campo] = 'La fecha no puede ser futura';
+        } else {
+          delete this.errors[campo];
+        }
       } else {
-        // Eliminar el error si el campo es válido
-        delete this.errors[campo];
+        if (!this.form[campo] || this.form[campo].toString().trim() === '') {
+          this.errors[campo] = 'El campo es requerido';
+        } else {
+          delete this.errors[campo];
+        }
       }
     },
 
@@ -467,42 +631,43 @@ export default {
     },
 
     validarFormularioCompleto() {
-      // Limpiar errores previos
       this.errors = {};
       
-      // Validar todos los campos del formulario
-      // Usamos Object.keys para iterar sobre todas las propiedades del objeto `form`
-      Object.keys(this.form).forEach(campo => {
-        // Aquí se valida cada tipo de campo con el método apropiado
-        // Si un campo es de texto o fecha
-        if (campo === 'lote' || campo === 'fechaReposo') {
-            this.validarCampo(campo);
-        // Si un campo es de porcentaje
-        } else if (this.porcentajesCampos.some(p => p.key === campo)) {
-            this.validarPorcentaje(campo);
-        // Si es de rendimiento
-        } else if (campo.includes('rend')) {
-            this.validarRendimiento(campo);
-        // Si es de peso
-        } else if (campo.includes('pesoVerde')) {
-            this.validarPeso(campo);
-        // Si es de humedad
-        } else if (campo.includes('humedad')) {
-            this.validarHumedad(campo);
-        }
+      // Validar campos básicos
+      ['nlote', 'ffinalReposo'].forEach(campo => {
+        this.validarCampo(campo);
+      });
+
+      // Validar porcentajes
+      this.porcentajesCampos.forEach(campo => {
+        this.validarPorcentaje(campo.key);
+      });
+
+      // Validar rendimientos
+      ['rteoricoPelado', 'rteoricoSeleccion', 'rfinalPelado', 'rfinalSeleccion'].forEach(campo => {
+        this.validarRendimiento(campo);
+      });
+
+      // Validar pesos
+      ['wverdeTeorico', 'wverdeFinal', 'wfinal', 'winferiores', 'wfInferior'].forEach(campo => {
+        this.validarPeso(campo);
+      });
+
+      // Validar humedad
+      ['hinicial', 'hfinal'].forEach(campo => {
+        this.validarHumedad(campo);
       });
       
-      // El formulario es válido si no hay errores en el objeto 'errors'
       return Object.keys(this.errors).length === 0;
     },
 
-    submitForm() {
+    async submitForm() {
       // Prevenir doble envío
       if (this.guardandoRegistro) {
         return;
       }
       
-      // Se llama al nuevo método de validación que revisa todos los campos
+      // Validar formulario completo
       if (!this.validarFormularioCompleto()) {
         this.mostrarError('Por favor, complete todos los campos obligatorios y corrija los errores.');
         return;
@@ -511,45 +676,58 @@ export default {
       // Activar estado de guardado
       this.guardandoRegistro = true;
 
-      // =========================================================================
-      // CÓDIGO DE BACKEND:
-      // Aquí es donde harías la llamada a tu API para guardar los datos.
-      // El siguiente código es un ejemplo y DEBE ser reemplazado por tu lógica
-      // de conexión a la base de datos (por ejemplo, una llamada HTTP con fetch o Axios).
-      // =========================================================================
+      try {
+        console.log("📋 Iniciando guardado de datos de trilla...");
 
-      // Ejemplo de la llamada a la base de datos:
-      // guardarDatosEnBaseDeDatos(this.form)
-      //   .then(response => {
-      //      this.mostrarExito();
-      //      setTimeout(() => {
-      //        this.guardandoRegistro = false;
-      //        if (this.$router) {
-      //          this.$router.push({ name: "HomeView" });
-      //        }
-      //      }, 4000);
-      //   })
-      //   .catch(error => {
-      //      this.guardandoRegistro = false;
-      //      this.mostrarError('Ocurrió un error al guardar los datos.');
-      //      console.error("Error al guardar:", error);
-      //   });
-      
-      // Simulación de una llamada asíncrona
-      console.log("📋 Datos de Trilla guardados:", {
-        ...this.form,
-        totalPorcentajes: this.totalPorcentajes,
-        fechaRegistro: new Date().toISOString()
-      });
-      
-      this.mostrarExito();
-      
-      setTimeout(() => {
-        this.guardandoRegistro = false;
-        if (this.$router) {
-          this.$router.push({ name: "HomeView" });
+        // 1. Crear el registro principal de Trilla
+        const trillaCreada = await this.crearTrilla();
+        
+        // Obtener ID de la trilla creada
+        const idTrilla = trillaCreada.ID_Trilla || trillaCreada.id_Trilla || trillaCreada.idTrilla;
+        
+        if (!idTrilla) {
+          console.error("❌ No se pudo obtener el ID de la trilla creada:", trillaCreada);
+          throw new Error("No se pudo obtener el ID del registro de trilla creado");
         }
-      }, 4000); 
+        
+        console.log("✅ Trilla creada con ID:", idTrilla);
+        console.log("🔍 Objeto completo de la trilla:", trillaCreada);
+
+        // 2. Crear el registro de PesoVerde usando el ID de la trilla
+        const pesoVerdeCreado = await this.crearPesoVerde(idTrilla);
+        console.log("✅ Peso Verde creado:", pesoVerdeCreado);
+
+        console.log("🎉 Todos los datos de trilla guardados exitosamente");
+        this.mostrarExito();
+        
+        // Limpiar formulario después de 3 segundos
+        setTimeout(() => {
+          this.limpiarFormulario();
+          this.guardandoRegistro = false;
+          if (this.$router) {
+            this.$router.push({ name: "HomeView" });
+          }
+        }, 3000);
+
+      } catch (error) {
+        console.error("❌ Error al guardar:", error);
+        
+        // Manejar diferentes tipos de errores
+        let mensajeError = "Error desconocido";
+        
+        if (typeof error === 'string') {
+          mensajeError = error;
+        } else if (error.message) {
+          mensajeError = error.message;
+        } else if (error.response?.data) {
+          mensajeError = error.response.data.message || JSON.stringify(error.response.data);
+        } else if (error.data) {
+          mensajeError = error.data.message || JSON.stringify(error.data);
+        }
+        
+        this.mostrarError(`Error al guardar los datos: ${mensajeError}`);
+        this.guardandoRegistro = false;
+      }
     },
 
     mostrarError(mensaje) {
@@ -557,29 +735,34 @@ export default {
       this.showError = true;
       setTimeout(() => {
         this.showError = false;
-      }, 4000);
+      }, 6000);
     },
 
     mostrarExito() {
       this.showSuccess = true;
       setTimeout(() => {
         this.showSuccess = false;
-      }, 3000); 
+      }, 3000);
     },
 
     limpiarFormulario() {
       // Limpiar todos los campos
       Object.keys(this.form).forEach(key => {
-        if (key === 'lote' || key === 'fechaReposo') {
+        if (key === 'nlote' || key === 'ffinalReposo') {
           this.form[key] = '';
         } else {
           this.form[key] = null;
         }
       });
       
-      // Limpiar errores
+      // Limpiar errores y totales
       this.errors = {};
       this.totalPorcentajes = 0;
+
+      // Recargar lotes solo si la API estaba disponible anteriormente
+      if (this.apiLotesDisponible && this.lotes.length === 0) {
+        this.cargarLotes();
+      }
     },
 
     cancelar() {
@@ -591,9 +774,11 @@ export default {
 
   mounted() {
     this.calcularTotalPorcentajes();
+    this.cargarLotes(); // Cargar lotes al montar el componente
   }
 };
 </script>
+
 <style scoped>
 /* Variables de la paleta de colores de café */
 * {
@@ -635,18 +820,7 @@ export default {
   /* Transiciones */
   --transition-all: all 0.3s ease;
 }
-.modal {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: linear-gradient(135deg, var(--verde-claro) 1%, var(--verde-oscuro) 50%, var(--verde-muy-oscuro) 99%);
-  backdrop-filter: blur(5px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  animation: fadeIn 0.3s ease;
-}
+
 .modal-overlay {
   position: fixed;
   top: 0; left: 0;
@@ -789,19 +963,23 @@ export default {
   border-left: 4px solid var(--burgundy);
 }
 
-.cherries {
-  border-left: 4px solid var(--cafe-oscuro);
-}
-
 .percentages {
   border-left: 4px solid var(--verde-oscuro);
 }
 
-.defects {
+.rendimientos {
+  border-left: 4px solid var(--cafe-oscuro);
+}
+
+.pesos {
   border-left: 4px solid var(--cafe-medio);
 }
 
-.density {
+.humidity {
+  border-left: 4px solid var(--verde-claro);
+}
+
+.exportacion {
   border-left: 4px solid var(--cafe-muy-oscuro);
 }
 
@@ -809,6 +987,29 @@ export default {
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.percentages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.percentage-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.rendimientos-grid, .pesos-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.exportacion-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
 }
 
@@ -825,6 +1026,12 @@ export default {
   font-size: 0.9rem;
 }
 
+.required-label::after {
+  content: " *";
+  color: var(--color-error);
+  font-weight: bold;
+}
+
 .input-field {
   padding: 12px 16px;
   border: 2px solid #E5C29F;
@@ -835,6 +1042,23 @@ export default {
   color: #2C1810;
   width: 100%;
   box-sizing: border-box;
+}
+
+/* Estilos específicos para select */
+select.input-field {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+}
+
+select.input-field:disabled {
+  background-color: var(--beige-claro);
+  color: var(--cafe-medio);
+  cursor: not-allowed;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23C8956F' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
 }
 
 .input-field:focus {
@@ -853,14 +1077,95 @@ export default {
   font-style: italic;
 }
 
-.select-field {
-  cursor: pointer;
+.percentage-input {
+  text-align: center;
+  font-weight: 500;
 }
 
-.select-field option {
-  color: #2C1810;
-  background: white;
-  padding: 8px;
+/* Mensajes de error */
+.error-text {
+  color: var(--color-error);
+  font-size: var(--text-xs);
+  margin-top: var(--space-xs);
+  display: block;
+}
+
+/* Información adicional */
+.percentage-info, .humidity-info {
+  background: var(--beige-claro);
+  padding: var(--space-md);
+  border-radius: 8px;
+  margin-bottom: var(--space-xl);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.info-text {
+  color: var(--cafe-oscuro);
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--text-sm);
+}
+
+.info-icon {
+  font-size: var(--text-sm);
+}
+
+.total-percentage {
+  font-weight: 600;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: 6px;
+  font-size: var(--text-sm);
+}
+
+.total-valid {
+  background: linear-gradient(135deg, var(--color-success), #388E3C);
+  color: white;
+}
+
+.total-warning {
+  background: var(--color-warning);
+  color: white;
+}
+
+/* Mediciones */
+.humidity-measurements {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-xl);
+}
+
+.rendimiento-pair, .peso-pair, .humidity-pair {
+  background: linear-gradient(145deg, #ffffff, var(--beige-claro));
+  padding: var(--space-lg);
+  border-radius: 12px;
+  border: 1px solid var(--cafe-claro);
+  transition: var(--transition-all);
+}
+
+.rendimiento-pair:hover, .peso-pair:hover, .humidity-pair:hover {
+  border-color: var(--cafe-medio);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(74, 45, 26, 0.15);
+}
+
+.pair-header {
+  font-weight: 600;
+  color: var(--cafe-oscuro);
+  margin-bottom: var(--space-md);
+  text-align: center;
+  font-size: var(--text-sm);
+}
+
+.pair-inputs-horizontal {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  align-items: end;
 }
 
 /* Botones */
@@ -873,7 +1178,7 @@ export default {
   border-top: 2px solid #E5C29F;
 }
 
-.btn-base {
+.btn {
   padding: 14px 28px;
   border: none;
   border-radius: 12px;
@@ -890,19 +1195,19 @@ export default {
   justify-content: center;
 }
 
-.btn-primary {
+.btn-submit {
   background: linear-gradient(135deg, #8FAD5A, #4A5D2E);
   color: white;
   box-shadow: 0 6px 15px rgba(143, 173, 90, 0.4);
 }
 
-.btn-primary:hover:not(:disabled) {
+.btn-submit:hover:not(:disabled) {
   background: linear-gradient(135deg, #4A5D2E, #2e3d1a);
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(143, 173, 90, 0.5);
 }
 
-.btn-primary:disabled {
+.btn-submit:disabled {
   background: var(--cafe-claro);
   color: #8B5A3C;
   cursor: not-allowed;
@@ -934,7 +1239,7 @@ export default {
   box-shadow: 0 8px 20px rgba(165, 42, 61, 0.5);
 }
 
-.btn-base:active {
+.btn:active {
   transform: translateY(0);
 }
 
@@ -1013,27 +1318,72 @@ export default {
     grid-template-columns: 1fr;
   }
 
+  .percentages-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .exportacion-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pair-inputs-horizontal {
+    grid-template-columns: 1fr;
+    gap: var(--space-sm);
+  }
+
   .form-buttons {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
   }
 
-  .btn-base {
+  .btn {
     flex: 1;
     min-width: 120px;
     max-width: 150px;
   }
+
+  .percentage-info, .humidity-info {
+    flex-direction: column;
+    text-align: center;
+  }
 }
 
 @media (max-width: 480px) {
+  .percentages-grid {
+    grid-template-columns: 1fr;
+  }
+
   .form-buttons {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .btn-base {
+  .btn {
     width: 100%;
   }
+
+  .pair-inputs-horizontal {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Scroll personalizado */
+.modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: var(--beige-claro);
+  border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(var(--cafe-medio), var(--cafe-oscuro));
+  border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(var(--cafe-oscuro), var(--cafe-muy-oscuro));
 }
 </style>
