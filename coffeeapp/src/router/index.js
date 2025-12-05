@@ -1,11 +1,14 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import FormularioAcopio from '../components/FormularioAcopio.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import FormularioAcopio from '../components/FormularioAcopio.vue';
 import HomeView from '@/components/HomeView.vue';
-import FormularioCaracterizacion from '../components/FCaracterizacion.vue'
+import FormularioCaracterizacion from '../components/FCaracterizacion.vue';
 import FSecado from '@/components/FSecado.vue';
 import FBodega from '../components/FBodega.vue';
 import FTrilla from '@/components/FTrilla.vue';
 import FCatacion from '@/components/FCatacion.vue';
+import HistorialCentroAcopio from '@/components/HistorialCentroAcopio.vue';
+import HistorialCaracterizacion from '@/components/HistorialCaracterizacion.vue';
+
 
 const routes = [
   { path: "/", name: "HomeView", component: HomeView },
@@ -15,6 +18,9 @@ const routes = [
   { path: '/bodega', name: 'FormularioBodega', component: FBodega },
   { path: '/trilla', name: 'FormularioTrilla', component: FTrilla },
   { path: '/catacion', name: 'FormularioCatación', component: FCatacion },
+  { path: '/historial', name: 'HistorialCentroAcopio', component: HistorialCentroAcopio },
+  { path: '/historial-caracterizacion', name: 'HistorialCaracterizacion', component: HistorialCaracterizacion },
+
 ];
 
 const router = createRouter({

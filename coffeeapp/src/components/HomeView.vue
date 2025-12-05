@@ -183,7 +183,7 @@ export default {
     verRegistroViejo() {
       this.modalVisible = false;
       this.$router.push({
-        name: "RegistroViejo",
+        name: "HistorialCentroAcopio",
         query: { seccion: this.selectedSection.title },
       });
     },

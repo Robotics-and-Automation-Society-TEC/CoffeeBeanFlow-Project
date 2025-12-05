@@ -30,76 +30,15 @@
           <h3><i class="section-icon">📋</i>Información Básica</h3>
           <div class="form-grid">
             <div class="input-group">
-              <label class="required-label">Número de Lote *</label>
-              
-              <!-- Select cuando hay lotes cargados -->
-              <select 
-                v-if="lotes.length > 0"
-                v-model="form.nloteAreaAcopio" 
-                required 
-                class="input-field select-field"
-                @change="validarCampo('nloteAreaAcopio')"
-                :disabled="cargandoLotes"
-              >
-                <option value="" disabled>
-                  {{ cargandoLotes ? 'Cargando lotes...' : 'Seleccione un lote' }}
-                </option>
-                <option 
-                  v-for="lote in lotes" 
-                  :key="lote" 
-                  :value="lote"
-                >
-                  {{ lote }}
+              <label>Número de Lote *</label>
+              <select v-model="form.lote" required class="input-field select-field" @change="onLoteChange">
+                <option disabled value="">Seleccione un lote existente</option>
+                <option v-for="lote in lotesDisponibles" :key="getLoteId(lote)" :value="getLoteId(lote)">
+                  {{ formatearLoteOpcion(lote) }}
                 </option>
               </select>
-              
-              <!-- Input manual cuando no hay lotes o falla la API -->
-              <input 
-                v-else
-                type="text" 
-                v-model="form.nloteAreaAcopio" 
-                required 
-                class="input-field"
-                placeholder="Ej: LOTE-001, LOTE-2024-001"
-                maxlength="50"
-                @blur="validarCampo('nloteAreaAcopio')"
-                :disabled="cargandoLotes"
-              />
-              
-              <span v-if="errors.nloteAreaAcopio" class="error-text">{{ errors.nloteAreaAcopio }}</span>
-              
-              <!-- Mensajes informativos -->
-              <small v-if="cargandoLotes" class="info-text">
-                <i class="info-icon">⏳</i>
-                Cargando lotes disponibles...
-              </small>
-              <small v-else-if="lotes.length === 0" class="info-text" style="color: var(--color-warning);">
-                <i class="info-icon">⚠️</i>
-                API de lotes no disponible. Ingrese el número de lote manualmente.
-              </small>
-              <small v-else class="info-text" style="color: var(--color-success);">
-                <i class="info-icon">✅</i>
-                {{ lotes.length }} lote(s) disponible(s)
-              </small>
-            </div>
-            
-            <!-- CAMPO PROCESO AGREGADO -->
-            <div class="input-group">
-              <label class="required-label">Tipo de Proceso *</label>
-              <select 
-                v-model="form.proceso" 
-                required 
-                class="input-field select-field"
-                @change="validarCampo('proceso')"
-              >
-                <option value="" disabled>Seleccione el proceso</option>
-                <option value="Lavado">Lavado</option>
-                <option value="Miel">Miel</option>
-                <option value="Natural">Natural</option>
-                <option value="Despulpado">Despulpado</option>
-                <option value="Semi-Lavado">Semi-Lavado</option>
-              </select>
-              <span v-if="errors.proceso" class="error-text">{{ errors.proceso }}</span>
+              <small v-if="cargandoLotes" class="loading-text">Cargando lotes disponibles...</small>
+              <small v-else-if="lotesDisponibles.length === 0" class="loading-text">No hay lotes disponibles</small>
             </div>
           </div>
         </div>
@@ -110,64 +49,33 @@
           <div class="form-grid">
             <div class="input-group">
               <label>Cerezas Inmaduras</label>
-              <input 
-                type="number" 
-                v-model.number="form.cinmaduras" 
-                min="0" 
-                class="input-field" 
-                placeholder="Cantidad" 
-              />
+              <input type="number" v-model.number="form.inmaduras" min="0" 
+                     class="input-field" placeholder="Cantidad" />
             </div>
             <div class="input-group">
               <label>Cerezas Sobremaduras</label>
-              <input 
-                type="number" 
-                v-model.number="form.csobremaduras" 
-                min="0" 
-                class="input-field" 
-                placeholder="Cantidad" 
-              />
+              <input type="number" v-model.number="form.sobremaduras" min="0" 
+                     class="input-field" placeholder="Cantidad" />
             </div>
             <div class="input-group">
               <label>Cerezas Verdes</label>
-              <input 
-                type="number" 
-                v-model.number="form.cverdes" 
-                min="0" 
-                class="input-field" 
-                placeholder="Cantidad" 
-              />
+              <input type="number" v-model.number="form.verdes" min="0" 
+                     class="input-field" placeholder="Cantidad" />
             </div>
             <div class="input-group">
               <label>Cerezas Objetivo (Óptimas)</label>
-              <input 
-                type="number" 
-                v-model.number="form.cobjetivo" 
-                min="0" 
-                class="input-field" 
-                placeholder="Cantidad" 
-              />
+              <input type="number" v-model.number="form.objetivo" min="0" 
+                     class="input-field" placeholder="Cantidad" />
             </div>
             <div class="input-group">
               <label>Cerezas Secas</label>
-              <input 
-                type="number" 
-                v-model.number="form.csecas" 
-                min="0" 
-                class="input-field" 
-                placeholder="Cantidad" 
-              />
+              <input type="number" v-model.number="form.secas" min="0" 
+                     class="input-field" placeholder="Cantidad" />
             </div>
             <div class="input-group">
               <label>Rango Óptimo de Maduras (°Brix)</label>
-              <input 
-                type="number" 
-                v-model.number="form.drmaduras" 
-                step="0.1" 
-                min="0" 
-                class="input-field" 
-                placeholder="20.5" 
-              />
+              <input type="number" v-model.number="form.rangoOptimo" step="0.1" min="0" 
+                     class="input-field" placeholder="20.5" />
             </div>
           </div>
         </div>
@@ -178,68 +86,33 @@
           <div class="form-grid">
             <div class="input-group">
               <label>% Cerezas Verdes</label>
-              <input 
-                type="number" 
-                v-model.number="form.pcverdes" 
-                min="0" 
-                max="100" 
-                step="0.1" 
-                @blur="validarPorcentaje('pcverdes')" 
-                class="input-field" 
-                placeholder="%" 
-              />
+              <input type="number" v-model.number="form.porcVerdes" min="0" max="100" 
+                     step="0.1" @blur="validarPorcentaje('porcVerdes')" 
+                     class="input-field" placeholder="%" />
             </div>
             <div class="input-group">
               <label>% Cerezas Secas</label>
-              <input 
-                type="number" 
-                v-model.number="form.pcsecas" 
-                min="0" 
-                max="100" 
-                step="0.1" 
-                @blur="validarPorcentaje('pcsecas')" 
-                class="input-field" 
-                placeholder="%" 
-              />
+              <input type="number" v-model.number="form.porcSecas" min="0" max="100" 
+                     step="0.1" @blur="validarPorcentaje('porcSecas')" 
+                     class="input-field" placeholder="%" />
             </div>
             <div class="input-group">
               <label>% Cerezas Objetivo</label>
-              <input 
-                type="number" 
-                v-model.number="form.pcobjetivo" 
-                min="0" 
-                max="100" 
-                step="0.1" 
-                @blur="validarPorcentaje('pcobjetivo')" 
-                class="input-field" 
-                placeholder="%" 
-              />
+              <input type="number" v-model.number="form.porcObjetivo" min="0" max="100" 
+                     step="0.1" @blur="validarPorcentaje('porcObjetivo')" 
+                     class="input-field" placeholder="%" />
             </div>
             <div class="input-group">
               <label>% Por Debajo de Madurez</label>
-              <input 
-                type="number" 
-                v-model.number="form.pcdebajo" 
-                min="0" 
-                max="100" 
-                step="0.1" 
-                @blur="validarPorcentaje('pcdebajo')" 
-                class="input-field" 
-                placeholder="%" 
-              />
+              <input type="number" v-model.number="form.porcDebajoObjetivo" min="0" max="100" 
+                     step="0.1" @blur="validarPorcentaje('porcDebajoObjetivo')" 
+                     class="input-field" placeholder="%" />
             </div>
             <div class="input-group">
               <label>% Por Encima de Madurez</label>
-              <input 
-                type="number" 
-                v-model.number="form.pcencima" 
-                min="0" 
-                max="100" 
-                step="0.1" 
-                @blur="validarPorcentaje('pcencima')" 
-                class="input-field" 
-                placeholder="%" 
-              />
+              <input type="number" v-model.number="form.porcEncimaObjetivo" min="0" max="100" 
+                     step="0.1" @blur="validarPorcentaje('porcEncimaObjetivo')" 
+                     class="input-field" placeholder="%" />
             </div>
           </div>
         </div>
@@ -250,65 +123,31 @@
           <div class="form-grid">
             <div class="input-group">
               <label>Escala de Maduración (1-10)</label>
-              <input 
-                type="number" 
-                v-model.number="form.emaduracion" 
-                min="1" 
-                max="10" 
-                step="0.1" 
-                class="input-field" 
-                placeholder="8.5" 
-              />
+              <input type="number" v-model.number="form.escalaMaduracion" min="1" max="10" 
+                     step="0.1" class="input-field" placeholder="8.5" />
             </div>
             <div class="input-group">
               <label>% Broca</label>
-              <input 
-                type="number" 
-                v-model.number="form.broca" 
-                min="0" 
-                max="100" 
-                step="0.1" 
-                @blur="validarPorcentaje('broca')" 
-                class="input-field" 
-                placeholder="%" 
-              />
+              <input type="number" v-model.number="form.broca" min="0" max="100" 
+                     step="0.1" @blur="validarPorcentaje('broca')" 
+                     class="input-field" placeholder="%" />
             </div>
             <div class="input-group">
               <label>% Vanos</label>
-              <input 
-                type="number" 
-                v-model.number="form.vanos" 
-                min="0" 
-                max="100" 
-                step="0.1" 
-                @blur="validarPorcentaje('vanos')" 
-                class="input-field" 
-                placeholder="%" 
-              />
+              <input type="number" v-model.number="form.vanos" min="0" max="100" 
+                     step="0.1" @blur="validarPorcentaje('vanos')" 
+                     class="input-field" placeholder="%" />
             </div>
             <div class="input-group">
               <label>% Secos</label>
-              <input 
-                type="number" 
-                v-model.number="form.secos" 
-                min="0" 
-                max="100" 
-                step="0.1" 
-                @blur="validarPorcentaje('secos')" 
-                class="input-field" 
-                placeholder="%" 
-              />
+              <input type="number" v-model.number="form.secos" min="0" max="100" 
+                     step="0.1" @blur="validarPorcentaje('secos')" 
+                     class="input-field" placeholder="%" />
             </div>
             <div class="input-group">
               <label>Muestreo Tabla</label>
-              <input 
-                type="number" 
-                v-model.number="form.mtabla" 
-                step="0.01" 
-                min="0" 
-                class="input-field" 
-                placeholder="100.0" 
-              />
+              <input type="number" v-model.number="form.muestreoTabla" step="0.01" min="0" 
+                     class="input-field" placeholder="100.0" />
             </div>
           </div>
         </div>
@@ -319,30 +158,24 @@
           <div class="form-grid">
             <div class="input-group">
               <label>Densidad del Grano (g/ml)</label>
-              <input 
-                type="number" 
-                v-model.number="form.densidad" 
-                step="0.01" 
-                min="0" 
-                class="input-field" 
-                placeholder="Ej: 1.25" 
-              />
+              <input type="number" v-model.number="form.densidadGrano" step="0.01" min="0" 
+                     class="input-field" placeholder="Ej: 1.25" />
             </div>
           </div>
         </div>
 
-        <!-- Botones -->
+         <!-- Botones -->
         <div class="form-buttons">
-          <button type="submit" class="btn btn-submit" :disabled="!formularioValido">
+          <button type="submit" class="btn-base btn-primary" :disabled="!formularioValido || guardandoRegistro">
             <i class="btn-icon" v-if="!guardandoRegistro">💾</i>
             <i class="btn-icon loading-spinner" v-else>⏳</i>
             {{ guardandoRegistro ? 'Guardando...' : 'Guardar Registro' }}
           </button>
-          <button type="button" @click="limpiarFormulario" class="btn btn-secondary">
+          <button type="button" @click="limpiarFormulario" class="btn-base btn-secondary" :disabled="guardandoRegistro">
             <i class="btn-icon">🔄</i>
             Limpiar
           </button>
-          <button type="button" @click="cancelar" class="btn btn-cancel">
+          <button type="button" @click="cancelar" class="btn-base btn-cancel" :disabled="guardandoRegistro">
             <i class="btn-icon">✕</i>
             Cancelar
           </button>
@@ -360,29 +193,28 @@ export default {
   data() {
     return {
       form: {
-        nloteAreaAcopio: "",
-        proceso: "",
-        cinmaduras: null,
-        csobremaduras: null,
-        cverdes: null,
-        cobjetivo: null,
-        csecas: null,
-        drmaduras: null,
-        pcverdes: null,
-        pcsecas: null,
-        pcobjetivo: null,
-        pcdebajo: null,
-        pcencima: null,
-        emaduracion: null,
+        lote: "",
+        
+        inmaduras: null,
+        sobremaduras: null,
+        verdes: null,
+        objetivo: null,
+        secas: null,
+        rangoOptimo: null,
+        porcVerdes: null,
+        porcSecas: null,
+        porcObjetivo: null,
+        porcDebajoObjetivo: null,
+        porcEncimaObjetivo: null,
+        escalaMaduracion: null,
         broca: null,
         vanos: null,
         secos: null,
-        densidad: null,
-        mtabla: 100.0, // Valor por defecto
+        densidadGrano: null,
+        muestreoTabla: 100.0, // Valor por defecto
       },
-      lotes: [], // Lista de lotes disponibles
+      lotesDisponibles: [],
       cargandoLotes: false,
-      errors: {},
       showSuccess: false,
       showError: false,
       errorMessage: '',
@@ -392,76 +224,68 @@ export default {
   computed: {
     formularioValido() {
       // Validación básica: lote y proceso son obligatorios
-      return Object.keys(this.errors).length === 0 &&
-             this.form.nloteAreaAcopio && 
-             this.form.nloteAreaAcopio.trim() !== '' && 
+      return (this.form.lote && this.form.lote.trim() !== '') && 
              this.form.proceso !== '' && 
-             !this.guardandoRegistro &&
-             !this.cargandoLotes;
+             !this.guardandoRegistro;
     }
   },
   async mounted() {
-    await this.cargarLotes();
+    await this.cargarLotesDisponibles();
+    
+    // Diagnosticar estructura de datos
+    setTimeout(() => {
+      console.log('🔍 DIAGNÓSTICO DE LOTES:');
+      console.log('Total de lotes:', this.lotesDisponibles.length);
+      
+      if (this.lotesDisponibles.length > 0) {
+        const primerLote = this.lotesDisponibles[0];
+        console.log('Primer lote completo:', primerLote);
+        console.log('Propiedades disponibles:', Object.keys(primerLote));
+        console.log('Valor nlote:', primerLote.nlote);
+        console.log('Valor Nlote:', primerLote.Nlote);
+        console.log('Valor nproductor:', primerLote.nproductor);
+        console.log('Valor Nproductor:', primerLote.Nproductor);
+      }
+    }, 1000);
   },
   methods: {
-    // Método para cargar lotes desde Area_Acopio
-    async cargarLotes() {
+    getLoteId(lote) {
+      // Intentar diferentes variaciones del nombre de la propiedad
+      return lote.nlote || lote.Nlote || lote.id || lote.Id || lote.lote || 'Sin ID';
+    },
+
+    formatearLoteOpcion(lote) {
+      const id = this.getLoteId(lote);
+      const productor = lote.nproductor || lote.Nproductor || lote.productor || lote.Productor || 'Sin productor';
+      const finca = lote.nfinca || lote.Nfinca || lote.finca || lote.Finca || 'Sin finca';
+      
+      return `${id} - ${productor} (${finca})`;
+    },
+
+    async cargarLotesDisponibles() {
       this.cargandoLotes = true;
       try {
-        console.log("📦 Cargando lotes desde Area_Acopio...");
+        console.log('🔍 Cargando lotes disponibles...');
+        const lotes = await apiService.obtenerTodos('Area_Acopio');
+        this.lotesDisponibles = lotes || [];
         
-        // Obtener todos los registros de Area_Acopio
-        const registrosAreaAcopio = await apiService.obtenerTodos('Area_Acopio');
-        
-        console.log("📊 Registros de Area_Acopio obtenidos:", registrosAreaAcopio);
-        
-        // Extraer números de lote únicos y válidos
-        const lotesUnicos = [...new Set(
-          registrosAreaAcopio
-            .map(registro => registro.Nlote || registro.nlote)
-            .filter(nlote => nlote && nlote.toString().trim() !== '')
-        )];
-        
-        this.lotes = lotesUnicos.sort();
-        
-        console.log("✅ Lotes cargados desde Area_Acopio:", this.lotes.length, this.lotes);
+        // Debug: mostrar la estructura de los datos
+        console.log('✅ Lotes cargados:', this.lotesDisponibles.length);
+        console.log('📋 Estructura del primer lote:', this.lotesDisponibles[0]);
+        console.log('📋 Todas las propiedades del primer lote:', 
+                   this.lotesDisponibles[0] ? Object.keys(this.lotesDisponibles[0]) : 'No hay lotes');
         
       } catch (error) {
-        console.error("❌ Error al cargar lotes desde Area_Acopio:", error);
-        this.lotes = [];
-        console.log("🔄 Cambiando a modo de entrada manual de lotes");
+        console.error('❌ Error al cargar lotes:', error);
+        this.mostrarError('Error al cargar los lotes disponibles');
+        this.lotesDisponibles = [];
       } finally {
         this.cargandoLotes = false;
       }
     },
 
-    // Validación de campos obligatorios
-    validarCampo(campo) {
-      if (campo === 'nloteAreaAcopio') {
-        if (!this.form.nloteAreaAcopio || this.form.nloteAreaAcopio.toString().trim() === '') {
-          this.errors.nloteAreaAcopio = 'Debe seleccionar o ingresar un lote';
-        } else if (this.lotes.length > 0) {
-          const loteValido = this.lotes.includes(this.form.nloteAreaAcopio);
-          if (!loteValido) {
-            this.errors.nloteAreaAcopio = 'El lote seleccionado no es válido';
-          } else {
-            delete this.errors.nloteAreaAcopio;
-          }
-        } else {
-          const lote = this.form.nloteAreaAcopio.toString().trim();
-          if (lote.length < 2) {
-            this.errors.nloteAreaAcopio = 'El número de lote debe tener al menos 2 caracteres';
-          } else {
-            delete this.errors.nloteAreaAcopio;
-          }
-        }
-      } else if (campo === 'proceso') {
-        if (!this.form.proceso || this.form.proceso.trim() === '') {
-          this.errors.proceso = 'Debe seleccionar un tipo de proceso';
-        } else {
-          delete this.errors.proceso;
-        }
-      }
+    onLoteChange() {
+      console.log('📋 Lote seleccionado:', this.form.lote);
     },
 
     validarPorcentaje(campo) {
@@ -476,7 +300,7 @@ export default {
       this.showError = true;
       setTimeout(() => {
         this.showError = false;
-      }, 6000);
+      }, 5000);
     },
 
     mostrarExito() {
@@ -486,50 +310,39 @@ export default {
       }, 3000);
     },
 
-    // Validar todos los campos obligatorios
-    validarFormularioCompleto() {
-      this.errors = {};
-      
-      // Validar campos obligatorios
-      this.validarCampo('nloteAreaAcopio');
-      this.validarCampo('proceso');
-      
-      return Object.keys(this.errors).length === 0;
-    },
-
     mapearDatosParaAPI() {
-      // Mapear los datos del formulario al modelo de la API según tu backend
+      // Mapear los datos del formulario al modelo de la API
       const datos = {
-        Tiempo: new Date().toISOString(), // Timestamp actual como llave primaria
-        Nlote_AreaAcopio: this.form.nloteAreaAcopio,
-        Proceso: this.form.proceso,
+        tiempo: new Date().toISOString(), // Timestamp actual
+        nlote_AreaAcopio: this.form.lote,
+        proceso: this.form.proceso,
         
         // Cantidades de cerezas
-        Cinmaduras: this.form.cinmaduras || 0,
-        Csobremaduras: this.form.csobremaduras || 0,
-        Cverdes: this.form.cverdes || 0,
-        Cobjetivo: this.form.cobjetivo || 0,
-        Csecas: this.form.csecas || 0,
+        cinmaduras: this.form.inmaduras || 0,
+        csobremaduras: this.form.sobremaduras || 0,
+        cverdes: this.form.verdes || 0,
+        cobjetivo: this.form.objetivo || 0,
+        csecas: this.form.secas || 0,
         
         // Rango óptimo y muestreo
-        DRmaduras: this.form.drmaduras || 0,
-        Mtabla: this.form.mtabla || 100.0,
+        drMaduras: this.form.rangoOptimo || 0,
+        mtabla: this.form.muestreoTabla || 100.0,
         
         // Porcentajes
-        PCverdes: this.form.pcverdes || 0,
-        PCsecas: this.form.pcsecas || 0,
-        PCobjetivo: this.form.pcobjetivo || 0,
-        PCdebajo: this.form.pcdebajo || 0,
-        PCencima: this.form.pcencima || 0,
+        pcverdes: this.form.porcVerdes || 0,
+        pcsecas: this.form.porcSecas || 0,
+        pcobjetivo: this.form.porcObjetivo || 0,
+        pcdebajo: this.form.porcDebajoObjetivo || 0,
+        pcencima: this.form.porcEncimaObjetivo || 0,
         
         // Escala de maduración y defectos
-        Emaduracion: this.form.emaduracion || 0,
-        Broca: this.form.broca || 0,
-        Vanos: this.form.vanos || 0,
-        Secos: this.form.secos || 0,
+        emaduracion: this.form.escalaMaduracion || 0,
+        broca: this.form.broca || 0,
+        vanos: this.form.vanos || 0,
+        secos: this.form.secos || 0,
         
         // Densidad
-        Densidad: this.form.densidad || 0
+        densidad: this.form.densidadGrano || 0
       };
       
       return datos;
@@ -537,13 +350,18 @@ export default {
 
     async submitForm() {
       // Prevenir doble envío
-      if (this.guardandoRegistro) {
+      if (this.guardandoRegistro || !this.formularioValido) {
         return;
       }
-      
-      // Validar formulario completo
-      if (!this.validarFormularioCompleto()) {
-        this.mostrarError('Por favor, complete todos los campos obligatorios y corrija los errores.');
+
+      // Validaciones básicas
+      if (!this.form.lote || !this.form.lote.trim()) {
+        this.mostrarError('El número de lote es obligatorio');
+        return;
+      }
+
+      if (!this.form.proceso) {
+        this.mostrarError('Debe seleccionar un proceso');
         return;
       }
 
@@ -553,14 +371,14 @@ export default {
       this.showSuccess = false;
 
       try {
-        console.log("📋 Iniciando guardado de caracterización...");
-        
         // Mapear datos para la API
         const datosAPI = this.mapearDatosParaAPI();
+        
         console.log("📋 Enviando datos de caracterización a API:", datosAPI);
         
         // Llamar a la API
         const resultado = await apiService.crear('FormularioCaracterizacionApi', datosAPI);
+        
         console.log("✅ Respuesta de la API:", resultado);
         
         this.mostrarExito();
@@ -568,14 +386,14 @@ export default {
         // Limpiar formulario después de guardar exitosamente
         setTimeout(() => {
           this.limpiarFormulario();
-        }, 2000);
+        }, 1500);
         
         // Redirigir después de guardar (opcional)
         setTimeout(() => {
           if (this.$router) {
             this.$router.push({ name: "HomeView" });
           }
-        }, 3000);
+        }, 4000);
         
       } catch (error) {
         console.error("❌ Error al guardar caracterización:", error);
@@ -583,14 +401,16 @@ export default {
         let mensajeError = "Error al guardar el registro de caracterización";
         
         // Manejar diferentes tipos de errores
-        if (typeof error === 'string') {
+        if (error.title) {
+          mensajeError = error.title;
+        } else if (error.errors) {
+          // Errores de validación del modelo
+          const errores = Object.values(error.errors).flat();
+          mensajeError = errores.join(', ');
+        } else if (typeof error === 'string') {
           mensajeError = error;
         } else if (error.message) {
           mensajeError = error.message;
-        } else if (error.response?.data) {
-          mensajeError = error.response.data.message || JSON.stringify(error.response.data);
-        } else if (error.data) {
-          mensajeError = error.data.message || JSON.stringify(error.data);
         }
         
         this.mostrarError(mensajeError);
@@ -602,22 +422,14 @@ export default {
     limpiarFormulario() {
       // Limpiar todos los campos excepto valores por defecto
       Object.keys(this.form).forEach(key => {
-        if (key === 'nloteAreaAcopio' || key === 'proceso') {
+        if (key === 'lote' || key === 'proceso') {
           this.form[key] = '';
-        } else if (key === 'mtabla') {
+        } else if (key === 'muestreoTabla') {
           this.form[key] = 100.0; // Mantener valor por defecto
         } else {
           this.form[key] = null;
         }
       });
-      
-      // Limpiar errores
-      this.errors = {};
-      
-      // Recargar lotes si es necesario
-      if (this.lotes.length === 0) {
-        this.cargarLotes();
-      }
     },
 
     cancelar() {
@@ -773,26 +585,11 @@ export default {
   font-weight: bold;
 }
 
-/* Información adicional */
-.info-text {
-  color: var(--cafe-oscuro);
+.loading-text {
+  color: var(--cafe-medio);
   font-style: italic;
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  font-size: var(--text-sm);
-}
-
-.info-icon {
-  font-size: var(--text-sm);
-}
-
-/* Mensajes de error */
-.error-text {
-  color: var(--color-error);
-  font-size: var(--text-xs);
-  margin-top: var(--space-xs);
-  display: block;
+  font-size: 0.85rem;
+  margin-top: 4px;
 }
 
 /* Secciones de formulario */
@@ -871,12 +668,6 @@ export default {
   font-size: 0.9rem;
 }
 
-.required-label::after {
-  content: " *";
-  color: var(--color-error);
-  font-weight: bold;
-}
-
 .input-field {
   padding: 12px 16px;
   border: 2px solid #E5C29F;
@@ -887,23 +678,6 @@ export default {
   color: #2C1810;
   width: 100%;
   box-sizing: border-box;
-}
-
-/* Estilos específicos para select */
-select.input-field {
-  cursor: pointer;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-  background-position: right 0.5rem center;
-  background-repeat: no-repeat;
-  background-size: 1.5em 1.5em;
-  padding-right: 2.5rem;
-}
-
-select.input-field:disabled {
-  background-color: var(--beige-claro);
-  color: var(--cafe-medio);
-  cursor: not-allowed;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23C8956F' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
 }
 
 .input-field:focus {
@@ -942,7 +716,7 @@ select.input-field:disabled {
   border-top: 2px solid #E5C29F;
 }
 
-.btn {
+.btn-base {
   padding: 14px 28px;
   border: none;
   border-radius: 12px;
@@ -959,19 +733,19 @@ select.input-field:disabled {
   justify-content: center;
 }
 
-.btn-submit {
+.btn-primary {
   background: linear-gradient(135deg, #8FAD5A, #4A5D2E);
   color: white;
   box-shadow: 0 6px 15px rgba(143, 173, 90, 0.4);
 }
 
-.btn-submit:hover:not(:disabled) {
+.btn-primary:hover:not(:disabled) {
   background: linear-gradient(135deg, #4A5D2E, #2e3d1a);
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(143, 173, 90, 0.5);
 }
 
-.btn-submit:disabled {
+.btn-primary:disabled {
   background: var(--cafe-claro);
   color: #8B5A3C;
   cursor: not-allowed;
@@ -1003,11 +777,11 @@ select.input-field:disabled {
   box-shadow: 0 8px 20px rgba(165, 42, 61, 0.5);
 }
 
-.btn:active {
+.btn-base:active {
   transform: translateY(0);
 }
 
-.btn:disabled {
+.btn-base:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
@@ -1093,7 +867,7 @@ select.input-field:disabled {
     justify-content: center;
   }
 
-  .btn {
+  .btn-base {
     flex: 1;
     min-width: 120px;
     max-width: 150px;
@@ -1106,27 +880,8 @@ select.input-field:disabled {
     align-items: stretch;
   }
 
-  .btn {
+  .btn-base {
     width: 100%;
   }
-}
-
-/* Scroll personalizado */
-.modal-content::-webkit-scrollbar {
-  width: 8px;
-}
-
-.modal-content::-webkit-scrollbar-track {
-  background: var(--beige-claro);
-  border-radius: 4px;
-}
-
-.modal-content::-webkit-scrollbar-thumb {
-  background: linear-gradient(var(--cafe-medio), var(--cafe-oscuro));
-  border-radius: 4px;
-}
-
-.modal-content::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(var(--cafe-oscuro), var(--cafe-muy-oscuro));
 }
 </style>
