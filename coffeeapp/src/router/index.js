@@ -6,8 +6,7 @@ import FSecado from '@/components/FSecado.vue';
 import FBodega from '../components/FBodega.vue';
 import FTrilla from '@/components/FTrilla.vue';
 import FCatacion from '@/components/FCatacion.vue';
-import HistorialCentroAcopio from '@/components/HistorialCentroAcopio.vue';
-import HistorialCaracterizacion from '@/components/HistorialCaracterizacion.vue';
+import HistorialGeneral from '@/components/HistorialGeneral.vue';
 
 
 const routes = [
@@ -18,8 +17,7 @@ const routes = [
   { path: '/bodega', name: 'FormularioBodega', component: FBodega },
   { path: '/trilla', name: 'FormularioTrilla', component: FTrilla },
   { path: '/catacion', name: 'FormularioCatación', component: FCatacion },
-  { path: '/historial', name: 'HistorialCentroAcopio', component: HistorialCentroAcopio },
-  { path: '/historial-caracterizacion', name: 'HistorialCaracterizacion', component: HistorialCaracterizacion },
+  { path: '/historial', name: 'HistorialGeneral', component: HistorialGeneral },
 
 ];
 

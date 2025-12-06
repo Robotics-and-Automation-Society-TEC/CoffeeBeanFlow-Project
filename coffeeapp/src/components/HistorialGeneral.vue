@@ -8,39 +8,68 @@
           Volver
         </button>
         <div class="title-section">
-          <div class="icon-container">
-            <i class="section-icon">🏪</i>
+          <div class="icon-container" :style="{ background: seccionActual.gradiente }">
+            <i class="section-icon">{{ seccionActual.icon }}</i>
           </div>
           <div>
-            <h1>Historial - Centro de Acopio</h1>
-            <p class="subtitle">Consulta de registros y reportes completos</p>
+            <h1>Historial de Registros</h1>
+            <p class="subtitle">Consulta y gestión de registros del sistema</p>
           </div>
         </div>
       </div>
     </header>
 
-    <!-- Selector de tipo de búsqueda (SOLO para Centro de Acopio) -->
-    <div class="search-type-selector" v-if="seccion === 'Área de Acopio'">
+    <!-- Selector de Tipo de Formulario -->
+    <div class="selector-formulario-section">
       <div class="selector-container">
+        <div class="selector-header">
+          <i class="selector-icon">📂</i>
+          <h3>Seleccione el tipo de registro a consultar</h3>
+        </div>
+        
+        <div class="formularios-grid">
+          <button
+            v-for="tipo in tiposFormulario"
+            :key="tipo.id"
+            @click="cambiarTipoFormulario(tipo)"
+            :class="['formulario-btn', { active: tipoSeleccionado === tipo.id }]"
+          >
+            <div class="formulario-icon" :style="{ background: tipo.gradiente }">
+              {{ tipo.icon }}
+            </div>
+            <div class="formulario-info">
+              <div class="formulario-nombre">{{ tipo.nombre }}</div>
+              <div class="formulario-desc">{{ tipo.descripcion }}</div>
+              <div class="formulario-count">{{ tipo.totalRegistros || 0 }} registros</div>
+            </div>
+            <div class="formulario-check" v-if="tipoSeleccionado === tipo.id">✓</div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOLO para Área de Acopio: opción de reporte completo -->
+    <div class="search-type-selector" v-if="tipoSeleccionado === 'acopio'">
+      <div class="selector-mode-container">
         <button 
-          @click="tipoBusqueda = 'acopio'"
-          :class="['selector-btn', { active: tipoBusqueda === 'acopio' }]"
+          @click="modoVista = 'individual'"
+          :class="['mode-btn', { active: modoVista === 'individual' }]"
         >
-          <i class="btn-icon">📋</i>
+          <i class="mode-icon">📋</i>
           <div>
-            <div class="btn-title">Solo Acopio</div>
-            <div class="btn-desc">Ver registros de centro de acopio únicamente</div>
+            <div class="mode-title">Registros Individuales</div>
+            <div class="mode-desc">Ver solo registros de acopio</div>
           </div>
         </button>
         
         <button 
-          @click="tipoBusqueda = 'completo'"
-          :class="['selector-btn', { active: tipoBusqueda === 'completo' }]"
+          @click="modoVista = 'completo'"
+          :class="['mode-btn', { active: modoVista === 'completo' }]"
         >
-          <i class="btn-icon">📄</i>
+          <i class="mode-icon">📄</i>
           <div>
-            <div class="btn-title">Reporte Completo</div>
-            <div class="btn-desc">Ver todo el proceso del lote (Acopio, Caracterización, Trilla...)</div>
+            <div class="mode-title">Seguimiento Completo</div>
+            <div class="mode-desc">Ver todo el proceso del lote</div>
           </div>
         </button>
       </div>
@@ -53,7 +82,7 @@
         <input 
           v-model="busqueda" 
           type="text" 
-          :placeholder="tipoBusqueda === 'completo' ? 'Buscar por número de lote (ej: LOT-2024-001)' : 'Buscar por lote, productor, fecha...'"
+          :placeholder="getPlaceholderBusqueda()"
           class="search-input"
           @input="filtrarRegistros"
         />
@@ -76,22 +105,22 @@
     <main class="main-content">
       <!-- Estadísticas rápidas -->
       <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon">📊</div>
+        <div class="stat-card" :style="{ borderLeft: `4px solid ${seccionActual.color}` }">
+          <div class="stat-icon" :style="{ background: seccionActual.gradiente }">📊</div>
           <div class="stat-info">
             <div class="stat-value">{{ registrosFiltrados.length }}</div>
             <div class="stat-label">Registros encontrados</div>
           </div>
         </div>
-        <div class="stat-card">
-          <div class="stat-icon">⚖️</div>
+        <div class="stat-card" :style="{ borderLeft: `4px solid ${seccionActual.color}` }">
+          <div class="stat-icon" :style="{ background: seccionActual.gradiente }">{{ seccionActual.statIcon }}</div>
           <div class="stat-info">
-            <div class="stat-value">{{ totalKilos }} kg</div>
-            <div class="stat-label">Total procesado</div>
+            <div class="stat-value">{{ estadisticaPrincipal }}</div>
+            <div class="stat-label">{{ estadisticaLabel }}</div>
           </div>
         </div>
-        <div class="stat-card">
-          <div class="stat-icon">📅</div>
+        <div class="stat-card" :style="{ borderLeft: `4px solid ${seccionActual.color}` }">
+          <div class="stat-icon" :style="{ background: seccionActual.gradiente }">📅</div>
           <div class="stat-info">
             <div class="stat-value">{{ registrosHoy }}</div>
             <div class="stat-label">Registros hoy</div>
@@ -99,16 +128,17 @@
         </div>
       </div>
 
-      <!-- Vista de registros individuales (Solo Acopio u otras secciones) -->
-      <div v-if="tipoBusqueda === 'acopio' || seccion !== 'Área de Acopio'" class="registros-grid">
+      <!-- Vista de registros individuales -->
+      <div v-if="modoVista === 'individual'" class="registros-grid">
         <div 
           v-for="registro in registrosFiltrados" 
           :key="registro.id"
           class="registro-card"
+          :style="{ borderTop: `4px solid ${seccionActual.color}` }"
         >
           <div class="registro-header">
             <div class="registro-title">
-              <span class="lote-badge">{{ registro.lote }}</span>
+              <span class="lote-badge" :style="{ color: seccionActual.color }">{{ registro.lote }}</span>
               <span class="fecha">{{ formatearFecha(registro.fecha) }}</span>
             </div>
             <div class="registro-status" :class="registro.estado">
@@ -117,30 +147,19 @@
           </div>
 
           <div class="registro-body">
-            <div class="info-row">
-              <span class="label">Productor:</span>
-              <span class="value">{{ registro.productor }}</span>
-            </div>
-            <div class="info-row">
-              <span class="label">Peso:</span>
-              <span class="value">{{ registro.peso }} kg</span>
-            </div>
-            <div class="info-row">
-              <span class="label">Calidad:</span>
-              <span class="value">{{ registro.calidad }}</span>
-            </div>
-            <div class="info-row" v-if="registro.observaciones">
-              <span class="label">Observaciones:</span>
-              <span class="value">{{ registro.observaciones }}</span>
-            </div>
+            <!-- Contenido dinámico según el tipo de formulario -->
+            <component 
+              :is="'div'" 
+              v-html="renderizarContenidoRegistro(registro)"
+            ></component>
           </div>
 
           <div class="registro-footer">
-            <button @click="verDetalle(registro)" class="btn-action btn-detail">
+            <button @click="verDetalle(registro)" class="btn-action btn-detail" :style="{ background: seccionActual.gradiente }">
               <i class="icon">👁️</i>
               Ver detalle
             </button>
-            <button @click="imprimirRegistro(registro)" class="btn-action btn-print">
+            <button @click="imprimirRegistro(registro)" class="btn-action btn-print" :style="{ borderColor: seccionActual.color, color: seccionActual.color }">
               <i class="icon">🖨️</i>
               Imprimir
             </button>
@@ -151,11 +170,11 @@
         <div v-if="registrosFiltrados.length === 0" class="empty-state">
           <div class="empty-icon">📭</div>
           <h3>No se encontraron registros</h3>
-          <p>Intenta ajustar los filtros de búsqueda</p>
+          <p>Intenta seleccionar otro tipo de formulario o ajustar los filtros</p>
         </div>
       </div>
 
-      <!-- Vista de reporte completo por lote (Solo Centro de Acopio) -->
+      <!-- Vista de seguimiento completo (solo Acopio) -->
       <div v-else class="reportes-completos">
         <div 
           v-for="lote in lotesCompletos" 
@@ -189,9 +208,7 @@
                 <div class="timeline-content">
                   <div class="timeline-title">{{ proceso.tipo }}</div>
                   <div class="timeline-date">{{ proceso.fecha || 'Pendiente' }}</div>
-                  <div class="timeline-data" v-if="proceso.datos">
-                    {{ proceso.datos }}
-                  </div>
+                  <div class="timeline-data" v-if="proceso.datos">{{ proceso.datos }}</div>
                 </div>
                 <div class="timeline-status">
                   <span v-if="proceso.completado" class="status-check">✓</span>
@@ -204,72 +221,28 @@
           <div class="reporte-footer">
             <button @click="verReporteCompleto(lote)" class="btn-action btn-primary">
               <i class="icon">📄</i>
-              Ver Reporte Completo
+              Ver Reporte
             </button>
             <button @click="imprimirReporteCompleto(lote)" class="btn-action btn-print">
               <i class="icon">🖨️</i>
               Imprimir PDF
             </button>
-            <button @click="descargarReporte(lote)" class="btn-action btn-download">
-              <i class="icon">⬇️</i>
-              Descargar
-            </button>
           </div>
-        </div>
-
-        <!-- Estado vacío para reportes completos -->
-        <div v-if="lotesCompletos.length === 0" class="empty-state">
-          <div class="empty-icon">📋</div>
-          <h3>No se encontraron lotes</h3>
-          <p>Busca por número de lote para ver el reporte completo</p>
         </div>
       </div>
     </main>
 
-    <!-- Modal de detalle -->
+    <!-- Modal de detalle (simplificado) -->
     <transition name="fade">
       <div v-if="modalDetalle" class="modal-overlay" @click="cerrarModal">
-        <div class="modal-content modal-large" @click.stop>
+        <div class="modal-content" @click.stop>
           <div class="modal-header">
             <h3>Detalle del Registro</h3>
             <button @click="cerrarModal" class="btn-close">✕</button>
           </div>
           
           <div class="modal-body" v-if="registroSeleccionado">
-            <div class="detail-section">
-              <h4>Información General</h4>
-              <div class="detail-grid">
-                <div class="detail-item">
-                  <span class="detail-label">Número de Lote:</span>
-                  <span class="detail-value">{{ registroSeleccionado.lote }}</span>
-                </div>
-                <div class="detail-item">
-                  <span class="detail-label">Fecha:</span>
-                  <span class="detail-value">{{ formatearFecha(registroSeleccionado.fecha) }}</span>
-                </div>
-                <div class="detail-item">
-                  <span class="detail-label">Productor:</span>
-                  <span class="detail-value">{{ registroSeleccionado.productor }}</span>
-                </div>
-                <div class="detail-item">
-                  <span class="detail-label">Peso Total:</span>
-                  <span class="detail-value">{{ registroSeleccionado.peso }} kg</span>
-                </div>
-                <div class="detail-item">
-                  <span class="detail-label">Calidad:</span>
-                  <span class="detail-value">{{ registroSeleccionado.calidad }}</span>
-                </div>
-                <div class="detail-item">
-                  <span class="detail-label">Estado:</span>
-                  <span class="detail-value">{{ registroSeleccionado.estado }}</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="detail-section" v-if="registroSeleccionado.observaciones">
-              <h4>Observaciones</h4>
-              <p class="observaciones-text">{{ registroSeleccionado.observaciones }}</p>
-            </div>
+            <p class="modal-placeholder">Aquí se mostrará el detalle completo del registro {{ registroSeleccionado.lote }}</p>
           </div>
 
           <div class="modal-footer">
@@ -289,15 +262,66 @@
 
 <script>
 export default {
-  name: "HistorialCentroAcopio",
+  name: "HistorialGeneral",
   data() {
     return {
-      seccion: '',
-      tipoBusqueda: 'acopio',
+      tipoSeleccionado: 'acopio',
+      modoVista: 'individual',
       busqueda: '',
       filtroActivo: null,
       modalDetalle: false,
       registroSeleccionado: null,
+      
+      tiposFormulario: [
+        {
+          id: 'acopio',
+          nombre: 'Área de Acopio',
+          icon: '🏪',
+          descripcion: 'Recepción y pesaje',
+          gradiente: 'linear-gradient(135deg, #8FBC8F, #556B2F)',
+          totalRegistros: 15
+        },
+        {
+          id: 'caracterizacion',
+          nombre: 'Caracterización',
+          icon: '🔬',
+          descripcion: 'Análisis refractométrico',
+          gradiente: 'linear-gradient(135deg, #C8956F, #8B5A3C)',
+          totalRegistros: 12
+        },
+        {
+          id: 'secado',
+          nombre: 'Secado',
+          icon: '🌡️',
+          descripcion: 'Control de temperatura',
+          gradiente: 'linear-gradient(135deg, #E5C29F, #C8956F)',
+          totalRegistros: 10
+        },
+        {
+          id: 'bodega',
+          nombre: 'Bodega',
+          icon: '📦',
+          descripcion: 'Gestión de inventario',
+          gradiente: 'linear-gradient(135deg, #8B5A3C, #4A2D1A)',
+          totalRegistros: 18
+        },
+        {
+          id: 'trilla',
+          nombre: 'Trilla',
+          icon: '⚙️',
+          descripcion: 'Proceso de trillado',
+          gradiente: 'linear-gradient(135deg, #A0826D, #8B5A3C)',
+          totalRegistros: 8
+        },
+        {
+          id: 'catacion',
+          nombre: 'Catación',
+          icon: '☕',
+          descripcion: 'Evaluación sensorial',
+          gradiente: 'linear-gradient(135deg, #4A2D1A, #2C1810)',
+          totalRegistros: 6
+        }
+      ],
       
       filtrosRapidos: [
         { id: 'hoy', label: 'Hoy' },
@@ -306,38 +330,31 @@ export default {
         { id: 'todos', label: 'Todos' }
       ],
       
-      registros: [
-        {
-          id: 1,
-          lote: 'LOT-2024-001',
-          fecha: '2024-12-03',
-          productor: 'Juan Pérez',
-          peso: 150,
-          calidad: 'Premium',
-          estado: 'Procesado',
-          observaciones: 'Café de excelente calidad, granos uniformes'
-        },
-        {
-          id: 2,
-          lote: 'LOT-2024-002',
-          fecha: '2024-12-02',
-          productor: 'María González',
-          peso: 200,
-          calidad: 'Estándar',
-          estado: 'En proceso',
-          observaciones: 'Requiere clasificación adicional'
-        },
-        {
-          id: 3,
-          lote: 'LOT-2024-003',
-          fecha: '2024-12-01',
-          productor: 'Carlos Rodríguez',
-          peso: 180,
-          calidad: 'Premium',
-          estado: 'Procesado',
-          observaciones: ''
-        }
-      ],
+      // Datos de ejemplo por tipo
+      registrosPorTipo: {
+        acopio: [
+          { id: 1, lote: 'LOT-2024-001', fecha: '2024-12-03', productor: 'Juan Pérez', peso: 150, estado: 'Procesado' },
+          { id: 2, lote: 'LOT-2024-002', fecha: '2024-12-02', productor: 'María González', peso: 200, estado: 'En proceso' }
+        ],
+        caracterizacion: [
+          { id: 1, lote: 'LOT-2024-001', fecha: '2024-12-03', rangoOptimo: 22.5, escalaMaduracion: 8.5, estado: 'Completado' },
+          { id: 2, lote: 'LOT-2024-002', fecha: '2024-12-02', rangoOptimo: 20.0, escalaMaduracion: 7.0, estado: 'Completado' }
+        ],
+        secado: [
+          { id: 1, lote: 'LOT-2024-001', fecha: '2024-12-04', temperatura: 45, tiempo: 6, humedad: 11, estado: 'Completado' },
+          { id: 2, lote: 'LOT-2024-002', fecha: '2024-12-03', temperatura: 42, tiempo: 7, humedad: 12, estado: 'En proceso' }
+        ],
+        bodega: [
+          { id: 1, lote: 'LOT-2024-001', fecha: '2024-12-05', ubicacion: 'B-12', sacos: 3, peso: 120, estado: 'Almacenado' },
+          { id: 2, lote: 'LOT-2024-002', fecha: '2024-12-04', ubicacion: 'A-08', sacos: 4, peso: 160, estado: 'Almacenado' }
+        ],
+        trilla: [
+          { id: 1, lote: 'LOT-2024-001', fecha: '2024-12-06', rendimiento: 82, pesoEntrada: 120, pesoSalida: 98, estado: 'Completado' }
+        ],
+        catacion: [
+          { id: 1, lote: 'LOT-2024-001', fecha: '2024-12-07', puntuacion: 88, perfil: 'Afrutado', estado: 'Certificado' }
+        ]
+      },
 
       lotes: [
         {
@@ -346,98 +363,12 @@ export default {
           fechaInicio: '2024-12-03',
           progreso: 100,
           procesos: [
-            { 
-              tipo: 'Acopio', 
-              icon: '🏪', 
-              completado: true, 
-              fecha: '2024-12-03 08:00',
-              datos: 'Peso: 150kg, Calidad: Premium'
-            },
-            { 
-              tipo: 'Caracterización', 
-              icon: '🔬', 
-              completado: true, 
-              fecha: '2024-12-03 10:30',
-              datos: 'Brix: 22°, Humedad: 11%'
-            },
-            { 
-              tipo: 'Secado', 
-              icon: '🌡️', 
-              completado: true, 
-              fecha: '2024-12-04 14:00',
-              datos: 'Temperatura: 45°C, Tiempo: 6h'
-            },
-            { 
-              tipo: 'Bodega', 
-              icon: '📦', 
-              completado: true, 
-              fecha: '2024-12-05 09:00',
-              datos: 'Ubicación: B-12, Sacos: 3'
-            },
-            { 
-              tipo: 'Trilla', 
-              icon: '⚙️', 
-              completado: true, 
-              fecha: '2024-12-06 11:00',
-              datos: 'Rendimiento: 82%'
-            },
-            { 
-              tipo: 'Catación', 
-              icon: '☕', 
-              completado: true, 
-              fecha: '2024-12-07 15:00',
-              datos: 'Puntuación: 88/100'
-            }
-          ]
-        },
-        {
-          numeroLote: 'LOT-2024-002',
-          productor: 'María González',
-          fechaInicio: '2024-12-02',
-          progreso: 66,
-          procesos: [
-            { 
-              tipo: 'Acopio', 
-              icon: '🏪', 
-              completado: true, 
-              fecha: '2024-12-02 07:30',
-              datos: 'Peso: 200kg, Calidad: Estándar'
-            },
-            { 
-              tipo: 'Caracterización', 
-              icon: '🔬', 
-              completado: true, 
-              fecha: '2024-12-02 09:15',
-              datos: 'Brix: 20°, Humedad: 12%'
-            },
-            { 
-              tipo: 'Secado', 
-              icon: '🌡️', 
-              completado: true, 
-              fecha: '2024-12-03 13:00',
-              datos: 'Temperatura: 42°C, Tiempo: 7h'
-            },
-            { 
-              tipo: 'Bodega', 
-              icon: '📦', 
-              completado: true, 
-              fecha: '2024-12-04 10:00',
-              datos: 'Ubicación: A-08, Sacos: 4'
-            },
-            { 
-              tipo: 'Trilla', 
-              icon: '⚙️', 
-              completado: false, 
-              fecha: null,
-              datos: null
-            },
-            { 
-              tipo: 'Catación', 
-              icon: '☕', 
-              completado: false, 
-              fecha: null,
-              datos: null
-            }
+            { tipo: 'Acopio', icon: '🏪', completado: true, fecha: '2024-12-03 08:00', datos: 'Peso: 150kg' },
+            { tipo: 'Caracterización', icon: '🔬', completado: true, fecha: '2024-12-03 10:30', datos: 'Brix: 22°' },
+            { tipo: 'Secado', icon: '🌡️', completado: true, fecha: '2024-12-04 14:00', datos: 'Temp: 45°C' },
+            { tipo: 'Bodega', icon: '📦', completado: true, fecha: '2024-12-05 09:00', datos: 'Ubicación: B-12' },
+            { tipo: 'Trilla', icon: '⚙️', completado: true, fecha: '2024-12-06 11:00', datos: 'Rend: 82%' },
+            { tipo: 'Catación', icon: '☕', completado: true, fecha: '2024-12-07 15:00', datos: 'Punt: 88/100' }
           ]
         }
       ],
@@ -447,8 +378,55 @@ export default {
   },
   
   computed: {
-    totalKilos() {
-      return this.registrosFiltrados.reduce((sum, r) => sum + r.peso, 0);
+    seccionActual() {
+      const tipo = this.tiposFormulario.find(t => t.id === this.tipoSeleccionado);
+      return {
+        ...tipo,
+        color: this.getColorPrincipal(tipo.gradiente),
+        statIcon: this.getStatIcon(tipo.id)
+      };
+    },
+
+    estadisticaPrincipal() {
+      const registros = this.registrosFiltrados;
+      if (registros.length === 0) return '0';
+      
+      switch(this.tipoSeleccionado) {
+        case 'acopio':
+          return registros.reduce((sum, r) => sum + (r.peso || 0), 0) + ' kg';
+        case 'caracterizacion': {
+          const avgBrix = registros.reduce((sum, r) => sum + (r.rangoOptimo || 0), 0) / registros.length;
+          return avgBrix.toFixed(1) + '°';
+        }
+        case 'secado': {
+          const avgTemp = registros.reduce((sum, r) => sum + (r.temperatura || 0), 0) / registros.length;
+          return avgTemp.toFixed(1) + '°C';
+        }
+        case 'bodega':
+          return registros.reduce((sum, r) => sum + (r.sacos || 0), 0) + ' sacos';
+        case 'trilla': {
+          const avgRend = registros.reduce((sum, r) => sum + (r.rendimiento || 0), 0) / registros.length;
+          return avgRend.toFixed(1) + '%';
+        }
+        case 'catacion': {
+          const avgPunt = registros.reduce((sum, r) => sum + (r.puntuacion || 0), 0) / registros.length;
+          return avgPunt.toFixed(1) + '/100';
+        }
+        default:
+          return '0';
+      }
+    },
+
+    estadisticaLabel() {
+      const labels = {
+        acopio: 'Total procesado',
+        caracterizacion: '°Brix promedio',
+        secado: 'Temperatura promedio',
+        bodega: 'Total sacos',
+        trilla: 'Rendimiento promedio',
+        catacion: 'Puntuación promedio'
+      };
+      return labels[this.tipoSeleccionado] || 'Estadística';
     },
     
     registrosHoy() {
@@ -458,7 +436,6 @@ export default {
 
     lotesCompletos() {
       if (!this.busqueda) return this.lotes;
-      
       const busquedaLower = this.busqueda.toLowerCase();
       return this.lotes.filter(lote => 
         lote.numeroLote.toLowerCase().includes(busquedaLower) ||
@@ -468,22 +445,96 @@ export default {
   },
   
   methods: {
+    getColorPrincipal(gradiente) {
+      const match = gradiente.match(/#[0-9A-F]{6}/i);
+      return match ? match[0] : '#8FBC8F';
+    },
+
+    getStatIcon(tipo) {
+      const icons = {
+        acopio: '⚖️',
+        caracterizacion: '📈',
+        secado: '🌡️',
+        bodega: '📦',
+        trilla: '⚙️',
+        catacion: '⭐'
+      };
+      return icons[tipo] || '📊';
+    },
+
+    cambiarTipoFormulario(tipo) {
+      this.tipoSeleccionado = tipo.id;
+      this.modoVista = 'individual';
+      this.busqueda = '';
+      this.filtroActivo = null;
+      this.cargarRegistros();
+    },
+
+    cargarRegistros() {
+      this.registrosFiltrados = [...(this.registrosPorTipo[this.tipoSeleccionado] || [])];
+    },
+
+    getPlaceholderBusqueda() {
+      const placeholders = {
+        acopio: 'Buscar por lote, productor, peso...',
+        caracterizacion: 'Buscar por lote, °Brix, escala...',
+        secado: 'Buscar por lote, temperatura, tiempo...',
+        bodega: 'Buscar por lote, ubicación, sacos...',
+        trilla: 'Buscar por lote, rendimiento...',
+        catacion: 'Buscar por lote, puntuación, perfil...'
+      };
+      return placeholders[this.tipoSeleccionado] || 'Buscar...';
+    },
+
+    renderizarContenidoRegistro(registro) {
+      const templates = {
+        acopio: `
+          <div class="info-row"><span class="label">Productor:</span><span class="value">${registro.productor}</span></div>
+          <div class="info-row"><span class="label">Peso:</span><span class="value">${registro.peso} kg</span></div>
+        `,
+        caracterizacion: `
+          <div class="info-row"><span class="label">Rango Óptimo:</span><span class="value">${registro.rangoOptimo}°Brix</span></div>
+          <div class="info-row"><span class="label">Escala Maduración:</span><span class="value">${registro.escalaMaduracion}/10</span></div>
+        `,
+        secado: `
+          <div class="info-row"><span class="label">Temperatura:</span><span class="value">${registro.temperatura}°C</span></div>
+          <div class="info-row"><span class="label">Tiempo:</span><span class="value">${registro.tiempo}h</span></div>
+          <div class="info-row"><span class="label">Humedad:</span><span class="value">${registro.humedad}%</span></div>
+        `,
+        bodega: `
+          <div class="info-row"><span class="label">Ubicación:</span><span class="value">${registro.ubicacion}</span></div>
+          <div class="info-row"><span class="label">Sacos:</span><span class="value">${registro.sacos}</span></div>
+          <div class="info-row"><span class="label">Peso:</span><span class="value">${registro.peso} kg</span></div>
+        `,
+        trilla: `
+          <div class="info-row"><span class="label">Rendimiento:</span><span class="value">${registro.rendimiento}%</span></div>
+          <div class="info-row"><span class="label">Peso Entrada:</span><span class="value">${registro.pesoEntrada} kg</span></div>
+          <div class="info-row"><span class="label">Peso Salida:</span><span class="value">${registro.pesoSalida} kg</span></div>
+        `,
+        catacion: `
+          <div class="info-row"><span class="label">Puntuación:</span><span class="value">${registro.puntuacion}/100</span></div>
+          <div class="info-row"><span class="label">Perfil:</span><span class="value">${registro.perfil}</span></div>
+        `
+      };
+      return templates[this.tipoSeleccionado] || '';
+    },
+    
     volverAtras() {
       this.$router.go(-1);
     },
     
     filtrarRegistros() {
       if (!this.busqueda) {
-        this.registrosFiltrados = [...this.registros];
+        this.cargarRegistros();
         return;
       }
       
       const busquedaLower = this.busqueda.toLowerCase();
-      this.registrosFiltrados = this.registros.filter(registro => 
-        registro.lote.toLowerCase().includes(busquedaLower) ||
-        registro.productor.toLowerCase().includes(busquedaLower) ||
-        registro.calidad.toLowerCase().includes(busquedaLower) ||
-        registro.estado.toLowerCase().includes(busquedaLower)
+      const registrosBase = this.registrosPorTipo[this.tipoSeleccionado] || [];
+      this.registrosFiltrados = registrosBase.filter(registro => 
+        Object.values(registro).some(valor => 
+          String(valor).toLowerCase().includes(busquedaLower)
+        )
       );
     },
     
@@ -495,31 +546,29 @@ export default {
     aplicarFiltroRapido(filtro) {
       this.filtroActivo = filtro.id;
       const hoy = new Date();
+      const registrosBase = this.registrosPorTipo[this.tipoSeleccionado] || [];
       
       switch(filtro.id) {
         case 'hoy': {
           const hoyStr = hoy.toISOString().split('T')[0];
-          this.registrosFiltrados = this.registros.filter(r => r.fecha === hoyStr);
+          this.registrosFiltrados = registrosBase.filter(r => r.fecha === hoyStr);
           break;
         }
         case 'semana': {
           const semanaAtras = new Date(hoy.getTime() - 7 * 24 * 60 * 60 * 1000);
-          this.registrosFiltrados = this.registros.filter(r => 
-            new Date(r.fecha) >= semanaAtras
-          );
+          this.registrosFiltrados = registrosBase.filter(r => new Date(r.fecha) >= semanaAtras);
           break;
         }
         case 'mes': {
           const mesAtras = new Date(hoy.getTime() - 30 * 24 * 60 * 60 * 1000);
-          this.registrosFiltrados = this.registros.filter(r => 
-            new Date(r.fecha) >= mesAtras
-          );
+          this.registrosFiltrados = registrosBase.filter(r => new Date(r.fecha) >= mesAtras);
           break;
         }
         case 'todos':
-          this.registrosFiltrados = [...this.registros];
+          this.registrosFiltrados = [...registrosBase];
           break;
         default:
+          this.registrosFiltrados = [...registrosBase];
           break;
       }
     },
@@ -550,21 +599,23 @@ export default {
     
     imprimirReporteCompleto(lote) {
       alert(`Imprimiendo reporte completo del lote ${lote.numeroLote}...`);
-    },
-
-    descargarReporte(lote) {
-      alert(`Descargando reporte del lote ${lote.numeroLote}...`);
     }
   },
   
   mounted() {
-    this.seccion = this.$route.query.seccion || 'Área de Acopio';
-    
-    if (this.seccion !== 'Área de Acopio') {
-      this.tipoBusqueda = 'acopio';
+    const seccionQuery = this.$route.query.seccion;
+    if (seccionQuery) {
+      const mapa = {
+        'Área de Acopio': 'acopio',
+        'Caracterización': 'caracterizacion',
+        'Secado': 'secado',
+        'Bodega': 'bodega',
+        'Trilla': 'trilla',
+        'Catación': 'catacion'
+      };
+      this.tipoSeleccionado = mapa[seccionQuery] || 'acopio';
     }
-    
-    this.registrosFiltrados = [...this.registros];
+    this.cargarRegistros();
   }
 };
 </script>
@@ -622,7 +673,6 @@ export default {
 .icon-container {
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #8FBC8F, #556B2F);
   border-radius: 16px;
   display: flex;
   align-items: center;
@@ -643,7 +693,8 @@ export default {
   font-size: 0.95rem;
 }
 
-.search-type-selector {
+/* Selector de formulario */
+.selector-formulario-section {
   background: white;
   padding: 2rem;
   margin: 2rem auto;
@@ -652,57 +703,164 @@ export default {
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-.selector-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-}
-
-.selector-btn {
+.selector-header {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.selector-icon {
+  font-size: 2rem;
+}
+
+.selector-header h3 {
+  margin: 0;
+  color: #4A2D1A;
+  font-size: 1.3rem;
+}
+
+.formularios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.formulario-btn {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
   border: 3px solid #e0e0e0;
   border-radius: 12px;
   background: white;
   cursor: pointer;
   transition: all 0.3s;
-  text-align: left;
+  position: relative;
 }
 
-.selector-btn:hover {
-  border-color: #A0826D;
+.formulario-btn:hover {
+  border-color: #C8956F;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   transform: translateY(-2px);
 }
 
-.selector-btn.active {
+.formulario-btn.active {
   border-color: #6F4E37;
   background: linear-gradient(135deg, #fff5ee, #ffffff);
   box-shadow: 0 4px 16px rgba(111,78,55,0.2);
 }
 
-.btn-icon {
-  font-size: 2.5rem;
+.formulario-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  flex-shrink: 0;
 }
 
-.btn-title {
-  font-size: 1.2rem;
+.formulario-info {
+  flex: 1;
+}
+
+.formulario-nombre {
   font-weight: bold;
   color: #333;
+  font-size: 1.05rem;
   margin-bottom: 0.25rem;
 }
 
-.btn-desc {
+.formulario-desc {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 0.25rem;
+}
+
+.formulario-count {
+  font-size: 0.75rem;
+  color: #999;
+  font-weight: 600;
+}
+
+.formulario-check {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 24px;
+  height: 24px;
+  background: #4caf50;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
   font-size: 0.9rem;
+}
+
+/* Selector de modo (individual/completo) */
+.search-type-selector {
+  background: white;
+  padding: 1.5rem 2rem;
+  margin: 0 auto 2rem;
+  max-width: 1400px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.selector-mode-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.mode-btn {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border: 3px solid #e0e0e0;
+  border-radius: 12px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.mode-btn:hover {
+  border-color: #8FBC8F;
+  transform: translateY(-2px);
+}
+
+.mode-btn.active {
+  border-color: #556B2F;
+  background: linear-gradient(135deg, #f0f8f0, #ffffff);
+  box-shadow: 0 4px 12px rgba(85,107,47,0.2);
+}
+
+.mode-icon {
+  font-size: 2rem;
+}
+
+.mode-title {
+  font-weight: bold;
+  color: #333;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.mode-desc {
+  font-size: 0.85rem;
   color: #666;
 }
 
+/* Búsqueda */
 .search-section {
   background: white;
   padding: 2rem;
-  margin: 2rem auto;
+  margin: 0 auto 2rem;
   max-width: 1400px;
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -748,9 +906,6 @@ export default {
   height: 32px;
   border-radius: 50%;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   transition: all 0.3s;
 }
 
@@ -786,6 +941,7 @@ export default {
   border-color: #6F4E37;
 }
 
+/* Contenido principal */
 .main-content {
   max-width: 1400px;
   margin: 0 auto 3rem;
@@ -816,7 +972,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #8FBC8F, #556B2F);
   border-radius: 12px;
 }
 
@@ -837,6 +992,7 @@ export default {
   color: #666;
 }
 
+/* Registros */
 .registros-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -872,7 +1028,6 @@ export default {
 
 .lote-badge {
   font-weight: bold;
-  color: #6F4E37;
   font-size: 1.1rem;
 }
 
@@ -888,7 +1043,10 @@ export default {
   font-weight: 600;
 }
 
-.registro-status.Procesado {
+.registro-status.Procesado,
+.registro-status.Completado,
+.registro-status.Almacenado,
+.registro-status.Certificado {
   background: #d4edda;
   color: #155724;
 }
@@ -945,24 +1103,21 @@ export default {
 }
 
 .btn-detail {
-  background: linear-gradient(135deg, #6F4E37, #A0826D);
   color: white;
 }
 
 .btn-detail:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(111,78,55,0.3);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .btn-print {
   background: white;
-  border: 2px solid #6F4E37;
-  color: #6F4E37;
+  border: 2px solid;
 }
 
 .btn-print:hover {
-  background: #6F4E37;
-  color: white;
+  opacity: 0.8;
 }
 
 .empty-state {
@@ -987,6 +1142,7 @@ export default {
   color: #666;
 }
 
+/* Reportes completos */
 .reportes-completos {
   display: flex;
   flex-direction: column;
@@ -1073,7 +1229,6 @@ export default {
   padding: 1rem;
   border-radius: 8px;
   background: #f8f8f8;
-  transition: all 0.3s;
 }
 
 .timeline-item.completed {
@@ -1153,16 +1308,7 @@ export default {
   box-shadow: 0 4px 12px rgba(111,78,55,0.3);
 }
 
-.btn-download {
-  background: linear-gradient(135deg, #8FBC8F, #556B2F);
-  color: white;
-}
-
-.btn-download:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(85,107,47,0.3);
-}
-
+/* Modal */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -1221,48 +1367,10 @@ export default {
   padding: 2rem;
 }
 
-.detail-section {
-  margin-bottom: 2rem;
-}
-
-.detail-section h4 {
-  color: #6F4E37;
-  margin-bottom: 1rem;
-  font-size: 1.2rem;
-}
-
-.detail-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
-}
-
-.detail-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  padding: 0.75rem;
-  background: #f8f8f8;
-  border-radius: 8px;
-}
-
-.detail-label {
-  font-size: 0.85rem;
+.modal-placeholder {
   color: #666;
-  font-weight: 600;
-}
-
-.detail-value {
-  font-size: 1rem;
-  color: #333;
-}
-
-.observaciones-text {
-  background: #f8f8f8;
-  padding: 1rem;
-  border-radius: 8px;
-  color: #333;
-  line-height: 1.6;
+  text-align: center;
+  padding: 2rem;
 }
 
 .modal-footer {
@@ -1306,16 +1414,16 @@ export default {
 }
 
 @media (max-width: 768px) {
-  .selector-container {
+  .formularios-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .selector-mode-container {
     grid-template-columns: 1fr;
   }
 
   .registros-grid {
     grid-template-columns: 1fr;
-  }
-
-  .reporte-footer {
-    flex-direction: column;
   }
 
   .timeline-item {
