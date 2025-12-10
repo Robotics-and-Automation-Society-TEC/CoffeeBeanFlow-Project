@@ -1,5 +1,8 @@
 <template>
   <div class="app-container">
+
+    <MenuLateral />
+
     <!-- Header elegante con tema de café -->
     <header class="header">
       <div class="header-content">
@@ -11,13 +14,6 @@
           <div class="title-info">
             <h1>Proyecto Café</h1>
             <p class="subtitle">Sistema de Gestión de Calidad</p>
-          </div>
-        </div>
-
-        <div class="search-section">
-          <div class="search-container">
-            <i class="search-icon">🔍</i>
-            <input type="text" placeholder="Buscar registros..." class="input-base search-input" />
           </div>
         </div>
       </div>
@@ -107,12 +103,14 @@
 </template>
 
 <script>
+import MenuLateral from "@/components/MenuLateral.vue";
 import AiAsistante from "@/components/AiAsistante.vue";
 
 export default {
   name: "HomeView",
 
   components: {
+    MenuLateral,
     AiAsistante
   },
 
@@ -166,6 +164,7 @@ export default {
 </script>
 
 <style scoped>
+  
 /* ===== USANDO CONSTANTES CSS GLOBALES ===== */
 
 /* Container principal con fondo verde requerido */

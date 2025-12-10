@@ -22,6 +22,7 @@ const routes = [
   { path: '/asistente', name: 'AiAsistante', component: AiAsistante },
 
 
+
 ];
 
 const router = createRouter({
