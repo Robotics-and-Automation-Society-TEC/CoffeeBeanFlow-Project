@@ -7,6 +7,7 @@ import FBodega from '../components/FBodega.vue';
 import FTrilla from '@/components/FTrilla.vue';
 import FCatacion from '@/components/FCatacion.vue';
 import HistorialGeneral from '@/components/HistorialGeneral.vue';
+import AiAsistante from '@/components/AiAsistante.vue';
 
 
 const routes = [
@@ -18,6 +19,8 @@ const routes = [
   { path: '/trilla', name: 'FormularioTrilla', component: FTrilla },
   { path: '/catacion', name: 'FormularioCatación', component: FCatacion },
   { path: '/historial', name: 'HistorialGeneral', component: HistorialGeneral },
+  { path: '/asistente', name: 'AiAsistante', component: AiAsistante },
+
 
 ];
 

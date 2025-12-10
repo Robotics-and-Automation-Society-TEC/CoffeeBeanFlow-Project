@@ -1,4 +1,4 @@
-<template> 
+<template>
   <div class="app-container">
     <!-- Header elegante con tema de café -->
     <header class="header">
@@ -13,6 +13,7 @@
             <p class="subtitle">Sistema de Gestión de Calidad</p>
           </div>
         </div>
+
         <div class="search-section">
           <div class="search-container">
             <i class="search-icon">🔍</i>
@@ -29,7 +30,7 @@
         <p>Seleccione el proceso que desea gestionar</p>
       </div>
 
-      <!-- Grid de tarjetas mejoradas y más grandes -->
+      <!-- Grid de tarjetas -->
       <div class="process-grid">
         <button
           class="process-card-large"
@@ -44,7 +45,7 @@
             </div>
             <div class="card-badge">{{ item.badge }}</div>
           </div>
-          
+
           <div class="card-content">
             <h3>{{ item.title }}</h3>
             <p class="card-description">{{ item.description }}</p>
@@ -55,7 +56,7 @@
               </span>
             </div>
           </div>
-          
+
           <div class="card-action">
             <span class="action-button">
               <i class="action-icon">▶</i>
@@ -66,7 +67,7 @@
       </div>
     </main>
 
-    <!-- Modal elegante usando constantes -->
+    <!-- Modal -->
     <transition name="fade">
       <div v-if="modalVisible" class="modal-overlay" @click="cerrarModal">
         <div class="modal-content" @click.stop>
@@ -77,18 +78,19 @@
             <h3>{{ selectedSection?.title }}</h3>
             <p class="text-muted">¿Qué acción desea realizar?</p>
           </div>
-          
+
           <div class="modal-actions">
             <button @click="nuevoRegistro" class="btn-base btn-primary">
               <i class="btn-icon">📝</i>
               Nuevo Registro
             </button>
+
             <button @click="verRegistroViejo" class="btn-base btn-secondary">
               <i class="btn-icon">📊</i>
               Ver Historial
             </button>
           </div>
-          
+
           <div class="modal-footer text-center">
             <button @click="cerrarModal" class="btn-base btn-cancel">
               <i class="btn-icon">✕</i>
@@ -98,69 +100,43 @@
         </div>
       </div>
     </transition>
+
+    <!-- ⚡ ASISTENTE FLOTANTE DE IA -->
+    <AiAsistante />
   </div>
 </template>
 
 <script>
+import AiAsistante from "@/components/AiAsistante.vue";
+
 export default {
   name: "HomeView",
+
+  components: {
+    AiAsistante
+  },
+
   data() {
     return {
       sections: [
-        { 
-          title: "Área de Acopio", 
-          icon: "🏪",
-          badge: "Recepción",
-          description: "Registro y control de entrada de café cereza. Pesaje y clasificación inicial.",
-          className: "acopio-card",
-        },
-        { 
-          title: "Caracterización", 
-          icon: "🔬",
-          badge: "Análisis",
-          description: "Análisis refractométrico y características físicas del café. Control de calidad.",
-          className: "caracterizacion-card",
-        },
-        { 
-          title: "Secado", 
-          icon: "🌡️",
-          badge: "Proceso",
-          description: "Control de temperatura, humedad y tiempo en el proceso de secado del café.",
-          className: "secado-card",
-        },
-        { 
-          title: "Bodega", 
-          icon: "📦",
-          badge: "Almacén",
-          description: "Gestión de inventario, almacenamiento y control de stock del café procesado.",
-          className: "bodega-card",
-        },
-        { 
-          title: "Trilla", 
-          icon: "⚙️",
-          badge: "Proceso",
-          description: "Control del proceso de trillado, clasificación y preparación para comercialización.",
-          className: "trilla-card",
-        },
-        { 
-          title: "Catación", 
-          icon: "☕",
-          badge: "Calidad",
-          description: "Evaluación sensorial, puntuación y certificación de la calidad del café.",
-          className: "catacion-card",
-          
-        },
+        { title: "Área de Acopio", icon: "🏪", badge: "Recepción", description: "Registro y control de entrada de café cereza.", className: "acopio-card" },
+        { title: "Caracterización", icon: "🔬", badge: "Análisis", description: "Análisis y características físicas del café.", className: "caracterizacion-card" },
+        { title: "Secado", icon: "🌡️", badge: "Proceso", description: "Control de temperatura y humedad.", className: "secado-card" },
+        { title: "Bodega", icon: "📦", badge: "Almacén", description: "Gestión de inventarios.", className: "bodega-card" },
+        { title: "Trilla", icon: "⚙️", badge: "Proceso", description: "Proceso de trillado.", className: "trilla-card" },
+        { title: "Catación", icon: "☕", badge: "Calidad", description: "Evaluación sensorial del café.", className: "catacion-card" },
       ],
       modalVisible: false,
       selectedSection: null,
     };
   },
+
   methods: {
     handleClick(section) {
       this.selectedSection = section;
       this.modalVisible = true;
     },
-    
+
     nuevoRegistro() {
       this.modalVisible = false;
       const routes = {
@@ -171,36 +147,20 @@ export default {
         "Trilla": "/trilla",
         "Catación": "/catacion"
       };
-      
       const route = routes[this.selectedSection.title];
-      if (route) {
-        this.$router.push(route);
-      } else {
-        this.showNotification("Módulo en desarrollo");
-      }
+      if (route) this.$router.push(route);
+      else alert("Módulo en desarrollo");
     },
-    
+
     verRegistroViejo() {
       this.modalVisible = false;
-      this.$router.push({
-        name: "HistorialGeneral",
-        query: { seccion: this.selectedSection.title },
-      });
+      this.$router.push({ name: "HistorialGeneral", query: { seccion: this.selectedSection.title } });
     },
-    
+
     cerrarModal() {
       this.modalVisible = false;
       this.selectedSection = null;
-    },
-    
-    showNotification(message) {
-      alert(message);
     }
-  },
-  
-  mounted() {
-    this.modalVisible = false;
-    this.selectedSection = null;
   }
 };
 </script>
