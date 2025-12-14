@@ -50,14 +50,14 @@
                 (click)="editarRegistro(bodega.idBodega)"
                 title="Editar"
               >
-                ✏️
+                ✏️ Editar
               </button>
               <button 
                 class="btn-action btn-delete" 
                 (click)="eliminarRegistro(bodega.idBodega)"
                 title="Eliminar"
               >
-                🗑️
+                🗑️ Eliminar
               </button>
             </div>
           </div>
@@ -65,86 +65,86 @@
           <div class="card-body">
             <!-- PESOS -->
             <div class="info-section">
-              <h3 class="section-label">⚖️ Pesos</h3>
-              <div class="info-grid">
-                <div class="info-item">
-                  <span class="info-label">Bellota:</span>
-                  <span class="info-value">{{ formatearNumero(bodega.wBellota) }} kg</span>
-                </div>
-                <div class="info-item">
-                  <span class="info-label">Pergamino:</span>
-                  <span class="info-value">{{ formatearNumero(bodega.wPergamino) }} kg</span>
-                </div>
-              </div>
+              <h3 class="section-title">⚖️ Pesos</h3>
+              <table class="info-table">
+                <tr>
+                  <td class="label-cell">Bellota:</td>
+                  <td class="value-cell">{{ formatearNumero(bodega.wBellota) }} kg</td>
+                </tr>
+                <tr>
+                  <td class="label-cell">Pergamino:</td>
+                  <td class="value-cell">{{ formatearNumero(bodega.wPergamino) }} kg</td>
+                </tr>
+              </table>
             </div>
 
             <!-- HUMEDADES -->
             <div class="info-section">
-              <h3 class="section-label">💧 Humedades</h3>
-              <div class="info-grid">
-                <div class="info-item">
-                  <span class="info-label">Inicial:</span>
-                  <span class="info-value">{{ formatearNumero(bodega.hinicial) }}%</span>
-                </div>
-                <div class="info-item">
-                  <span class="info-label">Final:</span>
-                  <span class="info-value">
+              <h3 class="section-title">💧 Humedades</h3>
+              <table class="info-table">
+                <tr>
+                  <td class="label-cell">Inicial:</td>
+                  <td class="value-cell">{{ formatearNumero(bodega.hinicial) }}%</td>
+                </tr>
+                <tr>
+                  <td class="label-cell">Final:</td>
+                  <td class="value-cell">
                     {{ formatearNumero(bodega.hfinal) }}%
                     <span class="badge" [ngClass]="getClaseEstadoHumedad(bodega)">
                       {{ getEstadoHumedad(bodega) }}
                     </span>
-                  </span>
-                </div>
-              </div>
+                  </td>
+                </tr>
+              </table>
             </div>
 
             <!-- DENSIDADES -->
             <div class="info-section">
-              <h3 class="section-label">📊 Densidades</h3>
-              <div class="info-grid">
-                <div class="info-item">
-                  <span class="info-label">Pergamino:</span>
-                  <span class="info-value">{{ formatearNumero(bodega.dPergamino) }} g/ml</span>
-                </div>
-                <div class="info-item">
-                  <span class="info-label">Bellota:</span>
-                  <span class="info-value">{{ formatearNumero(bodega.dBellota) }} g/ml</span>
-                </div>
-              </div>
+              <h3 class="section-title">📊 Densidades</h3>
+              <table class="info-table">
+                <tr>
+                  <td class="label-cell">Pergamino:</td>
+                  <td class="value-cell">{{ formatearNumero(bodega.dPergamino) }} g/ml</td>
+                </tr>
+                <tr>
+                  <td class="label-cell">Bellota:</td>
+                  <td class="value-cell">{{ formatearNumero(bodega.dBellota) }} g/ml</td>
+                </tr>
+              </table>
             </div>
 
             <!-- INFORMACIÓN ADICIONAL -->
             <div class="info-section">
-              <h3 class="section-label">📋 Información Adicional</h3>
-              <div class="info-grid">
-                <div class="info-item">
-                  <span class="info-label">Sacos:</span>
-                  <span class="info-value">{{ bodega.cantidadSacos ?? '-' }}</span>
-                </div>
-                <div class="info-item">
-                  <span class="info-label">Inicio Reposo:</span>
-                  <span class="info-value">{{ formatearFecha(bodega.finicio_reposo) }}</span>
-                </div>
-              </div>
+              <h3 class="section-title">📋 Información Adicional</h3>
+              <table class="info-table">
+                <tr>
+                  <td class="label-cell">Sacos:</td>
+                  <td class="value-cell">{{ bodega.cantidadSacos ?? '-' }}</td>
+                </tr>
+                <tr>
+                  <td class="label-cell">Inicio Reposo:</td>
+                  <td class="value-cell">{{ formatearFecha(bodega.finicio_reposo) }}</td>
+                </tr>
+              </table>
             </div>
 
             <!-- PRUEBAS DE MASA -->
             <div class="info-section">
-              <h3 class="section-label">🔬 Pruebas de Masa</h3>
-              <div class="info-grid-3">
-                <div class="info-item">
-                  <span class="info-label">PMH Relativa:</span>
-                  <span class="info-value">{{ formatearNumero(bodega.pmhRelativa) }}</span>
-                </div>
-                <div class="info-item">
-                  <span class="info-label">PMT Interna:</span>
-                  <span class="info-value">{{ formatearNumero(bodega.pmtInterna) }}°C</span>
-                </div>
-                <div class="info-item">
-                  <span class="info-label">PMT Externa:</span>
-                  <span class="info-value">{{ formatearNumero(bodega.pmtExterna) }}°C</span>
-                </div>
-              </div>
+              <h3 class="section-title">🔬 Pruebas de Masa</h3>
+              <table class="info-table">
+                <tr>
+                  <td class="label-cell">PMH Relativa:</td>
+                  <td class="value-cell">{{ formatearNumero(bodega.pmhRelativa) }}</td>
+                </tr>
+                <tr>
+                  <td class="label-cell">PMT Interna:</td>
+                  <td class="value-cell">{{ formatearNumero(bodega.pmtInterna) }}°C</td>
+                </tr>
+                <tr>
+                  <td class="label-cell">PMT Externa:</td>
+                  <td class="value-cell">{{ formatearNumero(bodega.pmtExterna) }}°C</td>
+                </tr>
+              </table>
             </div>
           </div>
         </div>

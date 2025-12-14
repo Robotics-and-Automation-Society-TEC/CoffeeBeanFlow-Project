@@ -18,70 +18,60 @@
   <div *ngIf="!cargando && cataciones.length > 0" class="cards-grid">
     <div class="catacion-card" *ngFor="let catacion of cataciones">
       <div class="card-header">
-        <div>
-          <h3>{{ catacion.nlote || 'Sin lote' }}</h3>
-          <span class="id-badge">ID: {{ catacion.idCatacion }}</span>
-        </div>
-        <div class="header-badges">
-          <span class="badge" [class]="'badge-' + getEstadoCalidad(catacion.pfinales).toLowerCase().replace(' ', '-')">
-            {{ getEstadoCalidad(catacion.pfinales) }}
-          </span>
-          <span class="score-badge" *ngIf="catacion.pfinales">
-            {{ catacion.pfinales }}
-          </span>
-        </div>
+        <span class="id-text">LOTE: {{ catacion.nlote || 'Sin lote' }}</span>
+        <span class="estado-text">{{ getEstadoCalidad(catacion.pfinales) }} {{ catacion.pfinales }}</span>
       </div>
 
       <div class="card-body">
         <!-- Información General -->
         <div class="info-section">
-          <h4>Información General</h4>
-          <div class="info-grid">
-            <div class="info-item highlight">
-              <span class="label">Puntos Finales:</span>
-              <span class="value primary">{{ catacion.pfinales || '-' }}</span>
-            </div>
-            <div class="info-item">
-              <span class="label">Limpio:</span>
-              <span class="value">{{ catacion.limpio ? (catacion.limpio + '%') : '-' }}</span>
-            </div>
-            <div class="info-item">
-              <span class="label">Defectuoso:</span>
-              <span class="value">{{ catacion.defectuoso ? (catacion.defectuoso + '%') : '-' }}</span>
-            </div>
-            <div class="info-item">
-              <span class="label">CC Calidad:</span>
-              <span class="value">{{ catacion.cccalidad ? (catacion.cccalidad + '%') : '-' }}</span>
-            </div>
-          </div>
+          <h3 class="section-title">📋 Información General</h3>
+          <table class="info-table">
+            <tr class="highlight-row">
+              <td class="label-cell">Puntos Finales:</td>
+              <td class="value-cell primary-value">{{ catacion.pfinales || '-' }}</td>
+            </tr>
+            <tr>
+              <td class="label-cell">Limpio:</td>
+              <td class="value-cell">{{ catacion.limpio ? (catacion.limpio + '%') : '-' }}</td>
+            </tr>
+            <tr>
+              <td class="label-cell">Defectuoso:</td>
+              <td class="value-cell">{{ catacion.defectuoso ? (catacion.defectuoso + '%') : '-' }}</td>
+            </tr>
+            <tr>
+              <td class="label-cell">CC Calidad:</td>
+              <td class="value-cell">{{ catacion.cccalidad ? (catacion.cccalidad + '%') : '-' }}</td>
+            </tr>
+          </table>
         </div>
 
         <!-- Calidad y Tostado -->
         <div class="info-section">
-          <h4>Calidad y Tostado</h4>
-          <div class="info-grid">
-            <div class="info-item">
-              <span class="label">FF Reposo:</span>
-              <span class="value">{{ catacion.ffreposo || '-' }}</span>
-            </div>
-            <div class="info-item">
-              <span class="label">Quaker:</span>
-              <span class="value">{{ catacion.quaker || '-' }}</span>
-            </div>
-            <div class="info-item">
-              <span class="label">CC Verde:</span>
-              <span class="value">{{ catacion.ccverde ? (catacion.ccverde + '%') : '-' }}</span>
-            </div>
-            <div class="info-item">
-              <span class="label">R Tostado:</span>
-              <span class="value">{{ catacion.rtostado ? (catacion.rtostado + '%') : '-' }}</span>
-            </div>
-          </div>
+          <h3 class="section-title">🔥 Calidad y Tostado</h3>
+          <table class="info-table">
+            <tr>
+              <td class="label-cell">FF Reposo:</td>
+              <td class="value-cell">{{ catacion.ffreposo || '-' }}</td>
+            </tr>
+            <tr>
+              <td class="label-cell">Quaker:</td>
+              <td class="value-cell">{{ catacion.quaker || '-' }}</td>
+            </tr>
+            <tr>
+              <td class="label-cell">CC Verde:</td>
+              <td class="value-cell">{{ catacion.ccverde ? (catacion.ccverde + '%') : '-' }}</td>
+            </tr>
+            <tr>
+              <td class="label-cell">R Tostado:</td>
+              <td class="value-cell">{{ catacion.rtostado ? (catacion.rtostado + '%') : '-' }}</td>
+            </tr>
+          </table>
         </div>
 
         <!-- Defectos -->
         <div class="info-section defects-section">
-          <h4>Defectos</h4>
+          <h3 class="section-title">⚠️ Defectos</h3>
           <div class="defects-summary">
             <div class="defect-card">
               <span class="defect-label">Categoría 1</span>
@@ -96,35 +86,35 @@
 
         <!-- Zaranda -->
         <div class="info-section" *ngIf="catacion.veinte || catacion.dieciocho || catacion.dieciseis">
-          <h4>Zaranda - Principales Tamices</h4>
-          <div class="info-grid">
-            <div class="info-item" *ngIf="catacion.veinte">
-              <span class="label">Tamiz 20:</span>
-              <span class="value">{{ catacion.veinte + '%' }}</span>
-            </div>
-            <div class="info-item" *ngIf="catacion.diecinueve">
-              <span class="label">Tamiz 19:</span>
-              <span class="value">{{ catacion.diecinueve + '%' }}</span>
-            </div>
-            <div class="info-item" *ngIf="catacion.dieciocho">
-              <span class="label">Tamiz 18:</span>
-              <span class="value">{{ catacion.dieciocho + '%' }}</span>
-            </div>
-            <div class="info-item" *ngIf="catacion.diecisiete">
-              <span class="label">Tamiz 17:</span>
-              <span class="value">{{ catacion.diecisiete + '%' }}</span>
-            </div>
-            <div class="info-item" *ngIf="catacion.dieciseis">
-              <span class="label">Tamiz 16:</span>
-              <span class="value">{{ catacion.dieciseis + '%' }}</span>
-            </div>
-          </div>
+          <h3 class="section-title">📏 Zaranda - Principales Tamices</h3>
+          <table class="info-table">
+            <tr *ngIf="catacion.veinte">
+              <td class="label-cell">Tamiz 20:</td>
+              <td class="value-cell">{{ catacion.veinte + '%' }}</td>
+            </tr>
+            <tr *ngIf="catacion.diecinueve">
+              <td class="label-cell">Tamiz 19:</td>
+              <td class="value-cell">{{ catacion.diecinueve + '%' }}</td>
+            </tr>
+            <tr *ngIf="catacion.dieciocho">
+              <td class="label-cell">Tamiz 18:</td>
+              <td class="value-cell">{{ catacion.dieciocho + '%' }}</td>
+            </tr>
+            <tr *ngIf="catacion.diecisiete">
+              <td class="label-cell">Tamiz 17:</td>
+              <td class="value-cell">{{ catacion.diecisiete + '%' }}</td>
+            </tr>
+            <tr *ngIf="catacion.dieciseis">
+              <td class="label-cell">Tamiz 16:</td>
+              <td class="value-cell">{{ catacion.dieciseis + '%' }}</td>
+            </tr>
+          </table>
         </div>
 
         <!-- Rondas de Evaluación -->
         <div class="info-section rondas-section" *ngIf="catacion.rondas && catacion.rondas.length > 0">
           <div class="rondas-header">
-            <h4>Rondas de Evaluación</h4>
+            <h3 class="section-title">🎯 Rondas de Evaluación</h3>
             <span class="rondas-badge">{{ catacion.rondas.length }} ronda(s)</span>
           </div>
           <div class="rondas-list">
@@ -140,9 +130,9 @@
         </div>
       </div>
 
-      <div class="card-actions">
-        <button class="btn-edit" (click)="editarRegistro(catacion.idCatacion)">Editar</button>
-        <button class="btn-delete" (click)="eliminarRegistro(catacion.idCatacion)">Eliminar</button>
+      <div class="card-footer">
+        <button class="btn-edit" (click)="editarRegistro(catacion.idCatacion)">✏️ Editar</button>
+        <button class="btn-delete" (click)="eliminarRegistro(catacion.idCatacion)">🗑️ Eliminar</button>
       </div>
     </div>
   </div>

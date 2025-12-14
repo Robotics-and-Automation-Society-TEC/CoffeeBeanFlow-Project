@@ -3,13 +3,16 @@
     🏠 Volver a Inicio
   </a>
   
-  <h2>{{ modoEdicion ? 'Editar Catación' : 'Nueva Catación' }}</h2>
+  <div class="form-header">
+    <h1>{{ modoEdicion ? 'Editar Catación' : 'Nueva Catación' }}</h1>
+    <p class="subtitle">Registra la evaluación sensorial del café</p>
+  </div>
 
-  <form [formGroup]="catacionForm" (ngSubmit)="guardar()" *ngIf="!cargando">
+  <form [formGroup]="catacionForm" (ngSubmit)="guardar()" *ngIf="!cargando" class="form">
     
     <!-- Sección: Información Principal -->
     <div class="form-section">
-      <h3>Información Principal</h3>
+      <h2 class="section-title">📋 Información Principal</h2>
       <div class="form-grid">
         <div class="form-field">
           <label for="nlote">Número de Lote <span class="required">*</span></label>
@@ -43,7 +46,7 @@
 
     <!-- Sección: Calidad y Tostado -->
     <div class="form-section">
-      <h3>Calidad y Tostado</h3>
+      <h2 class="section-title">🔥 Calidad y Tostado</h2>
       <div class="form-grid">
         <div class="form-field">
           <label for="ffreposo">FF Reposo</label>
@@ -84,7 +87,7 @@
 
     <!-- Sección: Defectos Categoría 1 -->
     <div class="form-section">
-      <h3>Defectos Categoría 1</h3>
+      <h2 class="section-title">⚠️ Defectos Categoría 1</h2>
       <div class="form-grid">
         <div class="form-field">
           <label for="c1agrio">C1 Agrio</label>
@@ -130,7 +133,7 @@
 
     <!-- Sección: Defectos Categoría 2 -->
     <div class="form-section">
-      <h3>Defectos Categoría 2</h3>
+      <h2 class="section-title">⚠️ Defectos Categoría 2</h2>
       <div class="form-grid">
         <div class="form-field">
           <label for="c2flotador">C2 Flotador</label>
@@ -191,7 +194,7 @@
 
     <!-- Sección: Zaranda (Tamices) -->
     <div class="form-section">
-      <h3>Zaranda - Tamices</h3>
+      <h2 class="section-title">📏 Zaranda - Tamices</h2>
       <div class="form-grid">
         <div class="form-field">
           <label for="tresSobreDieciseis">3/16 (%)</label>
@@ -242,7 +245,7 @@
 
     <!-- Sección: TonAgton (Agtron) -->
     <div class="form-section">
-      <h3>Tonalidad Agtron</h3>
+      <h2 class="section-title">🎨 Tonalidad Agtron</h2>
       <div class="form-grid">
         <div class="form-field">
           <label for="tonagton25">Agtron 25 (%)</label>
@@ -289,7 +292,7 @@
     <!-- Sección: Rondas de Evaluación -->
     <div class="form-section">
       <div class="section-header">
-        <h3>Rondas de Evaluación</h3>
+        <h2 class="section-title">🎯 Rondas de Evaluación</h2>
         <button type="button" class="btn-add" (click)="agregarRonda()">+ Agregar Ronda</button>
       </div>
 

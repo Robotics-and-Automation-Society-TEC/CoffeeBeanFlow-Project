@@ -96,10 +96,8 @@
 }
 
 .form-section h2 {
-  color: var(--color-primary-dark);
+  color: var(--color-white);
   margin-bottom: var(--space-lg);
-  font-size: var(--font-size-xl);
-  font-weight: 700;
   font-size: 2.5rem;
   font-weight: 900;
   text-shadow: 0 0 20px rgba(61, 139, 55, 0.8), 0 2px 8px rgba(0, 0, 0, 0.5);

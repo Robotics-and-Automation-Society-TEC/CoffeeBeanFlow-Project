@@ -3,12 +3,15 @@
     🏠 Volver a Inicio
   </a>
   
-  <h2>{{ modoEdicion ? 'Editar Caracterización' : 'Nueva Caracterización' }}</h2>
+  <div class="form-header">
+    <h1>{{ modoEdicion ? 'Editar Caracterización' : 'Nueva Caracterización' }}</h1>
+    <p class="subtitle">Registra la caracterización física del café</p>
+  </div>
 
-  <form [formGroup]="formulario" (ngSubmit)="guardar()">
+  <form [formGroup]="formulario" (ngSubmit)="guardar()" class="form">
     <!-- Información Principal -->
     <section class="form-section">
-      <h3>Información Principal</h3>
+      <h2 class="section-title">📋 Información Principal</h2>
       <div class="form-grid">
         <div class="form-field">
           <label for="tiempo">Fecha y Hora *</label>
@@ -50,7 +53,7 @@
 
     <!-- Rendimientos y Densidad -->
     <section class="form-section">
-      <h3>Rendimientos y Densidad</h3>
+      <h2 class="section-title">📊 Rendimientos y Densidad</h2>
       <div class="form-grid">
         <div class="form-field">
           <label for="drMaduras">DR Maduras (%)</label>
@@ -108,7 +111,7 @@
 
     <!-- Conteos -->
     <section class="form-section">
-      <h3>Conteos</h3>
+      <h2 class="section-title">🔢 Conteos</h2>
       <div class="form-grid">
         <div class="form-field">
           <label for="cVerdes">Cantidad Verdes</label>
@@ -198,7 +201,7 @@
 
     <!-- Porcentajes -->
     <section class="form-section">
-      <h3>Porcentajes</h3>
+      <h2 class="section-title">📈 Porcentajes</h2>
       <div class="form-grid">
         <div class="form-field">
           <label for="pcDebajo">PC Debajo (%)</label>
@@ -283,7 +286,7 @@
     <!-- RC Sobremaduras -->
     <section class="form-section">
       <div class="section-header">
-        <h3>RC Sobremaduras</h3>
+        <h2 class="section-title">📊 RC Sobremaduras</h2>
         <label class="checkbox-label">
           <input 
             type="checkbox" 
@@ -335,7 +338,7 @@
     <!-- RC Inmaduras -->
     <section class="form-section">
       <div class="section-header">
-        <h3>RC Inmaduras</h3>
+        <h2 class="section-title">📊 RC Inmaduras</h2>
         <label class="checkbox-label">
           <input 
             type="checkbox" 
@@ -387,7 +390,7 @@
     <!-- RC Maduras -->
     <section class="form-section">
       <div class="section-header">
-        <h3>RC Maduras</h3>
+        <h2 class="section-title">📊 RC Maduras</h2>
         <label class="checkbox-label">
           <input 
             type="checkbox" 

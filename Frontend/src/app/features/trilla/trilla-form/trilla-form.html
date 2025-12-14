@@ -3,12 +3,15 @@
     🏠 Volver a Inicio
   </a>
   
-  <h2>{{ modoEdicion ? 'Editar Trilla' : 'Nueva Trilla' }}</h2>
+  <div class="form-header">
+    <h1>{{ modoEdicion ? 'Editar Trilla' : 'Nueva Trilla' }}</h1>
+    <p class="subtitle">Registra el proceso de trillado del café</p>
+  </div>
 
-  <form [formGroup]="formulario" (ngSubmit)="guardar()">
+  <form [formGroup]="formulario" (ngSubmit)="guardar()" class="form">
     <!-- Información Principal -->
     <section class="form-section">
-      <h3>Información Principal</h3>
+      <h2 class="section-title">📋 Información Principal</h2>
       <div class="form-grid">
         <div class="form-field">
           <label for="nlote">Número de Lote *</label>
@@ -38,7 +41,7 @@
 
     <!-- Humedades y Rendimientos -->
     <section class="form-section">
-      <h3>Humedades y Rendimientos</h3>
+      <h2 class="section-title">💧 Humedades y Rendimientos</h2>
       <div class="form-grid">
         <div class="form-field">
           <label for="hinicial">Humedad Inicial (%)</label>
@@ -122,7 +125,7 @@
 
     <!-- Pesos Verde -->
     <section class="form-section">
-      <h3>Pesos Verde</h3>
+      <h2 class="section-title">⚖️ Pesos Verde</h2>
       <div class="form-grid">
         <div class="form-field">
           <label for="wverdeFinal">Peso Verde Final (kg)</label>
@@ -154,7 +157,7 @@
 
     <!-- Porcentajes de Clasificación -->
     <section class="form-section">
-      <h3>Porcentajes de Clasificación</h3>
+      <h2 class="section-title">☕ Porcentajes de Clasificación</h2>
       <div class="form-grid">
         <div class="form-field">
           <label for="pprimera">Primera (%)</label>
