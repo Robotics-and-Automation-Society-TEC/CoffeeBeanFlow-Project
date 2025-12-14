@@ -1,0 +1,150 @@
+<div class="list-container">
+  <a routerLink="/" class="btn-home">
+    🏠 Volver a Inicio
+  </a>
+  
+  <div class="header">
+    <h2>Gestión de Trilla</h2>
+    <button class="btn-primary" (click)="nuevoRegistro()">+ Nueva Trilla</button>
+  </div>
+
+  <div *ngIf="cargando" class="loading">Cargando registros...</div>
+
+  <div *ngIf="!cargando && trillas.length === 0" class="empty-state">
+    <p>No hay registros de trilla aún</p>
+    <button class="btn-primary" (click)="nuevoRegistro()">Crear el primero</button>
+  </div>
+
+  <div *ngIf="!cargando && trillas.length > 0" class="cards-grid">
+    <div class="trilla-card" *ngFor="let trilla of trillas">
+      <div class="card-header">
+        <div>
+          <h3>Lote: {{ trilla.nlote }}</h3>
+          <span class="trilla-id">ID: {{ trilla.idTrilla }}</span>
+        </div>
+        <span class="badge" [class]="'badge-' + getEstadoRendimiento(trilla).toLowerCase()">
+          {{ getEstadoRendimiento(trilla) }}
+        </span>
+      </div>
+
+      <div class="card-body">
+        <!-- Humedades y Rendimientos -->
+        <div class="info-section">
+          <h4>Humedades y Rendimientos</h4>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="label">Humedad Inicial:</span>
+              <span class="value">{{ trilla.hinicial ? (trilla.hinicial + '%') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Humedad Final:</span>
+              <span class="value">{{ trilla.hfinal ? (trilla.hfinal + '%') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Rend. Final Pelado:</span>
+              <span class="value">{{ trilla.rFinalPelado ? (trilla.rFinalPelado + '%') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Rend. Final Selección:</span>
+              <span class="value">{{ trilla.rFinalSeleccion ? (trilla.rFinalSeleccion + '%') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Rend. Teórico Pelado:</span>
+              <span class="value">{{ trilla.rteoricoPelado ? (trilla.rteoricoPelado + '%') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Rend. Teórico Selección:</span>
+              <span class="value">{{ trilla.rTeoricoSeleccion ? (trilla.rTeoricoSeleccion + '%') : '-' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pesos Verde -->
+        <div class="info-section">
+          <h4>Pesos Verde</h4>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="label">Peso Verde Final:</span>
+              <span class="value">{{ trilla.wverdeFinal ? (trilla.wverdeFinal + ' kg') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Peso Verde Teórico:</span>
+              <span class="value">{{ trilla.wverdeTeorico ? (trilla.wverdeTeorico + ' kg') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Fecha Final Reposo:</span>
+              <span class="value">{{ formatearFecha(trilla.ffinalReposo) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Clasificación de Cafés -->
+        <div class="info-section">
+          <h4>Clasificación de Cafés</h4>
+          <div class="info-grid classification">
+            <div class="info-item highlight">
+              <span class="label">Primera:</span>
+              <span class="value primary">{{ trilla.pprimera ? (trilla.pprimera + '%') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Segundas:</span>
+              <span class="value">{{ trilla.psegundas ? (trilla.psegundas + '%') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Caracolillo:</span>
+              <span class="value">{{ trilla.pcaracolillo ? (trilla.pcaracolillo + '%') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Madres:</span>
+              <span class="value">{{ trilla.pmadres ? (trilla.pmadres + '%') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Menudos:</span>
+              <span class="value">{{ trilla.pmenudos ? (trilla.pmenudos + '%') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Inferiores:</span>
+              <span class="value">{{ trilla.pinferiores ? (trilla.pinferiores + '%') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Cataduras:</span>
+              <span class="value">{{ trilla.pcataduras ? (trilla.pcataduras + '%') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Barreduras:</span>
+              <span class="value">{{ trilla.pbarreduras ? (trilla.pbarreduras + '%') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Escogeduras:</span>
+              <span class="value">{{ trilla.pescogeduras ? (trilla.pescogeduras + '%') : '-' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Peso Verde (Exportación) -->
+        <div class="info-section" *ngIf="trilla.pesoVerde">
+          <h4>📦 Peso Verde - Exportación</h4>
+          <div class="info-grid peso-verde-highlight">
+            <div class="info-item">
+              <span class="label">Peso Inferiores:</span>
+              <span class="value">{{ trilla.pesoVerde.winferiores ? (trilla.pesoVerde.winferiores + ' kg') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Peso Final:</span>
+              <span class="value">{{ trilla.pesoVerde.wfinal ? (trilla.pesoVerde.wfinal + ' kg') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Peso Final Inferiores:</span>
+              <span class="value">{{ trilla.pesoVerde.wFinalInferiores ? (trilla.pesoVerde.wFinalInferiores + ' kg') : '-' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <button class="btn-edit" (click)="editarRegistro(trilla.idTrilla)">Editar</button>
+        <button class="btn-delete" (click)="eliminarRegistro(trilla.idTrilla)">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>

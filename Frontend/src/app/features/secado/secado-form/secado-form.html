@@ -1,0 +1,287 @@
+<div class="secado-form-container">
+  <a routerLink="/" class="btn-home">
+    🏠 Volver a Inicio
+  </a>
+  
+  <div class="form-header">
+    <h1>{{ isEditMode ? 'Editar Secado' : 'Nuevo Secado' }}</h1>
+    <p class="subtitle">Registra el proceso de secado con todas las mediciones</p>
+  </div>
+
+  @if (errorMessage) {
+    <div class="alert alert-error">{{ errorMessage }}</div>
+  }
+
+  @if (isLoading) {
+    <div class="loading-overlay">
+      <div class="loading-spinner"></div>
+    </div>
+  }
+
+  <form [formGroup]="secadoForm" (ngSubmit)="onSubmit()" class="secado-form">
+    
+    <!-- INFORMACIÓN PRINCIPAL -->
+    <div class="form-section">
+      <h2 class="section-title">📋 Información Principal</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="nlote">Número de Lote *</label>
+          <select
+            id="nlote"
+            formControlName="nlote"
+            class="form-control"
+            [class.error]="secadoForm.get('nlote')?.invalid && secadoForm.get('nlote')?.touched"
+          >
+            <option value="">Seleccione un lote</option>
+            @for (lote of lotesDisponibles; track lote.nlote) {
+              <option [value]="lote.nlote">{{lote.nlote}} - {{lote.nproductor}} ({{lote.disponible}}kg)</option>
+            }
+          </select>
+          @if (secadoForm.get('nlote')?.invalid && secadoForm.get('nlote')?.touched) {
+            <span class="error-text">El número de lote es requerido</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="finicio">Fecha y Hora de Inicio *</label>
+          <input
+            type="datetime-local"
+            id="finicio"
+            formControlName="finicio"
+            class="form-control"
+            [class.error]="secadoForm.get('finicio')?.invalid && secadoForm.get('finicio')?.touched"
+          />
+          @if (secadoForm.get('finicio')?.invalid && secadoForm.get('finicio')?.touched) {
+            <span class="error-text">La fecha de inicio es requerida</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="dsecado">Días de Secado</label>
+          <input
+            type="number"
+            id="dsecado"
+            formControlName="dsecado"
+            class="form-control"
+            placeholder="0"
+            min="0"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="ffinal">Fecha y Hora Final</label>
+          <input
+            type="datetime-local"
+            id="ffinal"
+            formControlName="ffinal"
+            class="form-control"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- HUMEDADES -->
+    <div class="form-section">
+      <div class="section-header">
+        <h2 class="section-title">💧 Mediciones de Humedad</h2>
+        <button type="button" class="btn-add" (click)="agregarHumedad()">
+          + Agregar Humedad
+        </button>
+      </div>
+
+      @if (humedades.length === 0) {
+        <p class="empty-message">No hay mediciones de humedad registradas</p>
+      }
+
+      <div formArrayName="humedades" class="weak-entities-container">
+        @for (humedad of humedades.controls; track $index; let i = $index) {
+          <div [formGroupName]="i" class="weak-entity-card">
+            <div class="card-header">
+              <span class="card-number">Humedad #{{ i + 1 }}</span>
+              <button type="button" class="btn-remove" (click)="eliminarHumedad(i)">
+                ✕
+              </button>
+            </div>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label>Fecha y Hora *</label>
+                <input
+                  type="datetime-local"
+                  formControlName="fecha"
+                  class="form-control"
+                />
+              </div>
+              <div class="form-group">
+                <label>Humedad (%) *</label>
+                <input
+                  type="number"
+                  formControlName="humedad"
+                  class="form-control"
+                  placeholder="0.00"
+                  step="0.01"
+                  min="0"
+                  max="100"
+                />
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- TERMO-HIGROMETRÍA -->
+    <div class="form-section">
+      <div class="section-header">
+        <h2 class="section-title">🌡️ Termo-Higrometría</h2>
+        <button type="button" class="btn-add" (click)="agregarTermoHigrometria()">
+          + Agregar Termo-Higrometría
+        </button>
+      </div>
+
+      @if (termoHigrometrias.length === 0) {
+        <p class="empty-message">No hay mediciones termo-higrométricas registradas</p>
+      }
+
+      <div formArrayName="termoHigrometrias" class="weak-entities-container">
+        @for (termo of termoHigrometrias.controls; track $index; let i = $index) {
+          <div [formGroupName]="i" class="weak-entity-card">
+            <div class="card-header">
+              <span class="card-number">Termo-Higrometría #{{ i + 1 }}</span>
+              <button type="button" class="btn-remove" (click)="eliminarTermoHigrometria(i)">
+                ✕
+              </button>
+            </div>
+            <div class="form-grid-3">
+              <div class="form-group">
+                <label>Fecha y Hora *</label>
+                <input
+                  type="datetime-local"
+                  formControlName="fecha"
+                  class="form-control"
+                />
+              </div>
+              <div class="form-group">
+                <label>Temperatura Ambiente (°C) *</label>
+                <input
+                  type="number"
+                  formControlName="temperaturaAmbiente"
+                  class="form-control"
+                  placeholder="0.00"
+                  step="0.1"
+                />
+              </div>
+              <div class="form-group">
+                <label>Humedad Ambiente (%) *</label>
+                <input
+                  type="number"
+                  formControlName="humedadAmbiente"
+                  class="form-control"
+                  placeholder="0.00"
+                  step="0.1"
+                  min="0"
+                  max="100"
+                />
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- TEMPERATURAS DE SECADO -->
+    <div class="form-section">
+      <div class="section-header">
+        <h2 class="section-title">🔥 Temperaturas de Secado</h2>
+        <button type="button" class="btn-add" (click)="agregarTemperaturaSecado()">
+          + Agregar Temperatura
+        </button>
+      </div>
+
+      @if (temperaturasSecado.length === 0) {
+        <p class="empty-message">No hay temperaturas de secado registradas</p>
+      }
+
+      <div formArrayName="temperaturasSecado" class="weak-entities-container">
+        @for (temp of temperaturasSecado.controls; track $index; let i = $index) {
+          <div [formGroupName]="i" class="weak-entity-card">
+            <div class="card-header">
+              <span class="card-number">Temperatura #{{ i + 1 }}</span>
+              <button type="button" class="btn-remove" (click)="eliminarTemperaturaSecado(i)">
+                ✕
+              </button>
+            </div>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label>Fecha y Hora *</label>
+                <input
+                  type="datetime-local"
+                  formControlName="fecha"
+                  class="form-control"
+                />
+              </div>
+              <div class="form-group">
+                <label>Temperatura (°C) *</label>
+                <input
+                  type="number"
+                  formControlName="temperatura"
+                  class="form-control"
+                  placeholder="0.00"
+                  step="0.1"
+                  min="0"
+                  max="100"
+                />
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- NÚMERO DE CAMAS -->
+    <div class="form-section">
+      <div class="section-header">
+        <h2 class="section-title">🛏️ Números de Cama</h2>
+        <button type="button" class="btn-add" (click)="agregarNcama()">
+          + Agregar Cama
+        </button>
+      </div>
+
+      @if (ncamas.length === 0) {
+        <p class="empty-message">No hay números de cama registrados</p>
+      }
+
+      <div formArrayName="ncamas" class="weak-entities-container">
+        @for (ncama of ncamas.controls; track $index; let i = $index) {
+          <div [formGroupName]="i" class="weak-entity-card-small">
+            <div class="card-header">
+              <span class="card-number">Cama #{{ i + 1 }}</span>
+              <button type="button" class="btn-remove" (click)="eliminarNcama(i)">
+                ✕
+              </button>
+            </div>
+            <div class="form-group">
+              <label>Número de Cama *</label>
+              <input
+                type="number"
+                formControlName="numeroCama"
+                class="form-control"
+                placeholder="1"
+                min="1"
+              />
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- BOTONES DE ACCIÓN -->
+    <div class="form-actions">
+      <button type="button" class="btn-secondary" (click)="cancelar()" [disabled]="isLoading">
+        Cancelar
+      </button>
+      <button type="submit" class="btn-primary" [disabled]="isLoading">
+        {{ isEditMode ? 'Actualizar' : 'Guardar' }} Secado
+      </button>
+    </div>
+  </form>
+</div>

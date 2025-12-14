@@ -1,0 +1,165 @@
+@baseUrl = http://localhost:5253/api
+
+### 1. Obtener todas las Trillas
+GET {{baseUrl}}/Trilla
+Accept: application/json
+
+###
+
+### 2. Obtener Trilla por ID
+GET {{baseUrl}}/Trilla/1
+Accept: application/json
+
+###
+
+### 3. Obtener Trilla por Nlote
+GET {{baseUrl}}/Trilla/lote/L-001
+Accept: application/json
+
+###
+
+### 4. Crear Trilla SIN PesoVerde
+POST {{baseUrl}}/Trilla
+Content-Type: application/json
+
+{
+  "nlote": "L-001",
+  "hinicial": 12.5,
+  "hfinal": 10.8,
+  "rFinalPelado": 85.2,
+  "rFinalSeleccion": 92.5,
+  "wverdeFinal": 1250.75,
+  "rteoricoPelado": 86.0,
+  "wverdeTeorico": 1300.00,
+  "rTeoricoSeleccion": 93.0,
+  "ffinalReposo": "2024-12-14T10:30:00Z",
+  "psegundas": 5.2,
+  "pcataduras": 2.1,
+  "pbarreduras": 1.5,
+  "pescogeduras": 0.8,
+  "pcaracolillo": 3.5,
+  "pprimera": 82.5,
+  "pmadres": 2.3,
+  "pmenudos": 1.8,
+  "pinferiores": 0.3
+}
+
+###
+
+### 5. Crear Trilla CON PesoVerde (relación 1:1)
+POST {{baseUrl}}/Trilla
+Content-Type: application/json
+
+{
+  "nlote": "L-002",
+  "hinicial": 13.0,
+  "hfinal": 11.2,
+  "rFinalPelado": 84.8,
+  "rFinalSeleccion": 91.5,
+  "wverdeFinal": 1180.50,
+  "rteoricoPelado": 85.5,
+  "wverdeTeorico": 1220.00,
+  "rTeoricoSeleccion": 92.0,
+  "ffinalReposo": "2024-12-14T11:00:00Z",
+  "psegundas": 5.8,
+  "pcataduras": 2.5,
+  "pbarreduras": 1.8,
+  "pescogeduras": 1.0,
+  "pcaracolillo": 3.2,
+  "pprimera": 80.5,
+  "pmadres": 2.8,
+  "pmenudos": 2.0,
+  "pinferiores": 0.4,
+  "pesoVerde": {
+    "winferiores": 15.5,
+    "wfinal": 1180.50,
+    "wFinalInferiores": 1165.00
+  }
+}
+
+###
+
+### 6. Actualizar Trilla SIN modificar PesoVerde (si existe, se mantiene)
+PUT {{baseUrl}}/Trilla/1
+Content-Type: application/json
+
+{
+  "nlote": "L-001",
+  "hinicial": 12.8,
+  "hfinal": 11.0,
+  "rFinalPelado": 85.5,
+  "rFinalSeleccion": 92.8,
+  "wverdeFinal": 1260.00,
+  "rteoricoPelado": 86.2,
+  "wverdeTeorico": 1310.00,
+  "rTeoricoSeleccion": 93.2,
+  "ffinalReposo": "2024-12-14T12:00:00Z",
+  "psegundas": 5.0,
+  "pcataduras": 2.0,
+  "pbarreduras": 1.4,
+  "pescogeduras": 0.7,
+  "pcaracolillo": 3.6,
+  "pprimera": 83.0,
+  "pmadres": 2.2,
+  "pmenudos": 1.7,
+  "pinferiores": 0.4
+}
+
+###
+
+### 7. Actualizar Trilla CON PesoVerde (crea o reemplaza PesoVerde existente)
+PUT {{baseUrl}}/Trilla/2
+Content-Type: application/json
+
+{
+  "nlote": "L-002",
+  "hinicial": 13.2,
+  "hfinal": 11.5,
+  "rFinalPelado": 85.0,
+  "rFinalSeleccion": 92.0,
+  "wverdeFinal": 1190.00,
+  "rteoricoPelado": 85.8,
+  "wverdeTeorico": 1230.00,
+  "rTeoricoSeleccion": 92.5,
+  "ffinalReposo": "2024-12-14T13:00:00Z",
+  "psegundas": 5.5,
+  "pcataduras": 2.3,
+  "pbarreduras": 1.6,
+  "pescogeduras": 0.9,
+  "pcaracolillo": 3.4,
+  "pprimera": 81.0,
+  "pmadres": 2.6,
+  "pmenudos": 1.9,
+  "pinferiores": 0.3,
+  "pesoVerde": {
+    "winferiores": 16.0,
+    "wfinal": 1190.00,
+    "wFinalInferiores": 1174.00
+  }
+}
+
+###
+
+### 8. Agregar PesoVerde a Trilla existente (si no tiene)
+POST {{baseUrl}}/Trilla/1/peso-verde
+Content-Type: application/json
+
+{
+  "winferiores": 18.2,
+  "wfinal": 1260.00,
+  "wFinalInferiores": 1241.80
+}
+
+###
+
+### 9. Eliminar PesoVerde de una Trilla
+DELETE {{baseUrl}}/Trilla/1/peso-verde
+Accept: application/json
+
+###
+
+### 10. Eliminar Trilla (elimina automáticamente su PesoVerde por CASCADE)
+DELETE {{baseUrl}}/Trilla/1
+Accept: application/json
+
+###

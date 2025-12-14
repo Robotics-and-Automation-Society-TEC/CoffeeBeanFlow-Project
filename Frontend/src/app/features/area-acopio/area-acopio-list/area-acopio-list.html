@@ -1,0 +1,88 @@
+<div class="list-container">
+  <a routerLink="/" class="btn-home">
+    🏠 Volver a Inicio
+  </a>
+  
+  <div class="list-header">
+    <h1>📋 Área de Acopio</h1>
+    <button class="btn-primary" (click)="nuevoRegistro()">
+      ➕ Nuevo Registro
+    </button>
+  </div>
+
+  <!-- Mensajes de estado -->
+  <div *ngIf="successMessage" class="alert alert-success">
+    ✓ {{ successMessage }}
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-error">
+    ✗ {{ errorMessage }}
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Cargando registros...</p>
+  </div>
+
+  <!-- Lista vacía -->
+  <div *ngIf="!isLoading && registros.length === 0" class="empty-state">
+    <span class="empty-icon">📦</span>
+    <h3>No hay registros</h3>
+    <p>Comience agregando un nuevo registro de área de acopio</p>
+    <button class="btn-primary" (click)="nuevoRegistro()">
+      ➕ Crear Primer Registro
+    </button>
+  </div>
+
+  <!-- Tabla de registros -->
+  <div *ngIf="!isLoading && registros.length > 0" class="table-container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Lote</th>
+          <th>Productor</th>
+          <th>Finca</th>
+          <th>Zona</th>
+          <th>Disponible (kg)</th>
+          <th>Tipo</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let registro of registros">
+          <td class="font-bold">{{ registro.nlote }}</td>
+          <td>{{ registro.nproductor }}</td>
+          <td>{{ registro.nfinca }}</td>
+          <td>{{ registro.zona }}</td>
+          <td class="text-right">{{ registro.disponible }}</td>
+          <td class="text-sm">{{ getTipoDespulpado(registro) }}</td>
+          <td>
+            <span class="status-badge" [class.status-vendido]="registro.vendido">
+              {{ registro.vendido ? 'Vendido' : registro.enproceso }}
+            </span>
+          </td>
+          <td class="actions">
+            <button 
+              class="btn-icon btn-edit" 
+              (click)="editarRegistro(registro.nlote)"
+              title="Editar">
+              ✏️
+            </button>
+            <button 
+              class="btn-icon btn-delete" 
+              (click)="eliminarRegistro(registro.nlote)"
+              title="Eliminar">
+              🗑️
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!isLoading && registros.length > 0" class="table-footer">
+    <p>Total de registros: <strong>{{ registros.length }}</strong></p>
+  </div>
+</div>

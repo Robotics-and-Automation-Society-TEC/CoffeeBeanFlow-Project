@@ -1,0 +1,204 @@
+<div class="list-container">
+  <a routerLink="/" class="btn-home">
+    🏠 Volver a Inicio
+  </a>
+  
+  <div class="header">
+    <h2>Gestión de Caracterización</h2>
+    <button class="btn-primary" (click)="nuevoRegistro()">+ Nueva Caracterización</button>
+  </div>
+
+  <div *ngIf="cargando" class="loading">Cargando registros...</div>
+
+  <div *ngIf="!cargando && caracterizaciones.length === 0" class="empty-state">
+    <p>No hay registros de caracterización aún</p>
+    <button class="btn-primary" (click)="nuevoRegistro()">Crear el primero</button>
+  </div>
+
+  <div *ngIf="!cargando && caracterizaciones.length > 0" class="cards-grid">
+    <div class="caracterizacion-card" *ngFor="let caract of caracterizaciones">
+      <div class="card-header">
+        <div>
+          <h3>Lote: {{ caract.nloteAreaAcopio }}</h3>
+          <span class="tiempo">{{ formatearFecha(caract.tiempo) }}</span>
+        </div>
+        <div class="header-badges">
+          <span class="badge" [class]="'badge-' + getEstadoCalidad(caract).toLowerCase()">
+            {{ getEstadoCalidad(caract) }}
+          </span>
+          <span class="rc-badge" *ngIf="tieneRC(caract)">
+            {{ contarRC(caract) }} RC
+          </span>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <!-- Información General -->
+        <div class="info-section">
+          <h4>Información General</h4>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="label">Proceso:</span>
+              <span class="value">{{ caract.proceso || '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Lote Asignado:</span>
+              <span class="value">{{ caract.lAsignado || '-' }}</span>
+            </div>
+            <div class="info-item highlight">
+              <span class="label">Estado Maduración:</span>
+              <span class="value primary">{{ caract.eMaduracion ? (caract.eMaduracion + '%') : '-' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rendimientos -->
+        <div class="info-section">
+          <h4>Rendimientos y Mediciones</h4>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="label">DR Maduras:</span>
+              <span class="value">{{ caract.drMaduras ? (caract.drMaduras + '%') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Densidad:</span>
+              <span class="value">{{ caract.densidad || '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">M Tabla:</span>
+              <span class="value">{{ caract.mTabla || '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Broca:</span>
+              <span class="value">{{ caract.broca ? (caract.broca + '%') : '-' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Conteos -->
+        <div class="info-section">
+          <h4>Conteos</h4>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="label">Verdes:</span>
+              <span class="value">{{ caract.cVerdes || 0 }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Objetivo:</span>
+              <span class="value">{{ caract.cObjetivo || 0 }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Inmaduras:</span>
+              <span class="value">{{ caract.cInmaduras || 0 }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Sobremaduras:</span>
+              <span class="value">{{ caract.cSobremaduras || 0 }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Secas:</span>
+              <span class="value">{{ caract.cSecas || 0 }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Vanos:</span>
+              <span class="value">{{ caract.vanos || 0 }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Secos:</span>
+              <span class="value">{{ caract.secos || 0 }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Porcentajes -->
+        <div class="info-section">
+          <h4>Porcentajes</h4>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="label">PC Debajo:</span>
+              <span class="value">{{ caract.pcDebajo ? (caract.pcDebajo + '%') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">PC Verdes:</span>
+              <span class="value">{{ caract.pcVerdes ? (caract.pcVerdes + '%') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">PC Secas:</span>
+              <span class="value">{{ caract.pcSecas ? (caract.pcSecas + '%') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">PC Encima:</span>
+              <span class="value">{{ caract.pcEncima ? (caract.pcEncima + '%') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">PC Objetivo:</span>
+              <span class="value">{{ caract.pcObjetivo ? (caract.pcObjetivo + '%') : '-' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- RC Sobremaduras -->
+        <div class="info-section rc-section" *ngIf="caract.rcSobremaduras">
+          <h4>📊 RC Sobremaduras</h4>
+          <div class="info-grid rc-grid">
+            <div class="info-item">
+              <span class="label">GBX:</span>
+              <span class="value">{{ caract.rcSobremaduras.gbx || '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Promedio:</span>
+              <span class="value">{{ caract.rcSobremaduras.promedio || '-' }}</span>
+            </div>
+            <div class="info-item full-width" *ngIf="caract.rcSobremaduras.observaciones">
+              <span class="label">Observaciones:</span>
+              <span class="value">{{ caract.rcSobremaduras.observaciones }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- RC Inmaduras -->
+        <div class="info-section rc-section" *ngIf="caract.rcInmaduras">
+          <h4>📊 RC Inmaduras</h4>
+          <div class="info-grid rc-grid">
+            <div class="info-item">
+              <span class="label">GBX:</span>
+              <span class="value">{{ caract.rcInmaduras.gbx || '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Promedio:</span>
+              <span class="value">{{ caract.rcInmaduras.promedio || '-' }}</span>
+            </div>
+            <div class="info-item full-width" *ngIf="caract.rcInmaduras.observaciones">
+              <span class="label">Observaciones:</span>
+              <span class="value">{{ caract.rcInmaduras.observaciones }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- RC Maduras -->
+        <div class="info-section rc-section" *ngIf="caract.rcMaduras">
+          <h4>📊 RC Maduras</h4>
+          <div class="info-grid rc-grid">
+            <div class="info-item">
+              <span class="label">GBX:</span>
+              <span class="value">{{ caract.rcMaduras.gbx || '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Promedio:</span>
+              <span class="value">{{ caract.rcMaduras.promedio || '-' }}</span>
+            </div>
+            <div class="info-item full-width" *ngIf="caract.rcMaduras.observaciones">
+              <span class="label">Observaciones:</span>
+              <span class="value">{{ caract.rcMaduras.observaciones }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <button class="btn-edit" (click)="editarRegistro(caract.tiempo)">Editar</button>
+        <button class="btn-delete" (click)="eliminarRegistro(caract.tiempo)">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>

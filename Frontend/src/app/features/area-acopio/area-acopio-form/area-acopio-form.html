@@ -1,0 +1,310 @@
+<div class="form-container">
+  <div class="form-header">
+    <h1>{{ isEditMode ? 'Editar' : 'Nuevo' }} Registro de Área de Acopio</h1>
+    <p class="subtitle">Complete todos los campos requeridos del formulario</p>
+  </div>
+
+  <!-- Mensajes de estado -->
+  <div *ngIf="successMessage" class="alert alert-success">
+    ✓ {{ successMessage }}
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-error">
+    ✗ {{ errorMessage }}
+  </div>
+
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div class="spinner"></div>
+    <p>Procesando...</p>
+  </div>
+
+  <form [formGroup]="areaAcopioForm" (ngSubmit)="onSubmit()" class="form">
+    <!-- Sección 1: Información Principal -->
+    <div class="form-section">
+      <h2>📋 Información Principal</h2>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nlote">Número de Lote *</label>
+          <input 
+            id="nlote" 
+            type="text" 
+            formControlName="nlote"
+            [class.error]="isFieldInvalid('nlote')"
+            placeholder="Ej: LOTE-2024-001">
+          <span *ngIf="isFieldInvalid('nlote')" class="error-message">
+            El número de lote es requerido
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="nrecibo">Número de Recibo *</label>
+          <input 
+            id="nrecibo" 
+            type="number" 
+            formControlName="nrecibo"
+            [class.error]="isFieldInvalid('nrecibo')"
+            placeholder="Ej: 12345">
+          <span *ngIf="isFieldInvalid('nrecibo')" class="error-message">
+            El número de recibo es requerido
+          </span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="nproductor">Nombre del Productor *</label>
+          <input 
+            id="nproductor" 
+            type="text" 
+            formControlName="nproductor"
+            [class.error]="isFieldInvalid('nproductor')"
+            placeholder="Ej: José Pérez">
+          <span *ngIf="isFieldInvalid('nproductor')" class="error-message">
+            El nombre del productor es requerido
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="nfinca">Nombre de la Finca *</label>
+          <input 
+            id="nfinca" 
+            type="text" 
+            formControlName="nfinca"
+            [class.error]="isFieldInvalid('nfinca')"
+            placeholder="Ej: La Esperanza">
+          <span *ngIf="isFieldInvalid('nfinca')" class="error-message">
+            El nombre de la finca es requerido
+          </span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="zona">Zona *</label>
+          <input 
+            id="zona" 
+            type="text" 
+            formControlName="zona"
+            [class.error]="isFieldInvalid('zona')"
+            placeholder="Ej: Zona Norte">
+          <span *ngIf="isFieldInvalid('zona')" class="error-message">
+            La zona es requerida
+          </span>
+        </div>
+
+        <div class="form-group">
+          <label for="altura">Altura (msnm) *</label>
+          <input 
+            id="altura" 
+            type="number" 
+            step="0.01"
+            formControlName="altura"
+            [class.error]="isFieldInvalid('altura')"
+            placeholder="Ej: 1500">
+          <span *ngIf="isFieldInvalid('altura')" class="error-message">
+            La altura es requerida
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección 2: Rendimiento -->
+    <div class="form-section">
+      <h2>📊 Rendimiento</h2>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="robjetivo">Rendimiento Objetivo (%) *</label>
+          <input 
+            id="robjetivo" 
+            type="number" 
+            step="0.01"
+            formControlName="robjetivo"
+            placeholder="Ej: 85.5">
+        </div>
+
+        <div class="form-group">
+          <label for="rtotal">Rendimiento Total (%)</label>
+          <input 
+            id="rtotal" 
+            type="number" 
+            step="0.01"
+            formControlName="rtotal"
+            placeholder="Ej: 88.2">
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección 3: Estado y Disponibilidad -->
+    <div class="form-section">
+      <h2>📦 Estado y Disponibilidad</h2>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="disponible">Cantidad Disponible (kg)</label>
+          <input 
+            id="disponible" 
+            type="number" 
+            formControlName="disponible"
+            placeholder="Ej: 1000">
+        </div>
+
+        <div class="form-group">
+          <label for="enproceso">Estado del Proceso *</label>
+          <select id="enproceso" formControlName="enproceso">
+            <option value="No">No</option>
+            <option value="En Secado">En Secado</option>
+            <option value="En Trilla">En Trilla</option>
+            <option value="En Bodega">En Bodega</option>
+            <option value="Vendido">Vendido</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" formControlName="vendido">
+            <span>Vendido</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección 4: Tipo de Despulpado -->
+    <div class="form-section">
+      <h2>🌱 Tipo de Despulpado</h2>
+      
+      <div class="checkbox-grid">
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" formControlName="semilavado">
+            <span>Semilavado</span>
+          </label>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" formControlName="natural">
+            <span>Natural</span>
+          </label>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" formControlName="anaerobico">
+            <span>Anaeróbico</span>
+          </label>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" formControlName="miel">
+            <span>Miel</span>
+          </label>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" formControlName="lavado">
+            <span>Lavado</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="otro">Otro (especificar)</label>
+        <input 
+          id="otro" 
+          type="text" 
+          formControlName="otro"
+          placeholder="Especificar otro tipo de despulpado">
+      </div>
+    </div>
+
+    <!-- Sección 5: Pruebas Físicas de Beneficio Húmedo -->
+    <div class="form-section">
+      <h2>🔬 Pruebas Físicas - Beneficio Húmedo</h2>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="pF_Pulpa_Pergamino">PF Pulpa/Pergamino (%)</label>
+          <input 
+            id="pF_Pulpa_Pergamino" 
+            type="number" 
+            step="0.01"
+            formControlName="pF_Pulpa_Pergamino"
+            placeholder="Ej: 15.5">
+        </div>
+
+        <div class="form-group">
+          <label for="pF_DMecanicos">PF Daños Mecánicos (%)</label>
+          <input 
+            id="pF_DMecanicos" 
+            type="number" 
+            step="0.01"
+            formControlName="pF_DMecanicos"
+            placeholder="Ej: 2.3">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="pF_Segundas">PF Segundas (%)</label>
+          <input 
+            id="pF_Segundas" 
+            type="number" 
+            step="0.01"
+            formControlName="pF_Segundas"
+            placeholder="Ej: 1.8">
+        </div>
+
+        <div class="form-group">
+          <label for="pF_Pergamino_Pulpa">PF Pergamino/Pulpa (%)</label>
+          <input 
+            id="pF_Pergamino_Pulpa" 
+            type="number" 
+            step="0.01"
+            formControlName="pF_Pergamino_Pulpa"
+            placeholder="Ej: 12.4">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="pDensidad_Fruta">Densidad Fruta</label>
+          <input 
+            id="pDensidad_Fruta" 
+            type="number" 
+            step="0.01"
+            formControlName="pDensidad_Fruta"
+            placeholder="Ej: 1.05">
+        </div>
+
+        <div class="form-group">
+          <label for="pDensidad_Pergamino_Humedo">Densidad Pergamino Húmedo</label>
+          <input 
+            id="pDensidad_Pergamino_Humedo" 
+            type="number" 
+            step="0.01"
+            formControlName="pDensidad_Pergamino_Humedo"
+            placeholder="Ej: 0.85">
+        </div>
+      </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="form-actions">
+      <a routerLink="/" class="btn-home">
+        🏠 Volver a Inicio
+      </a>
+      <button type="button" class="btn-secondary" (click)="onCancel()">
+        ❌ Cancelar
+      </button>
+      <button type="submit" class="btn-primary" [disabled]="isLoading">
+        ✓ {{ isEditMode ? 'Actualizar' : 'Guardar' }} Registro
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,239 @@
+### Test API Catación - CoffeeBeanFlow
+### Base URL: http://localhost:5253/api/Catacion
+
+### 1. Crear nueva catación con rondas
+POST http://localhost:5253/api/Catacion
+Content-Type: application/json
+
+{
+  "nlote": "LOTE001",
+  "limpio": 95.5,
+  "defectuoso": 4.5,
+  "ffreposo": 2.0,
+  "overde": 1.5,
+  "quaker": 0.5,
+  "ccverde": 85.0,
+  "rtostado": 90.0,
+  "dfueste": 0.0,
+  "cccalidad": 88.5,
+  "c1agrio": 0.0,
+  "c1hongos": 0.0,
+  "c1cerezaseca": 0.5,
+  "c1negro": 0.0,
+  "c1insectos": 0.0,
+  "c1negrop": 0.0,
+  "c1agriop": 0.0,
+  "c1me": 0.0,
+  "c2flotador": 1.0,
+  "c2averanado": 0.5,
+  "c2pergamino": 1.5,
+  "c2inmaduro": 1.0,
+  "c2concha": 0.5,
+  "c2insectos": 0.0,
+  "c2cascara": 0.5,
+  "c2pulpa": 0.5,
+  "c2partido": 1.0,
+  "c2cortado": 0.5,
+  "c2mordido": 0.5,
+  "tresSobreDieciseis": 5.0,
+  "veinte": 10.0,
+  "diecinueve": 15.0,
+  "dieciocho": 20.0,
+  "diecisiete": 18.0,
+  "dieciseis": 12.0,
+  "quince": 10.0,
+  "catorce": 8.0,
+  "trece": 2.0,
+  "tonagton25": 2.0,
+  "tonagton35": 5.0,
+  "tonagton45": 8.0,
+  "tonagton55": 12.0,
+  "tonagton65": 15.0,
+  "tonagton75": 18.0,
+  "tonagton85": 25.0,
+  "tonagton95": 15.0,
+  "pfinales": 86.5,
+  "rondas": [
+    {
+      "valorCalidad": 84.5
+    },
+    {
+      "valorCalidad": 86.0
+    },
+    {
+      "valorCalidad": 85.5
+    }
+  ]
+}
+
+###
+
+### 2. Obtener todas las cataciones
+GET http://localhost:5253/api/Catacion
+
+###
+
+### 3. Obtener catación por ID (usar ID devuelto en test 1)
+GET http://localhost:5253/api/Catacion/1
+
+###
+
+### 4. Obtener cataciones por lote
+GET http://localhost:5253/api/Catacion/lote/LOTE001
+
+###
+
+### 5. Crear catación sin rondas iniciales
+POST http://localhost:5253/api/Catacion
+Content-Type: application/json
+
+{
+  "nlote": "LOTE002",
+  "limpio": 92.0,
+  "defectuoso": 8.0,
+  "cccalidad": 85.0,
+  "pfinales": 84.0,
+  "rondas": []
+}
+
+###
+
+### 6. Actualizar catación completa (usar ID de test 1)
+PUT http://localhost:5253/api/Catacion/1
+Content-Type: application/json
+
+{
+  "idCatacion": 1,
+  "nlote": "LOTE001",
+  "limpio": 96.0,
+  "defectuoso": 4.0,
+  "ffreposo": 1.8,
+  "overde": 1.2,
+  "quaker": 0.3,
+  "ccverde": 86.0,
+  "rtostado": 91.0,
+  "dfueste": 0.0,
+  "cccalidad": 89.0,
+  "c1agrio": 0.0,
+  "c1hongos": 0.0,
+  "c1cerezaseca": 0.3,
+  "c1negro": 0.0,
+  "c1insectos": 0.0,
+  "c1negrop": 0.0,
+  "c1agriop": 0.0,
+  "c1me": 0.0,
+  "c2flotador": 0.8,
+  "c2averanado": 0.4,
+  "c2pergamino": 1.2,
+  "c2inmaduro": 0.8,
+  "c2concha": 0.4,
+  "c2insectos": 0.0,
+  "c2cascara": 0.4,
+  "c2pulpa": 0.4,
+  "c2partido": 0.8,
+  "c2cortado": 0.4,
+  "c2mordido": 0.4,
+  "tresSobreDieciseis": 6.0,
+  "veinte": 11.0,
+  "diecinueve": 16.0,
+  "dieciocho": 21.0,
+  "diecisiete": 17.0,
+  "dieciseis": 11.0,
+  "quince": 9.0,
+  "catorce": 7.0,
+  "trece": 2.0,
+  "tonagton25": 1.5,
+  "tonagton35": 4.5,
+  "tonagton45": 7.5,
+  "tonagton55": 11.5,
+  "tonagton65": 14.5,
+  "tonagton75": 17.5,
+  "tonagton85": 26.0,
+  "tonagton95": 16.5,
+  "pfinales": 87.5,
+  "rondas": [
+    {
+      "idRondas": 1,
+      "idCatacion": 1,
+      "valorCalidad": 85.0
+    },
+    {
+      "idRondas": 2,
+      "idCatacion": 1,
+      "valorCalidad": 87.0
+    },
+    {
+      "valorCalidad": 88.0
+    }
+  ]
+}
+
+###
+
+### 7. Agregar nueva ronda a catación existente (usar ID de test 1)
+POST http://localhost:5253/api/Catacion/1/rondas
+Content-Type: application/json
+
+{
+  "valorCalidad": 89.5
+}
+
+###
+
+### 8. Obtener todas las rondas de una catación (usar ID de test 1)
+GET http://localhost:5253/api/Catacion/1/rondas
+
+###
+
+### 9. Obtener ronda específica (usar IDs de test 1 y test 7)
+GET http://localhost:5253/api/Catacion/1/rondas/4
+
+###
+
+### 10. Actualizar ronda específica (usar IDs de test 1 y una ronda existente)
+PUT http://localhost:5253/api/Catacion/1/rondas/1
+Content-Type: application/json
+
+{
+  "idRondas": 1,
+  "idCatacion": 1,
+  "valorCalidad": 86.5
+}
+
+###
+
+### 11. Eliminar ronda específica (usar IDs de test 1 y una ronda existente)
+DELETE http://localhost:5253/api/Catacion/1/rondas/3
+
+###
+
+### 12. Crear catación con muchas rondas
+POST http://localhost:5253/api/Catacion
+Content-Type: application/json
+
+{
+  "nlote": "LOTE003",
+  "limpio": 93.0,
+  "defectuoso": 7.0,
+  "cccalidad": 87.0,
+  "pfinales": 86.0,
+  "rondas": [
+    { "valorCalidad": 85.0 },
+    { "valorCalidad": 86.0 },
+    { "valorCalidad": 87.0 },
+    { "valorCalidad": 88.0 },
+    { "valorCalidad": 87.5 }
+  ]
+}
+
+###
+
+### 13. Eliminar catación completa (usar ID de test 5)
+DELETE http://localhost:5253/api/Catacion/2
+
+###
+
+### 14. Verificar que catación eliminada ya no existe
+GET http://localhost:5253/api/Catacion/2
+
+###

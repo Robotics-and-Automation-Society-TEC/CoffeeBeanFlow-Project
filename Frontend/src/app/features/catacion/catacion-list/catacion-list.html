@@ -1,0 +1,149 @@
+<div class="list-container">
+  <a routerLink="/" class="btn-home">
+    🏠 Volver a Inicio
+  </a>
+  
+  <div class="header">
+    <h2>Gestión de Catación</h2>
+    <button class="btn-primary" (click)="nuevoRegistro()">+ Nueva Catación</button>
+  </div>
+
+  <div *ngIf="cargando" class="loading">Cargando registros...</div>
+
+  <div *ngIf="!cargando && cataciones.length === 0" class="empty-state">
+    <p>No hay registros de catación aún</p>
+    <button class="btn-primary" (click)="nuevoRegistro()">Crear el primero</button>
+  </div>
+
+  <div *ngIf="!cargando && cataciones.length > 0" class="cards-grid">
+    <div class="catacion-card" *ngFor="let catacion of cataciones">
+      <div class="card-header">
+        <div>
+          <h3>{{ catacion.nlote || 'Sin lote' }}</h3>
+          <span class="id-badge">ID: {{ catacion.idCatacion }}</span>
+        </div>
+        <div class="header-badges">
+          <span class="badge" [class]="'badge-' + getEstadoCalidad(catacion.pfinales).toLowerCase().replace(' ', '-')">
+            {{ getEstadoCalidad(catacion.pfinales) }}
+          </span>
+          <span class="score-badge" *ngIf="catacion.pfinales">
+            {{ catacion.pfinales }}
+          </span>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <!-- Información General -->
+        <div class="info-section">
+          <h4>Información General</h4>
+          <div class="info-grid">
+            <div class="info-item highlight">
+              <span class="label">Puntos Finales:</span>
+              <span class="value primary">{{ catacion.pfinales || '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Limpio:</span>
+              <span class="value">{{ catacion.limpio ? (catacion.limpio + '%') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Defectuoso:</span>
+              <span class="value">{{ catacion.defectuoso ? (catacion.defectuoso + '%') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">CC Calidad:</span>
+              <span class="value">{{ catacion.cccalidad ? (catacion.cccalidad + '%') : '-' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calidad y Tostado -->
+        <div class="info-section">
+          <h4>Calidad y Tostado</h4>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="label">FF Reposo:</span>
+              <span class="value">{{ catacion.ffreposo || '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">Quaker:</span>
+              <span class="value">{{ catacion.quaker || '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">CC Verde:</span>
+              <span class="value">{{ catacion.ccverde ? (catacion.ccverde + '%') : '-' }}</span>
+            </div>
+            <div class="info-item">
+              <span class="label">R Tostado:</span>
+              <span class="value">{{ catacion.rtostado ? (catacion.rtostado + '%') : '-' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Defectos -->
+        <div class="info-section defects-section">
+          <h4>Defectos</h4>
+          <div class="defects-summary">
+            <div class="defect-card">
+              <span class="defect-label">Categoría 1</span>
+              <span class="defect-value c1">{{ contarDefectosCategoria1(catacion) }}</span>
+            </div>
+            <div class="defect-card">
+              <span class="defect-label">Categoría 2</span>
+              <span class="defect-value c2">{{ contarDefectosCategoria2(catacion) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Zaranda -->
+        <div class="info-section" *ngIf="catacion.veinte || catacion.dieciocho || catacion.dieciseis">
+          <h4>Zaranda - Principales Tamices</h4>
+          <div class="info-grid">
+            <div class="info-item" *ngIf="catacion.veinte">
+              <span class="label">Tamiz 20:</span>
+              <span class="value">{{ catacion.veinte + '%' }}</span>
+            </div>
+            <div class="info-item" *ngIf="catacion.diecinueve">
+              <span class="label">Tamiz 19:</span>
+              <span class="value">{{ catacion.diecinueve + '%' }}</span>
+            </div>
+            <div class="info-item" *ngIf="catacion.dieciocho">
+              <span class="label">Tamiz 18:</span>
+              <span class="value">{{ catacion.dieciocho + '%' }}</span>
+            </div>
+            <div class="info-item" *ngIf="catacion.diecisiete">
+              <span class="label">Tamiz 17:</span>
+              <span class="value">{{ catacion.diecisiete + '%' }}</span>
+            </div>
+            <div class="info-item" *ngIf="catacion.dieciseis">
+              <span class="label">Tamiz 16:</span>
+              <span class="value">{{ catacion.dieciseis + '%' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rondas de Evaluación -->
+        <div class="info-section rondas-section" *ngIf="catacion.rondas && catacion.rondas.length > 0">
+          <div class="rondas-header">
+            <h4>Rondas de Evaluación</h4>
+            <span class="rondas-badge">{{ catacion.rondas.length }} ronda(s)</span>
+          </div>
+          <div class="rondas-list">
+            <div class="ronda-item" *ngFor="let ronda of catacion.rondas; let i = index">
+              <span class="ronda-label">Ronda {{ i + 1 }}:</span>
+              <span class="ronda-score">{{ ronda.valorCalidad || '-' }}</span>
+            </div>
+          </div>
+          <div class="promedio-rondas" *ngIf="calcularPromedioRondas(catacion)">
+            <span class="promedio-label">Promedio:</span>
+            <span class="promedio-value">{{ calcularPromedioRondas(catacion) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <button class="btn-edit" (click)="editarRegistro(catacion.idCatacion)">Editar</button>
+        <button class="btn-delete" (click)="eliminarRegistro(catacion.idCatacion)">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(winget install:*)",
+      "Bash(psql:*)",
+      "Bash(findstr:*)",
+      "Bash(mkdir:*)",
+      "Bash(dotnet new:*)",
+      "Bash(dotnet add package:*)",
+      "Bash(dotnet add:*)",
+      "Bash(set:*)",
+      "Bash(dotnet ef migrations:*)",
+      "Bash(dotnet build:*)",
+      "Bash(dotnet ef database:*)",
+      "Bash(dotnet run)",
+      "Bash(dotnet remove:*)"
+    ]
+  }
+}

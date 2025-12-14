@@ -1,0 +1,247 @@
+<div class="bodega-form-container">
+  <a routerLink="/" class="btn-home">
+    🏠 Volver a Inicio
+  </a>
+  
+  <div class="form-header">
+    <h1>{{ isEditMode ? 'Editar Bodega' : 'Nueva Bodega' }}</h1>
+    <p class="subtitle">Registra el almacenamiento de café procesado</p>
+  </div>
+
+  @if (errorMessage) {
+    <div class="alert alert-error">{{ errorMessage }}</div>
+  }
+
+  @if (isLoading) {
+    <div class="loading-overlay">
+      <div class="loading-spinner"></div>
+    </div>
+  }
+
+  <form [formGroup]="bodegaForm" (ngSubmit)="onSubmit()" class="bodega-form">
+    
+    <!-- INFORMACIÓN PRINCIPAL -->
+    <div class="form-section">
+      <h2 class="section-title">📋 Información Principal</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="nlote">Número de Lote *</label>
+          <select
+            id="nlote"
+            formControlName="nlote"
+            class="form-control"
+            [class.error]="bodegaForm.get('nlote')?.invalid && bodegaForm.get('nlote')?.touched"
+          >
+            <option value="">Seleccione un lote</option>
+            @for (lote of lotesDisponibles; track lote.nlote) {
+              <option [value]="lote.nlote">{{lote.nlote}} - {{lote.nproductor}} ({{lote.disponible}}kg)</option>
+            }
+          </select>
+          @if (bodegaForm.get('nlote')?.invalid && bodegaForm.get('nlote')?.touched) {
+            <span class="error-text">El número de lote es requerido</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="finicio_reposo">Fecha Inicio de Reposo</label>
+          <input
+            type="datetime-local"
+            id="finicio_reposo"
+            formControlName="finicio_reposo"
+            class="form-control"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="cantidadSacos">Cantidad de Sacos</label>
+          <input
+            type="number"
+            id="cantidadSacos"
+            formControlName="cantidadSacos"
+            class="form-control"
+            placeholder="0"
+            min="0"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- PESOS -->
+    <div class="form-section">
+      <h2 class="section-title">⚖️ Pesos del Café</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="wBellota">Peso Bellota (kg)</label>
+          <input
+            type="number"
+            id="wBellota"
+            formControlName="wBellota"
+            class="form-control"
+            placeholder="0.00"
+            step="0.01"
+            min="0"
+          />
+          <small class="help-text">Peso del café en bellota</small>
+        </div>
+
+        <div class="form-group">
+          <label for="wPergamino">Peso Pergamino (kg)</label>
+          <input
+            type="number"
+            id="wPergamino"
+            formControlName="wPergamino"
+            class="form-control"
+            placeholder="0.00"
+            step="0.01"
+            min="0"
+          />
+          <small class="help-text">Peso del café pergamino</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- HUMEDADES -->
+    <div class="form-section">
+      <h2 class="section-title">💧 Humedades</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="hinicial">Humedad Inicial (%)</label>
+          <input
+            type="number"
+            id="hinicial"
+            formControlName="hinicial"
+            class="form-control"
+            placeholder="0.00"
+            step="0.01"
+            min="0"
+            max="100"
+            [class.error]="bodegaForm.get('hinicial')?.invalid && bodegaForm.get('hinicial')?.touched"
+          />
+          @if (bodegaForm.get('hinicial')?.hasError('max')) {
+            <span class="error-text">La humedad debe ser menor o igual a 100%</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="hfinal">Humedad Final (%)</label>
+          <input
+            type="number"
+            id="hfinal"
+            formControlName="hfinal"
+            class="form-control"
+            placeholder="0.00"
+            step="0.01"
+            min="0"
+            max="100"
+            [class.error]="bodegaForm.get('hfinal')?.invalid && bodegaForm.get('hfinal')?.touched"
+          />
+          @if (bodegaForm.get('hfinal')?.hasError('max')) {
+            <span class="error-text">La humedad debe ser menor o igual a 100%</span>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- DENSIDADES -->
+    <div class="form-section">
+      <h2 class="section-title">📊 Densidades</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="dPergamino">Densidad Pergamino (g/ml)</label>
+          <input
+            type="number"
+            id="dPergamino"
+            formControlName="dPergamino"
+            class="form-control"
+            placeholder="0.00"
+            step="0.01"
+            min="0"
+            max="1"
+            [class.error]="bodegaForm.get('dPergamino')?.invalid && bodegaForm.get('dPergamino')?.touched"
+          />
+          <small class="help-text">Valor típico: 0.65 - 0.75 g/ml</small>
+          @if (bodegaForm.get('dPergamino')?.hasError('max')) {
+            <span class="error-text">La densidad debe ser menor o igual a 1</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="dBellota">Densidad Bellota (g/ml)</label>
+          <input
+            type="number"
+            id="dBellota"
+            formControlName="dBellota"
+            class="form-control"
+            placeholder="0.00"
+            step="0.01"
+            min="0"
+            max="1"
+            [class.error]="bodegaForm.get('dBellota')?.invalid && bodegaForm.get('dBellota')?.touched"
+          />
+          <small class="help-text">Valor típico: 0.60 - 0.70 g/ml</small>
+          @if (bodegaForm.get('dBellota')?.hasError('max')) {
+            <span class="error-text">La densidad debe ser menor o igual a 1</span>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- PRUEBAS DE MASA -->
+    <div class="form-section">
+      <h2 class="section-title">🔬 Pruebas de Masa</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="pmhRelativa">PMH Relativa</label>
+          <input
+            type="number"
+            id="pmhRelativa"
+            formControlName="pmhRelativa"
+            class="form-control"
+            placeholder="0.00"
+            step="0.01"
+            min="0"
+            max="1"
+            [class.error]="bodegaForm.get('pmhRelativa')?.invalid && bodegaForm.get('pmhRelativa')?.touched"
+          />
+          <small class="help-text">Prueba de Masa Húmeda relativa</small>
+        </div>
+
+        <div class="form-group">
+          <label for="pmtInterna">PMT Interna (°C)</label>
+          <input
+            type="number"
+            id="pmtInterna"
+            formControlName="pmtInterna"
+            class="form-control"
+            placeholder="0.00"
+            step="0.1"
+          />
+          <small class="help-text">Prueba de Masa - Temperatura interna</small>
+        </div>
+
+        <div class="form-group">
+          <label for="pmtExterna">PMT Externa (°C)</label>
+          <input
+            type="number"
+            id="pmtExterna"
+            formControlName="pmtExterna"
+            class="form-control"
+            placeholder="0.00"
+            step="0.1"
+          />
+          <small class="help-text">Prueba de Masa - Temperatura externa</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTONES DE ACCIÓN -->
+    <div class="form-actions">
+      <button type="button" class="btn-secondary" (click)="cancelar()" [disabled]="isLoading">
+        Cancelar
+      </button>
+      <button type="submit" class="btn-primary" [disabled]="isLoading">
+        {{ isEditMode ? 'Actualizar' : 'Guardar' }} Bodega
+      </button>
+    </div>
+  </form>
+</div>

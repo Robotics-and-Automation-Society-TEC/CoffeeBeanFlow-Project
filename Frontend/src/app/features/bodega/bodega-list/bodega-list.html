@@ -1,0 +1,158 @@
+<div class="bodega-list-container">
+  <a routerLink="/" class="btn-home">
+    🏠 Volver a Inicio
+  </a>
+  
+  <div class="list-header">
+    <div class="header-content">
+      <h1>🏪 Registros de Bodega</h1>
+      <p class="subtitle">Gestión de almacenamiento de café procesado</p>
+    </div>
+    <button class="btn-primary" routerLink="/bodega/nuevo">
+      + Nueva Bodega
+    </button>
+  </div>
+
+  @if (errorMessage) {
+    <div class="alert alert-error">{{ errorMessage }}</div>
+  }
+
+  @if (isLoading) {
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>Cargando registros...</p>
+    </div>
+  }
+
+  @if (!isLoading && bodegas.length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">🏪</div>
+      <h2>No hay registros de bodega</h2>
+      <p>Comienza creando un nuevo registro de almacenamiento</p>
+      <button class="btn-primary" routerLink="/bodega/nuevo">
+        Crear Primera Bodega
+      </button>
+    </div>
+  }
+
+  @if (!isLoading && bodegas.length > 0) {
+    <div class="cards-container">
+      @for (bodega of bodegas; track bodega.idBodega) {
+        <div class="bodega-card">
+          <div class="card-header">
+            <div class="card-title">
+              <span class="id-badge">ID: {{ bodega.idBodega }}</span>
+              <span class="lote-badge">{{ bodega.nlote }}</span>
+            </div>
+            <div class="card-actions">
+              <button 
+                class="btn-action btn-edit" 
+                (click)="editarRegistro(bodega.idBodega)"
+                title="Editar"
+              >
+                ✏️
+              </button>
+              <button 
+                class="btn-action btn-delete" 
+                (click)="eliminarRegistro(bodega.idBodega)"
+                title="Eliminar"
+              >
+                🗑️
+              </button>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <!-- PESOS -->
+            <div class="info-section">
+              <h3 class="section-label">⚖️ Pesos</h3>
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="info-label">Bellota:</span>
+                  <span class="info-value">{{ formatearNumero(bodega.wBellota) }} kg</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Pergamino:</span>
+                  <span class="info-value">{{ formatearNumero(bodega.wPergamino) }} kg</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- HUMEDADES -->
+            <div class="info-section">
+              <h3 class="section-label">💧 Humedades</h3>
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="info-label">Inicial:</span>
+                  <span class="info-value">{{ formatearNumero(bodega.hinicial) }}%</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Final:</span>
+                  <span class="info-value">
+                    {{ formatearNumero(bodega.hfinal) }}%
+                    <span class="badge" [ngClass]="getClaseEstadoHumedad(bodega)">
+                      {{ getEstadoHumedad(bodega) }}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- DENSIDADES -->
+            <div class="info-section">
+              <h3 class="section-label">📊 Densidades</h3>
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="info-label">Pergamino:</span>
+                  <span class="info-value">{{ formatearNumero(bodega.dPergamino) }} g/ml</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Bellota:</span>
+                  <span class="info-value">{{ formatearNumero(bodega.dBellota) }} g/ml</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- INFORMACIÓN ADICIONAL -->
+            <div class="info-section">
+              <h3 class="section-label">📋 Información Adicional</h3>
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="info-label">Sacos:</span>
+                  <span class="info-value">{{ bodega.cantidadSacos ?? '-' }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">Inicio Reposo:</span>
+                  <span class="info-value">{{ formatearFecha(bodega.finicio_reposo) }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- PRUEBAS DE MASA -->
+            <div class="info-section">
+              <h3 class="section-label">🔬 Pruebas de Masa</h3>
+              <div class="info-grid-3">
+                <div class="info-item">
+                  <span class="info-label">PMH Relativa:</span>
+                  <span class="info-value">{{ formatearNumero(bodega.pmhRelativa) }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">PMT Interna:</span>
+                  <span class="info-value">{{ formatearNumero(bodega.pmtInterna) }}°C</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">PMT Externa:</span>
+                  <span class="info-value">{{ formatearNumero(bodega.pmtExterna) }}°C</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="list-footer">
+      <p>Total de registros: <strong>{{ bodegas.length }}</strong></p>
+    </div>
+  }
+</div>

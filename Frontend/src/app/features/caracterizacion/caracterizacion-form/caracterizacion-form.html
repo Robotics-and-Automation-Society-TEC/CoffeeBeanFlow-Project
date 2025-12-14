@@ -1,0 +1,447 @@
+<div class="form-container">
+  <a routerLink="/" class="btn-home">
+    🏠 Volver a Inicio
+  </a>
+  
+  <h2>{{ modoEdicion ? 'Editar Caracterización' : 'Nueva Caracterización' }}</h2>
+
+  <form [formGroup]="formulario" (ngSubmit)="guardar()">
+    <!-- Información Principal -->
+    <section class="form-section">
+      <h3>Información Principal</h3>
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="tiempo">Fecha y Hora *</label>
+          <input 
+            type="datetime-local" 
+            id="tiempo" 
+            formControlName="tiempo"
+            [class.error]="formulario.get('tiempo')?.invalid && formulario.get('tiempo')?.touched">
+          <span class="error-message" *ngIf="formulario.get('tiempo')?.invalid && formulario.get('tiempo')?.touched">
+            Campo requerido
+          </span>
+        </div>
+
+        <div class="form-field">
+          <label for="nloteAreaAcopio">Número de Lote *</label>
+          <select 
+            id="nloteAreaAcopio" 
+            formControlName="nloteAreaAcopio"
+            [class.error]="formulario.get('nloteAreaAcopio')?.invalid && formulario.get('nloteAreaAcopio')?.touched">
+            <option value="">Seleccione un lote</option>
+            <option *ngFor="let lote of lotesDisponibles" [value]="lote.nlote">
+              {{lote.nlote}} - {{lote.nproductor}} ({{lote.disponible}}kg)
+            </option>
+          </select>
+          <span class="error-message" *ngIf="formulario.get('nloteAreaAcopio')?.invalid && formulario.get('nloteAreaAcopio')?.touched">
+            Campo requerido
+          </span>
+        </div>
+
+        <div class="form-field">
+          <label for="proceso">Proceso</label>
+          <input 
+            type="text" 
+            id="proceso" 
+            formControlName="proceso">
+        </div>
+      </div>
+    </section>
+
+    <!-- Rendimientos y Densidad -->
+    <section class="form-section">
+      <h3>Rendimientos y Densidad</h3>
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="drMaduras">DR Maduras (%)</label>
+          <input 
+            type="number" 
+            id="drMaduras" 
+            formControlName="drMaduras" 
+            step="0.01"
+            [class.error]="formulario.get('drMaduras')?.invalid && formulario.get('drMaduras')?.touched">
+          <span class="error-message" *ngIf="formulario.get('drMaduras')?.invalid && formulario.get('drMaduras')?.touched">
+            Rango: 0-100%
+          </span>
+        </div>
+
+        <div class="form-field">
+          <label for="densidad">Densidad</label>
+          <input 
+            type="number" 
+            id="densidad" 
+            formControlName="densidad" 
+            step="0.01"
+            [class.error]="formulario.get('densidad')?.invalid && formulario.get('densidad')?.touched">
+          <span class="error-message" *ngIf="formulario.get('densidad')?.invalid && formulario.get('densidad')?.touched">
+            Debe ser mayor o igual a 0
+          </span>
+        </div>
+
+        <div class="form-field">
+          <label for="mTabla">M Tabla</label>
+          <input 
+            type="number" 
+            id="mTabla" 
+            formControlName="mTabla" 
+            step="0.01"
+            [class.error]="formulario.get('mTabla')?.invalid && formulario.get('mTabla')?.touched">
+          <span class="error-message" *ngIf="formulario.get('mTabla')?.invalid && formulario.get('mTabla')?.touched">
+            Debe ser mayor o igual a 0
+          </span>
+        </div>
+
+        <div class="form-field">
+          <label for="eMaduracion">Estado Maduración (%)</label>
+          <input 
+            type="number" 
+            id="eMaduracion" 
+            formControlName="eMaduracion" 
+            step="0.01"
+            [class.error]="formulario.get('eMaduracion')?.invalid && formulario.get('eMaduracion')?.touched">
+          <span class="error-message" *ngIf="formulario.get('eMaduracion')?.invalid && formulario.get('eMaduracion')?.touched">
+            Rango: 0-100%
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Conteos -->
+    <section class="form-section">
+      <h3>Conteos</h3>
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="cVerdes">Cantidad Verdes</label>
+          <input 
+            type="number" 
+            id="cVerdes" 
+            formControlName="cVerdes"
+            [class.error]="formulario.get('cVerdes')?.invalid && formulario.get('cVerdes')?.touched">
+          <span class="error-message" *ngIf="formulario.get('cVerdes')?.invalid && formulario.get('cVerdes')?.touched">
+            Debe ser mayor o igual a 0
+          </span>
+        </div>
+
+        <div class="form-field">
+          <label for="cObjetivo">Cantidad Objetivo</label>
+          <input 
+            type="number" 
+            id="cObjetivo" 
+            formControlName="cObjetivo"
+            [class.error]="formulario.get('cObjetivo')?.invalid && formulario.get('cObjetivo')?.touched">
+          <span class="error-message" *ngIf="formulario.get('cObjetivo')?.invalid && formulario.get('cObjetivo')?.touched">
+            Debe ser mayor o igual a 0
+          </span>
+        </div>
+
+        <div class="form-field">
+          <label for="cInmaduras">Cantidad Inmaduras</label>
+          <input 
+            type="number" 
+            id="cInmaduras" 
+            formControlName="cInmaduras"
+            [class.error]="formulario.get('cInmaduras')?.invalid && formulario.get('cInmaduras')?.touched">
+          <span class="error-message" *ngIf="formulario.get('cInmaduras')?.invalid && formulario.get('cInmaduras')?.touched">
+            Debe ser mayor o igual a 0
+          </span>
+        </div>
+
+        <div class="form-field">
+          <label for="cSobremaduras">Cantidad Sobremaduras</label>
+          <input 
+            type="number" 
+            id="cSobremaduras" 
+            formControlName="cSobremaduras"
+            [class.error]="formulario.get('cSobremaduras')?.invalid && formulario.get('cSobremaduras')?.touched">
+          <span class="error-message" *ngIf="formulario.get('cSobremaduras')?.invalid && formulario.get('cSobremaduras')?.touched">
+            Debe ser mayor o igual a 0
+          </span>
+        </div>
+
+        <div class="form-field">
+          <label for="cSecas">Cantidad Secas</label>
+          <input 
+            type="number" 
+            id="cSecas" 
+            formControlName="cSecas"
+            [class.error]="formulario.get('cSecas')?.invalid && formulario.get('cSecas')?.touched">
+          <span class="error-message" *ngIf="formulario.get('cSecas')?.invalid && formulario.get('cSecas')?.touched">
+            Debe ser mayor o igual a 0
+          </span>
+        </div>
+
+        <div class="form-field">
+          <label for="vanos">Vanos</label>
+          <input 
+            type="number" 
+            id="vanos" 
+            formControlName="vanos"
+            [class.error]="formulario.get('vanos')?.invalid && formulario.get('vanos')?.touched">
+          <span class="error-message" *ngIf="formulario.get('vanos')?.invalid && formulario.get('vanos')?.touched">
+            Debe ser mayor o igual a 0
+          </span>
+        </div>
+
+        <div class="form-field">
+          <label for="secos">Secos</label>
+          <input 
+            type="number" 
+            id="secos" 
+            formControlName="secos"
+            [class.error]="formulario.get('secos')?.invalid && formulario.get('secos')?.touched">
+          <span class="error-message" *ngIf="formulario.get('secos')?.invalid && formulario.get('secos')?.touched">
+            Debe ser mayor o igual a 0
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Porcentajes -->
+    <section class="form-section">
+      <h3>Porcentajes</h3>
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="pcDebajo">PC Debajo (%)</label>
+          <input 
+            type="number" 
+            id="pcDebajo" 
+            formControlName="pcDebajo" 
+            step="0.01"
+            [class.error]="formulario.get('pcDebajo')?.invalid && formulario.get('pcDebajo')?.touched">
+          <span class="error-message" *ngIf="formulario.get('pcDebajo')?.invalid && formulario.get('pcDebajo')?.touched">
+            Rango: 0-100%
+          </span>
+        </div>
+
+        <div class="form-field">
+          <label for="pcVerdes">PC Verdes (%)</label>
+          <input 
+            type="number" 
+            id="pcVerdes" 
+            formControlName="pcVerdes" 
+            step="0.01"
+            [class.error]="formulario.get('pcVerdes')?.invalid && formulario.get('pcVerdes')?.touched">
+          <span class="error-message" *ngIf="formulario.get('pcVerdes')?.invalid && formulario.get('pcVerdes')?.touched">
+            Rango: 0-100%
+          </span>
+        </div>
+
+        <div class="form-field">
+          <label for="pcSecas">PC Secas (%)</label>
+          <input 
+            type="number" 
+            id="pcSecas" 
+            formControlName="pcSecas" 
+            step="0.01"
+            [class.error]="formulario.get('pcSecas')?.invalid && formulario.get('pcSecas')?.touched">
+          <span class="error-message" *ngIf="formulario.get('pcSecas')?.invalid && formulario.get('pcSecas')?.touched">
+            Rango: 0-100%
+          </span>
+        </div>
+
+        <div class="form-field">
+          <label for="pcEncima">PC Encima (%)</label>
+          <input 
+            type="number" 
+            id="pcEncima" 
+            formControlName="pcEncima" 
+            step="0.01"
+            [class.error]="formulario.get('pcEncima')?.invalid && formulario.get('pcEncima')?.touched">
+          <span class="error-message" *ngIf="formulario.get('pcEncima')?.invalid && formulario.get('pcEncima')?.touched">
+            Rango: 0-100%
+          </span>
+        </div>
+
+        <div class="form-field">
+          <label for="pcObjetivo">PC Objetivo (%)</label>
+          <input 
+            type="number" 
+            id="pcObjetivo" 
+            formControlName="pcObjetivo" 
+            step="0.01"
+            [class.error]="formulario.get('pcObjetivo')?.invalid && formulario.get('pcObjetivo')?.touched">
+          <span class="error-message" *ngIf="formulario.get('pcObjetivo')?.invalid && formulario.get('pcObjetivo')?.touched">
+            Rango: 0-100%
+          </span>
+        </div>
+
+        <div class="form-field">
+          <label for="broca">Broca (%)</label>
+          <input 
+            type="number" 
+            id="broca" 
+            formControlName="broca" 
+            step="0.01"
+            [class.error]="formulario.get('broca')?.invalid && formulario.get('broca')?.touched">
+          <span class="error-message" *ngIf="formulario.get('broca')?.invalid && formulario.get('broca')?.touched">
+            Rango: 0-100%
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- RC Sobremaduras -->
+    <section class="form-section">
+      <div class="section-header">
+        <h3>RC Sobremaduras</h3>
+        <label class="checkbox-label">
+          <input 
+            type="checkbox" 
+            [checked]="incluyeSobremaduras"
+            (change)="toggleSobremaduras()">
+          Incluir RC Sobremaduras
+        </label>
+      </div>
+
+      <div *ngIf="incluyeSobremaduras" formGroupName="rcSobremaduras" class="rc-card">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="sobremadurasGbx">GBX</label>
+            <input 
+              type="number" 
+              id="sobremadurasGbx" 
+              formControlName="gbx" 
+              step="0.01"
+              [class.error]="formulario.get('rcSobremaduras.gbx')?.invalid && formulario.get('rcSobremaduras.gbx')?.touched">
+            <span class="error-message" *ngIf="formulario.get('rcSobremaduras.gbx')?.invalid && formulario.get('rcSobremaduras.gbx')?.touched">
+              Debe ser mayor o igual a 0
+            </span>
+          </div>
+
+          <div class="form-field">
+            <label for="sobremadurasPromedio">Promedio</label>
+            <input 
+              type="number" 
+              id="sobremadurasPromedio" 
+              formControlName="promedio" 
+              step="0.01"
+              [class.error]="formulario.get('rcSobremaduras.promedio')?.invalid && formulario.get('rcSobremaduras.promedio')?.touched">
+            <span class="error-message" *ngIf="formulario.get('rcSobremaduras.promedio')?.invalid && formulario.get('rcSobremaduras.promedio')?.touched">
+              Debe ser mayor o igual a 0
+            </span>
+          </div>
+
+          <div class="form-field full-width">
+            <label for="sobremadurasObservaciones">Observaciones</label>
+            <textarea 
+              id="sobremadurasObservaciones" 
+              formControlName="observaciones"
+              rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RC Inmaduras -->
+    <section class="form-section">
+      <div class="section-header">
+        <h3>RC Inmaduras</h3>
+        <label class="checkbox-label">
+          <input 
+            type="checkbox" 
+            [checked]="incluyeInmaduras"
+            (change)="toggleInmaduras()">
+          Incluir RC Inmaduras
+        </label>
+      </div>
+
+      <div *ngIf="incluyeInmaduras" formGroupName="rcInmaduras" class="rc-card">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="inmadurasGbx">GBX</label>
+            <input 
+              type="number" 
+              id="inmadurasGbx" 
+              formControlName="gbx" 
+              step="0.01"
+              [class.error]="formulario.get('rcInmaduras.gbx')?.invalid && formulario.get('rcInmaduras.gbx')?.touched">
+            <span class="error-message" *ngIf="formulario.get('rcInmaduras.gbx')?.invalid && formulario.get('rcInmaduras.gbx')?.touched">
+              Debe ser mayor o igual a 0
+            </span>
+          </div>
+
+          <div class="form-field">
+            <label for="inmadurasPromedio">Promedio</label>
+            <input 
+              type="number" 
+              id="inmadurasPromedio" 
+              formControlName="promedio" 
+              step="0.01"
+              [class.error]="formulario.get('rcInmaduras.promedio')?.invalid && formulario.get('rcInmaduras.promedio')?.touched">
+            <span class="error-message" *ngIf="formulario.get('rcInmaduras.promedio')?.invalid && formulario.get('rcInmaduras.promedio')?.touched">
+              Debe ser mayor o igual a 0
+            </span>
+          </div>
+
+          <div class="form-field full-width">
+            <label for="inmadurasObservaciones">Observaciones</label>
+            <textarea 
+              id="inmadurasObservaciones" 
+              formControlName="observaciones"
+              rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RC Maduras -->
+    <section class="form-section">
+      <div class="section-header">
+        <h3>RC Maduras</h3>
+        <label class="checkbox-label">
+          <input 
+            type="checkbox" 
+            [checked]="incluyeMaduras"
+            (change)="toggleMaduras()">
+          Incluir RC Maduras
+        </label>
+      </div>
+
+      <div *ngIf="incluyeMaduras" formGroupName="rcMaduras" class="rc-card">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="madurasGbx">GBX</label>
+            <input 
+              type="number" 
+              id="madurasGbx" 
+              formControlName="gbx" 
+              step="0.01"
+              [class.error]="formulario.get('rcMaduras.gbx')?.invalid && formulario.get('rcMaduras.gbx')?.touched">
+            <span class="error-message" *ngIf="formulario.get('rcMaduras.gbx')?.invalid && formulario.get('rcMaduras.gbx')?.touched">
+              Debe ser mayor o igual a 0
+            </span>
+          </div>
+
+          <div class="form-field">
+            <label for="madurasPromedio">Promedio</label>
+            <input 
+              type="number" 
+              id="madurasPromedio" 
+              formControlName="promedio" 
+              step="0.01"
+              [class.error]="formulario.get('rcMaduras.promedio')?.invalid && formulario.get('rcMaduras.promedio')?.touched">
+            <span class="error-message" *ngIf="formulario.get('rcMaduras.promedio')?.invalid && formulario.get('rcMaduras.promedio')?.touched">
+              Debe ser mayor o igual a 0
+            </span>
+          </div>
+
+          <div class="form-field full-width">
+            <label for="madurasObservaciones">Observaciones</label>
+            <textarea 
+              id="madurasObservaciones" 
+              formControlName="observaciones"
+              rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Botones -->
+    <div class="form-actions">
+      <button type="button" class="btn-secondary" (click)="cancelar()">Cancelar</button>
+      <button type="submit" class="btn-primary" [disabled]="formulario.invalid">
+        {{ modoEdicion ? 'Actualizar' : 'Crear' }}
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,229 @@
+@baseUrl = http://localhost:5253/api
+
+### 1. Obtener todas las Caracterizaciones
+GET {{baseUrl}}/Caracterizacion
+Accept: application/json
+
+###
+
+### 2. Obtener Caracterización por Tiempo
+GET {{baseUrl}}/Caracterizacion/2024-12-14T08:30:00Z
+Accept: application/json
+
+###
+
+### 3. Obtener Caracterizaciones por Lote
+GET {{baseUrl}}/Caracterizacion/lote/L-001
+Accept: application/json
+
+###
+
+### 4. Crear Caracterización SIN entidades débiles RC
+POST {{baseUrl}}/Caracterizacion
+Content-Type: application/json
+
+{
+  "tiempo": "2024-12-14T08:30:00Z",
+  "nloteAreaAcopio": "L-001",
+  "drMaduras": 85.5,
+  "pcDebajo": 12.3,
+  "proceso": "Lavado",
+  "lAsignado": "Lote-A",
+  "cVerdes": 50,
+  "cObjetivo": 200,
+  "cInmaduras": 30,
+  "cSobremaduras": 20,
+  "cSecas": 10,
+  "mTabla": 15.5,
+  "pcVerdes": 25.0,
+  "pcSecas": 5.0,
+  "pcEncima": 8.0,
+  "eMaduracion": 80.0,
+  "broca": 3.5,
+  "densidad": 1.12,
+  "vanos": 5,
+  "secos": 8,
+  "pcObjetivo": 90.0
+}
+
+###
+
+### 5. Crear Caracterización CON las 3 entidades débiles RC (Sobremaduras, Inmaduras, Maduras)
+POST {{baseUrl}}/Caracterizacion
+Content-Type: application/json
+
+{
+  "tiempo": "2024-12-14T09:00:00Z",
+  "nloteAreaAcopio": "L-002",
+  "drMaduras": 88.2,
+  "pcDebajo": 10.5,
+  "proceso": "Natural",
+  "lAsignado": "Lote-B",
+  "cVerdes": 45,
+  "cObjetivo": 180,
+  "cInmaduras": 25,
+  "cSobremaduras": 15,
+  "cSecas": 8,
+  "mTabla": 14.2,
+  "pcVerdes": 22.0,
+  "pcSecas": 4.5,
+  "pcEncima": 7.5,
+  "eMaduracion": 82.5,
+  "broca": 2.8,
+  "densidad": 1.15,
+  "vanos": 4,
+  "secos": 6,
+  "pcObjetivo": 92.0,
+  "rcSobremaduras": {
+    "gbx": 21.5,
+    "promedio": 18.3,
+    "observaciones": "Sobremaduras dentro del rango aceptable"
+  },
+  "rcInmaduras": {
+    "gbx": 19.8,
+    "promedio": 16.5,
+    "observaciones": "Inmaduras por debajo del límite"
+  },
+  "rcMaduras": {
+    "gbx": 85.7,
+    "promedio": 82.4,
+    "observaciones": "Maduras en excelente condición"
+  }
+}
+
+###
+
+### 6. Actualizar Caracterización (solo datos principales, sin modificar RC existentes)
+PUT {{baseUrl}}/Caracterizacion/2024-12-14T08:30:00Z
+Content-Type: application/json
+
+{
+  "tiempo": "2024-12-14T08:30:00Z",
+  "nloteAreaAcopio": "L-001",
+  "drMaduras": 86.0,
+  "pcDebajo": 11.8,
+  "proceso": "Lavado Mejorado",
+  "lAsignado": "Lote-A",
+  "cVerdes": 48,
+  "cObjetivo": 200,
+  "cInmaduras": 28,
+  "cSobremaduras": 18,
+  "cSecas": 9,
+  "mTabla": 15.8,
+  "pcVerdes": 24.0,
+  "pcSecas": 4.8,
+  "pcEncima": 7.8,
+  "eMaduracion": 81.0,
+  "broca": 3.2,
+  "densidad": 1.13,
+  "vanos": 4,
+  "secos": 7,
+  "pcObjetivo": 91.0
+}
+
+###
+
+### 7. Actualizar Caracterización CON nuevas entidades débiles RC (agregando o reemplazando)
+PUT {{baseUrl}}/Caracterizacion/2024-12-14T09:00:00Z
+Content-Type: application/json
+
+{
+  "tiempo": "2024-12-14T09:00:00Z",
+  "nloteAreaAcopio": "L-002",
+  "drMaduras": 89.0,
+  "pcDebajo": 10.0,
+  "proceso": "Natural Premium",
+  "lAsignado": "Lote-B",
+  "cVerdes": 42,
+  "cObjetivo": 180,
+  "cInmaduras": 23,
+  "cSobremaduras": 14,
+  "cSecas": 7,
+  "mTabla": 14.5,
+  "pcVerdes": 21.0,
+  "pcSecas": 4.2,
+  "pcEncima": 7.2,
+  "eMaduracion": 83.5,
+  "broca": 2.5,
+  "densidad": 1.16,
+  "vanos": 3,
+  "secos": 5,
+  "pcObjetivo": 93.0,
+  "rcSobremaduras": {
+    "gbx": 22.0,
+    "promedio": 18.8,
+    "observaciones": "Actualización: Sobremaduras mejoradas"
+  },
+  "rcInmaduras": {
+    "gbx": 18.5,
+    "promedio": 15.8,
+    "observaciones": "Actualización: Inmaduras reducidas"
+  },
+  "rcMaduras": {
+    "gbx": 86.5,
+    "promedio": 83.2,
+    "observaciones": "Actualización: Maduras óptimas"
+  }
+}
+
+###
+
+### 8. Agregar RCsobremaduras a Caracterización existente (si no tiene)
+POST {{baseUrl}}/Caracterizacion/2024-12-14T08:30:00Z/sobremaduras
+Content-Type: application/json
+
+{
+  "gbx": 20.5,
+  "promedio": 17.8,
+  "observaciones": "Sobremaduras agregadas posteriormente"
+}
+
+###
+
+### 9. Eliminar RCsobremaduras de una Caracterización
+DELETE {{baseUrl}}/Caracterizacion/2024-12-14T08:30:00Z/sobremaduras
+Accept: application/json
+
+###
+
+### 10. Agregar RCinmaduras a Caracterización existente
+POST {{baseUrl}}/Caracterizacion/2024-12-14T08:30:00Z/inmaduras
+Content-Type: application/json
+
+{
+  "gbx": 18.2,
+  "promedio": 15.5,
+  "observaciones": "Inmaduras agregadas posteriormente"
+}
+
+###
+
+### 11. Eliminar RCinmaduras de una Caracterización
+DELETE {{baseUrl}}/Caracterizacion/2024-12-14T08:30:00Z/inmaduras
+Accept: application/json
+
+###
+
+### 12. Agregar RCmaduras a Caracterización existente
+POST {{baseUrl}}/Caracterizacion/2024-12-14T08:30:00Z/maduras
+Content-Type: application/json
+
+{
+  "gbx": 84.5,
+  "promedio": 81.3,
+  "observaciones": "Maduras agregadas posteriormente"
+}
+
+###
+
+### 13. Eliminar RCmaduras de una Caracterización
+DELETE {{baseUrl}}/Caracterizacion/2024-12-14T08:30:00Z/maduras
+Accept: application/json
+
+###
+
+### 14. Eliminar Caracterización completa (elimina automáticamente las 3 RC por CASCADE)
+DELETE {{baseUrl}}/Caracterizacion/2024-12-14T08:30:00Z
+Accept: application/json
+
+###

@@ -1,0 +1,328 @@
+<div class="form-container">
+  <a routerLink="/" class="btn-home">
+    🏠 Volver a Inicio
+  </a>
+  
+  <h2>{{ modoEdicion ? 'Editar Catación' : 'Nueva Catación' }}</h2>
+
+  <form [formGroup]="catacionForm" (ngSubmit)="guardar()" *ngIf="!cargando">
+    
+    <!-- Sección: Información Principal -->
+    <div class="form-section">
+      <h3>Información Principal</h3>
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="nlote">Número de Lote <span class="required">*</span></label>
+          <select id="nlote" formControlName="nlote">
+            <option value="">Seleccione un lote</option>
+            <option *ngFor="let lote of lotesDisponibles" [value]="lote.nlote">
+              {{lote.nlote}} - {{lote.nproductor}} ({{lote.disponible}}kg)
+            </option>
+          </select>
+          <span class="error-message" *ngIf="catacionForm.get('nlote')?.invalid && catacionForm.get('nlote')?.touched">
+            Este campo es requerido
+          </span>
+        </div>
+
+        <div class="form-field">
+          <label for="limpio">Limpio (%)</label>
+          <input type="number" id="limpio" formControlName="limpio" step="0.01" min="0" max="100">
+        </div>
+
+        <div class="form-field">
+          <label for="defectuoso">Defectuoso (%)</label>
+          <input type="number" id="defectuoso" formControlName="defectuoso" step="0.01" min="0" max="100">
+        </div>
+
+        <div class="form-field">
+          <label for="pfinales">Puntos Finales</label>
+          <input type="number" id="pfinales" formControlName="pfinales" step="0.01" min="0" max="100">
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección: Calidad y Tostado -->
+    <div class="form-section">
+      <h3>Calidad y Tostado</h3>
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="ffreposo">FF Reposo</label>
+          <input type="number" id="ffreposo" formControlName="ffreposo" step="0.01" min="0">
+        </div>
+
+        <div class="form-field">
+          <label for="overde">Olor Verde</label>
+          <input type="number" id="overde" formControlName="overde" step="0.01" min="0">
+        </div>
+
+        <div class="form-field">
+          <label for="quaker">Quaker</label>
+          <input type="number" id="quaker" formControlName="quaker" step="0.01" min="0">
+        </div>
+
+        <div class="form-field">
+          <label for="ccverde">CC Verde (%)</label>
+          <input type="number" id="ccverde" formControlName="ccverde" step="0.01" min="0" max="100">
+        </div>
+
+        <div class="form-field">
+          <label for="rtostado">R Tostado (%)</label>
+          <input type="number" id="rtostado" formControlName="rtostado" step="0.01" min="0" max="100">
+        </div>
+
+        <div class="form-field">
+          <label for="dfueste">D Fueste</label>
+          <input type="number" id="dfueste" formControlName="dfueste" step="0.01" min="0">
+        </div>
+
+        <div class="form-field">
+          <label for="cccalidad">CC Calidad (%)</label>
+          <input type="number" id="cccalidad" formControlName="cccalidad" step="0.01" min="0" max="100">
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección: Defectos Categoría 1 -->
+    <div class="form-section">
+      <h3>Defectos Categoría 1</h3>
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="c1agrio">C1 Agrio</label>
+          <input type="number" id="c1agrio" formControlName="c1agrio" step="0.01" min="0">
+        </div>
+
+        <div class="form-field">
+          <label for="c1hongos">C1 Hongos</label>
+          <input type="number" id="c1hongos" formControlName="c1hongos" step="0.01" min="0">
+        </div>
+
+        <div class="form-field">
+          <label for="c1cerezaseca">C1 Cereza Seca</label>
+          <input type="number" id="c1cerezaseca" formControlName="c1cerezaseca" step="0.01" min="0">
+        </div>
+
+        <div class="form-field">
+          <label for="c1negro">C1 Negro</label>
+          <input type="number" id="c1negro" formControlName="c1negro" step="0.01" min="0">
+        </div>
+
+        <div class="form-field">
+          <label for="c1insectos">C1 Insectos</label>
+          <input type="number" id="c1insectos" formControlName="c1insectos" step="0.01" min="0">
+        </div>
+
+        <div class="form-field">
+          <label for="c1negrop">C1 Negro P</label>
+          <input type="number" id="c1negrop" formControlName="c1negrop" step="0.01" min="0">
+        </div>
+
+        <div class="form-field">
+          <label for="c1agriop">C1 Agrio P</label>
+          <input type="number" id="c1agriop" formControlName="c1agriop" step="0.01" min="0">
+        </div>
+
+        <div class="form-field">
+          <label for="c1me">C1 ME</label>
+          <input type="number" id="c1me" formControlName="c1me" step="0.01" min="0">
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección: Defectos Categoría 2 -->
+    <div class="form-section">
+      <h3>Defectos Categoría 2</h3>
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="c2flotador">C2 Flotador</label>
+          <input type="number" id="c2flotador" formControlName="c2flotador" step="0.01" min="0">
+        </div>
+
+        <div class="form-field">
+          <label for="c2averanado">C2 Averanado</label>
+          <input type="number" id="c2averanado" formControlName="c2averanado" step="0.01" min="0">
+        </div>
+
+        <div class="form-field">
+          <label for="c2pergamino">C2 Pergamino</label>
+          <input type="number" id="c2pergamino" formControlName="c2pergamino" step="0.01" min="0">
+        </div>
+
+        <div class="form-field">
+          <label for="c2inmaduro">C2 Inmaduro</label>
+          <input type="number" id="c2inmaduro" formControlName="c2inmaduro" step="0.01" min="0">
+        </div>
+
+        <div class="form-field">
+          <label for="c2concha">C2 Concha</label>
+          <input type="number" id="c2concha" formControlName="c2concha" step="0.01" min="0">
+        </div>
+
+        <div class="form-field">
+          <label for="c2insectos">C2 Insectos</label>
+          <input type="number" id="c2insectos" formControlName="c2insectos" step="0.01" min="0">
+        </div>
+
+        <div class="form-field">
+          <label for="c2cascara">C2 Cáscara</label>
+          <input type="number" id="c2cascara" formControlName="c2cascara" step="0.01" min="0">
+        </div>
+
+        <div class="form-field">
+          <label for="c2pulpa">C2 Pulpa</label>
+          <input type="number" id="c2pulpa" formControlName="c2pulpa" step="0.01" min="0">
+        </div>
+
+        <div class="form-field">
+          <label for="c2partido">C2 Partido</label>
+          <input type="number" id="c2partido" formControlName="c2partido" step="0.01" min="0">
+        </div>
+
+        <div class="form-field">
+          <label for="c2cortado">C2 Cortado</label>
+          <input type="number" id="c2cortado" formControlName="c2cortado" step="0.01" min="0">
+        </div>
+
+        <div class="form-field">
+          <label for="c2mordido">C2 Mordido</label>
+          <input type="number" id="c2mordido" formControlName="c2mordido" step="0.01" min="0">
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección: Zaranda (Tamices) -->
+    <div class="form-section">
+      <h3>Zaranda - Tamices</h3>
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="tresSobreDieciseis">3/16 (%)</label>
+          <input type="number" id="tresSobreDieciseis" formControlName="tresSobreDieciseis" step="0.01" min="0" max="100">
+        </div>
+
+        <div class="form-field">
+          <label for="veinte">20 (%)</label>
+          <input type="number" id="veinte" formControlName="veinte" step="0.01" min="0" max="100">
+        </div>
+
+        <div class="form-field">
+          <label for="diecinueve">19 (%)</label>
+          <input type="number" id="diecinueve" formControlName="diecinueve" step="0.01" min="0" max="100">
+        </div>
+
+        <div class="form-field">
+          <label for="dieciocho">18 (%)</label>
+          <input type="number" id="dieciocho" formControlName="dieciocho" step="0.01" min="0" max="100">
+        </div>
+
+        <div class="form-field">
+          <label for="diecisiete">17 (%)</label>
+          <input type="number" id="diecisiete" formControlName="diecisiete" step="0.01" min="0" max="100">
+        </div>
+
+        <div class="form-field">
+          <label for="dieciseis">16 (%)</label>
+          <input type="number" id="dieciseis" formControlName="dieciseis" step="0.01" min="0" max="100">
+        </div>
+
+        <div class="form-field">
+          <label for="quince">15 (%)</label>
+          <input type="number" id="quince" formControlName="quince" step="0.01" min="0" max="100">
+        </div>
+
+        <div class="form-field">
+          <label for="catorce">14 (%)</label>
+          <input type="number" id="catorce" formControlName="catorce" step="0.01" min="0" max="100">
+        </div>
+
+        <div class="form-field">
+          <label for="trece">13 (%)</label>
+          <input type="number" id="trece" formControlName="trece" step="0.01" min="0" max="100">
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección: TonAgton (Agtron) -->
+    <div class="form-section">
+      <h3>Tonalidad Agtron</h3>
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="tonagton25">Agtron 25 (%)</label>
+          <input type="number" id="tonagton25" formControlName="tonagton25" step="0.01" min="0" max="100">
+        </div>
+
+        <div class="form-field">
+          <label for="tonagton35">Agtron 35 (%)</label>
+          <input type="number" id="tonagton35" formControlName="tonagton35" step="0.01" min="0" max="100">
+        </div>
+
+        <div class="form-field">
+          <label for="tonagton45">Agtron 45 (%)</label>
+          <input type="number" id="tonagton45" formControlName="tonagton45" step="0.01" min="0" max="100">
+        </div>
+
+        <div class="form-field">
+          <label for="tonagton55">Agtron 55 (%)</label>
+          <input type="number" id="tonagton55" formControlName="tonagton55" step="0.01" min="0" max="100">
+        </div>
+
+        <div class="form-field">
+          <label for="tonagton65">Agtron 65 (%)</label>
+          <input type="number" id="tonagton65" formControlName="tonagton65" step="0.01" min="0" max="100">
+        </div>
+
+        <div class="form-field">
+          <label for="tonagton75">Agtron 75 (%)</label>
+          <input type="number" id="tonagton75" formControlName="tonagton75" step="0.01" min="0" max="100">
+        </div>
+
+        <div class="form-field">
+          <label for="tonagton85">Agtron 85 (%)</label>
+          <input type="number" id="tonagton85" formControlName="tonagton85" step="0.01" min="0" max="100">
+        </div>
+
+        <div class="form-field">
+          <label for="tonagton95">Agtron 95 (%)</label>
+          <input type="number" id="tonagton95" formControlName="tonagton95" step="0.01" min="0" max="100">
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección: Rondas de Evaluación -->
+    <div class="form-section">
+      <div class="section-header">
+        <h3>Rondas de Evaluación</h3>
+        <button type="button" class="btn-add" (click)="agregarRonda()">+ Agregar Ronda</button>
+      </div>
+
+      <div class="rondas-container" *ngIf="rondas.length > 0">
+        <div class="ronda-card" *ngFor="let ronda of rondas.controls; let i = index" [formGroup]="$any(ronda)">
+          <div class="ronda-header">
+            <span class="ronda-numero">Ronda #{{ i + 1 }}</span>
+            <button type="button" class="btn-remove" (click)="eliminarRonda(i)">✕</button>
+          </div>
+          <div class="ronda-body">
+            <div class="form-field">
+              <label [for]="'valorCalidad' + i">Valor de Calidad</label>
+              <input type="number" [id]="'valorCalidad' + i" formControlName="valorCalidad" 
+                     step="0.01" min="0" max="100" placeholder="Ej: 85.5">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty-state" *ngIf="rondas.length === 0">
+        <p>No hay rondas de evaluación agregadas</p>
+        <button type="button" class="btn-primary" (click)="agregarRonda()">Agregar primera ronda</button>
+      </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="form-actions">
+      <button type="button" class="btn-secondary" (click)="cancelar()">Cancelar</button>
+      <button type="submit" class="btn-primary" [disabled]="catacionForm.invalid || cargando">
+        {{ modoEdicion ? 'Actualizar' : 'Crear' }} Catación
+      </button>
+    </div>
+  </form>
+
+  <div class="loading" *ngIf="cargando">Cargando...</div>
+</div>

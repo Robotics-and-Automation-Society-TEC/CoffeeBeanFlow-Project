@@ -1,0 +1,157 @@
+/* Importar archivos CSS modulares */
+@import 'styles/variables.css';
+@import 'styles/reset.css';
+
+/* Clases utilitarias globales - Temática Verde-Café */
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-verde));
+  color: var(--color-white);
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--border-radius-md);
+  border: none;
+  font-weight: 600;
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--color-verde), var(--color-primary-light));
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, var(--color-secondary), var(--color-accent));
+  color: var(--color-white);
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--border-radius-md);
+  border: none;
+  font-weight: 600;
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-secondary-light));
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.btn-home {
+  background: linear-gradient(135deg, var(--color-secondary-dark), var(--color-primary-dark));
+  color: var(--color-white);
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--border-radius-md);
+  border: 2px solid var(--color-verde);
+  font-weight: 600;
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-md);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  text-decoration: none;
+}
+
+.btn-home:hover {
+  background: linear-gradient(135deg, var(--color-primary-dark), var(--color-verde-dark));
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+  border-color: var(--color-verde-light);
+}
+
+.card {
+  background-color: var(--color-white);
+  border-radius: var(--border-radius-lg);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-md);
+  transition: box-shadow var(--transition-base);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-lg);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-1 { margin-top: var(--space-xs); }
+.mt-2 { margin-top: var(--space-sm); }
+.mt-3 { margin-top: var(--space-md); }
+.mt-4 { margin-top: var(--space-lg); }
+
+.mb-1 { margin-bottom: var(--space-xs); }
+.mb-2 { margin-bottom: var(--space-sm); }
+.mb-3 { margin-bottom: var(--space-md); }
+.mb-4 { margin-bottom: var(--space-lg); }
+
+/* Estilos globales para formularios - Mejor contraste y legibilidad */
+label, .form-label {
+  color: var(--color-gray-900) !important;
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  margin-bottom: var(--space-sm);
+}
+
+input, select, textarea {
+  color: var(--color-gray-900) !important;
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  background-color: var(--color-white) !important;
+  border: 2px solid var(--color-gray-400) !important;
+  padding: var(--space-md) !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--color-gray-600) !important;
+  font-weight: 500 !important;
+}
+
+/* Estilos para mejorar visibilidad en tablas y listas */
+th {
+  color: var(--color-white) !important;
+  font-size: 1.25rem !important;
+  font-weight: 900 !important;
+}
+
+td {
+  color: var(--color-gray-900) !important;
+  font-size: 1.125rem !important;
+  font-weight: 600 !important;
+}
+
+/* Botones más grandes y legibles */
+button {
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  padding: var(--space-md) var(--space-xl) !important;
+}
+
+/* Texto en tarjetas con mejor contraste */
+.card h2, .card h3, .card h4 {
+  color: var(--color-primary-dark) !important;
+  font-weight: 900 !important;
+}
+
+.card p {
+  color: var(--color-gray-900) !important;
+  font-size: 1.125rem !important;
+  font-weight: 600 !important;
+}

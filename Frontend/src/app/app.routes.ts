@@ -1,0 +1,41 @@
+import { Routes } from '@angular/router';
+import { HomeComponent } from './features/home/home';
+import { AreaAcopioListComponent } from './features/area-acopio/area-acopio-list/area-acopio-list';
+import { AreaAcopioFormComponent } from './features/area-acopio/area-acopio-form/area-acopio-form';
+import { SecadoListComponent } from './features/secado/secado-list/secado-list';
+import { SecadoFormComponent } from './features/secado/secado-form/secado-form';
+import { BodegaListComponent } from './features/bodega/bodega-list/bodega-list';
+import { BodegaFormComponent } from './features/bodega/bodega-form/bodega-form';
+import { TrillaListComponent } from './features/trilla/trilla-list/trilla-list';
+import { TrillaFormComponent } from './features/trilla/trilla-form/trilla-form';
+import { CaracterizacionListComponent } from './features/caracterizacion/caracterizacion-list/caracterizacion-list';
+import { CaracterizacionFormComponent } from './features/caracterizacion/caracterizacion-form/caracterizacion-form';
+import { CatacionListComponent } from './features/catacion/catacion-list/catacion-list';
+import { CatacionFormComponent } from './features/catacion/catacion-form/catacion-form';
+import { HistorialGeneralComponent } from './features/historial/historial-general/historial-general.component';
+import { TrazabilidadLoteComponent } from './features/historial/trazabilidad-lote/trazabilidad-lote.component';
+
+export const routes: Routes = [
+  { path: '', component: HomeComponent },
+  { path: 'historial', component: HistorialGeneralComponent },
+  { path: 'trazabilidad', component: TrazabilidadLoteComponent },
+  { path: 'area-acopio', component: AreaAcopioListComponent },
+  { path: 'area-acopio/nuevo', component: AreaAcopioFormComponent },
+  { path: 'area-acopio/editar/:nlote', component: AreaAcopioFormComponent },
+  { path: 'secado', component: SecadoListComponent },
+  { path: 'secado/nuevo', component: SecadoFormComponent },
+  { path: 'secado/editar/:id', component: SecadoFormComponent },
+  { path: 'bodega', component: BodegaListComponent },
+  { path: 'bodega/nuevo', component: BodegaFormComponent },
+  { path: 'bodega/editar/:id', component: BodegaFormComponent },
+  { path: 'trilla', component: TrillaListComponent },
+  { path: 'trilla/nuevo', component: TrillaFormComponent },
+  { path: 'trilla/editar/:id', component: TrillaFormComponent },
+  { path: 'caracterizacion', component: CaracterizacionListComponent },
+  { path: 'caracterizacion/nuevo', component: CaracterizacionFormComponent },
+  { path: 'caracterizacion/editar/:tiempo', component: CaracterizacionFormComponent },
+  { path: 'catacion', component: CatacionListComponent },
+  { path: 'catacion/nuevo', component: CatacionFormComponent },
+  { path: 'catacion/editar/:id', component: CatacionFormComponent },
+  { path: '**', redirectTo: '' }
+];

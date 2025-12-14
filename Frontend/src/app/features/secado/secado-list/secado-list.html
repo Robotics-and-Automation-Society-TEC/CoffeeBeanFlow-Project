@@ -1,0 +1,103 @@
+<div class="secado-list-container">
+  <a routerLink="/" class="btn-home">
+    🏠 Volver a Inicio
+  </a>
+  
+  <div class="list-header">
+    <div class="header-content">
+      <h1>☕ Registros de Secado</h1>
+      <p class="subtitle">Gestión del proceso de secado del café</p>
+    </div>
+    <button class="btn-primary" routerLink="/secado/nuevo">
+      + Nuevo Secado
+    </button>
+  </div>
+
+  @if (errorMessage) {
+    <div class="alert alert-error">{{ errorMessage }}</div>
+  }
+
+  @if (isLoading) {
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>Cargando registros...</p>
+    </div>
+  }
+
+  @if (!isLoading && secados.length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">📦</div>
+      <h2>No hay registros de secado</h2>
+      <p>Comienza creando un nuevo registro de secado</p>
+      <button class="btn-primary" routerLink="/secado/nuevo">
+        Crear Primer Secado
+      </button>
+    </div>
+  }
+
+  @if (!isLoading && secados.length > 0) {
+    <div class="table-container">
+      <table class="secado-table">
+        <thead>
+          <tr>
+            <th>ID Secado</th>
+            <th>Número de Lote</th>
+            <th>Fecha Inicio</th>
+            <th>Días de Secado</th>
+            <th>Fecha Final</th>
+            <th>Mediciones</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (secado of secados; track secado.idSecado) {
+            <tr>
+              <td class="id-cell">{{ secado.idSecado }}</td>
+              <td class="lote-cell">
+                <span class="badge badge-lote">{{ secado.nlote }}</span>
+              </td>
+              <td>{{ formatearFecha(secado.finicio) }}</td>
+              <td class="center-cell">
+                @if (secado.dsecado !== null) {
+                  <span class="badge badge-days">{{ secado.dsecado }} días</span>
+                } @else {
+                  <span class="text-muted">-</span>
+                }
+              </td>
+              <td>
+                @if (secado.ffinal) {
+                  {{ formatearFecha(secado.ffinal) }}
+                } @else {
+                  <span class="badge badge-pending">En proceso</span>
+                }
+              </td>
+              <td class="mediciones-cell">
+                <span class="mediciones-info">{{ contarEntidadesDebiles(secado) }}</span>
+              </td>
+              <td class="actions-cell">
+                <button 
+                  class="btn-action btn-edit" 
+                  (click)="editarRegistro(secado.idSecado)"
+                  title="Editar"
+                >
+                  ✏️
+                </button>
+                <button 
+                  class="btn-action btn-delete" 
+                  (click)="eliminarRegistro(secado.idSecado)"
+                  title="Eliminar"
+                >
+                  🗑️
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="list-footer">
+      <p>Total de registros: <strong>{{ secados.length }}</strong></p>
+    </div>
+  }
+</div>

@@ -1,0 +1,250 @@
+### Archivo de pruebas para API de Bodega
+### Servidor de desarrollo local
+@baseUrl = http://localhost:5253/api
+
+###############################################
+### 1. OBTENER TODAS LAS BODEGAS
+###############################################
+GET {{baseUrl}}/Bodega HTTP/1.1
+Content-Type: application/json
+
+###############################################
+### 2. OBTENER BODEGA POR ID
+###############################################
+GET {{baseUrl}}/Bodega/1 HTTP/1.1
+Content-Type: application/json
+
+###############################################
+### 3. OBTENER BODEGAS POR LOTE
+###############################################
+GET {{baseUrl}}/Bodega/lote/LOTE-001 HTTP/1.1
+Content-Type: application/json
+
+###############################################
+### 4. CREAR NUEVA BODEGA (sin relaciones N:N)
+###############################################
+POST {{baseUrl}}/Bodega HTTP/1.1
+Content-Type: application/json
+
+{
+  "nlote": "LOTE-001",
+  "wBellota": 450.75,
+  "wPergamino": 520.50,
+  "hfinal": 11.5,
+  "hinicial": 45.2,
+  "dPergamino": 0.72,
+  "dBellota": 0.68,
+  "finicio_reposo": "2024-12-14T08:00:00",
+  "cantidad_sacos": 15,
+  "pmhRelativa": 0.58,
+  "pmtInterna": 22.5,
+  "pmtExterna": 24.8
+}
+
+###############################################
+### 5. CREAR BODEGA CON RELACIONES N:N
+###############################################
+POST {{baseUrl}}/Bodega HTTP/1.1
+Content-Type: application/json
+
+{
+  "nlote": "LOTE-001",
+  "wBellota": 380.25,
+  "wPergamino": 450.00,
+  "hfinal": 12.0,
+  "hinicial": 44.5,
+  "dPergamino": 0.70,
+  "dBellota": 0.66,
+  "finicio_reposo": "2024-12-15T10:00:00",
+  "cantidad_sacos": 12,
+  "pmhRelativa": 0.55,
+  "pmtInterna": 21.8,
+  "pmtExterna": 23.5,
+  "secadosGuardados": [
+    {
+      "idSecado": 1,
+      "cantidadSacos": 5
+    },
+    {
+      "idSecado": 2,
+      "cantidadSacos": 7
+    }
+  ]
+}
+
+###############################################
+### 6. ACTUALIZAR BODEGA COMPLETA
+###############################################
+PUT {{baseUrl}}/Bodega/1 HTTP/1.1
+Content-Type: application/json
+
+{
+  "idBodega": 1,
+  "nlote": "LOTE-001",
+  "wBellota": 455.00,
+  "wPergamino": 525.75,
+  "hfinal": 11.2,
+  "hinicial": 45.5,
+  "dPergamino": 0.73,
+  "dBellota": 0.69,
+  "finicio_reposo": "2024-12-14T09:00:00",
+  "cantidad_sacos": 16,
+  "pmhRelativa": 0.60,
+  "pmtInterna": 23.0,
+  "pmtExterna": 25.2
+}
+
+###############################################
+### 7. ACTUALIZAR BODEGA CON RELACIONES N:N
+###############################################
+PUT {{baseUrl}}/Bodega/1 HTTP/1.1
+Content-Type: application/json
+
+{
+  "idBodega": 1,
+  "nlote": "LOTE-001",
+  "wBellota": 455.00,
+  "wPergamino": 525.75,
+  "hfinal": 11.2,
+  "hinicial": 45.5,
+  "dPergamino": 0.73,
+  "dBellota": 0.69,
+  "finicio_reposo": "2024-12-14T09:00:00",
+  "cantidad_sacos": 16,
+  "pmhRelativa": 0.60,
+  "pmtInterna": 23.0,
+  "pmtExterna": 25.2,
+  "secadosGuardados": [
+    {
+      "idSecado": 1,
+      "cantidadSacos": 10
+    },
+    {
+      "idSecado": 3,
+      "cantidadSacos": 6
+    }
+  ]
+}
+
+###############################################
+### 8. ASOCIAR SECADO CON BODEGA (Guardar_Cafe)
+###############################################
+POST {{baseUrl}}/Bodega/1/guardar-secado/1 HTTP/1.1
+Content-Type: application/json
+
+8
+
+###############################################
+### 9. ASOCIAR MÚLTIPLES SECADOS
+###############################################
+POST {{baseUrl}}/Bodega/1/guardar-secado/2 HTTP/1.1
+Content-Type: application/json
+
+5
+
+###
+POST {{baseUrl}}/Bodega/1/guardar-secado/3 HTTP/1.1
+Content-Type: application/json
+
+7
+
+###############################################
+### 10. ELIMINAR RELACIÓN SECADO-BODEGA
+###############################################
+DELETE {{baseUrl}}/Bodega/1/guardar-secado/2 HTTP/1.1
+Content-Type: application/json
+
+###############################################
+### 11. ELIMINAR BODEGA POR ID
+###############################################
+DELETE {{baseUrl}}/Bodega/2 HTTP/1.1
+Content-Type: application/json
+
+###############################################
+### 12. PROBAR VALIDACIONES - NLOTE INEXISTENTE
+###############################################
+POST {{baseUrl}}/Bodega HTTP/1.1
+Content-Type: application/json
+
+{
+  "nlote": "LOTE-999",
+  "wBellota": 400.00,
+  "wPergamino": 480.00,
+  "hfinal": 12.0,
+  "hinicial": 44.0
+}
+
+###############################################
+### 13. PROBAR VALIDACIONES - ID SECADO INEXISTENTE
+###############################################
+POST {{baseUrl}}/Bodega HTTP/1.1
+Content-Type: application/json
+
+{
+  "nlote": "LOTE-001",
+  "wBellota": 400.00,
+  "wPergamino": 480.00,
+  "hfinal": 12.0,
+  "hinicial": 44.0,
+  "secadosGuardados": [
+    {
+      "idSecado": 999,
+      "cantidadSacos": 10
+    }
+  ]
+}
+
+###############################################
+### 14. PROBAR BODEGA NO ENCONTRADA
+###############################################
+GET {{baseUrl}}/Bodega/999 HTTP/1.1
+Content-Type: application/json
+
+###############################################
+### 15. PROBAR LOTE SIN BODEGAS
+###############################################
+GET {{baseUrl}}/Bodega/lote/LOTE-999 HTTP/1.1
+Content-Type: application/json
+
+###############################################
+### 16. CREAR BODEGA MÍNIMA (solo FK)
+###############################################
+POST {{baseUrl}}/Bodega HTTP/1.1
+Content-Type: application/json
+
+{
+  "nlote": "LOTE-001",
+  "wBellota": null,
+  "wPergamino": null,
+  "hfinal": null,
+  "hinicial": null
+}
+
+###############################################
+### 17. VERIFICAR CASCADE DELETE (eliminar Bodega con relaciones)
+###############################################
+# Primero crear bodega con relaciones
+POST {{baseUrl}}/Bodega HTTP/1.1
+Content-Type: application/json
+
+{
+  "nlote": "LOTE-001",
+  "wBellota": 300.00,
+  "secadosGuardados": [
+    {
+      "idSecado": 1,
+      "cantidadSacos": 5
+    }
+  ]
+}
+
+###
+# Luego eliminar la bodega (debe eliminar automáticamente las relaciones en guardar_cafe)
+DELETE {{baseUrl}}/Bodega/3 HTTP/1.1
+Content-Type: application/json
+
+###############################################
+### 18. OBTENER BODEGA CON TODAS LAS RELACIONES
+###############################################
+GET {{baseUrl}}/Bodega/1 HTTP/1.1
+Content-Type: application/json

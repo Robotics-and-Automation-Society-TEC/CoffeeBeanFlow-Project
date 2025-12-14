@@ -1,0 +1,275 @@
+### Variables
+@baseUrl = http://localhost:5253/api
+@nlote = LOTE-TEST-001
+@idSecado = 1
+
+### ============================================
+### PRUEBAS DE FASE 3 - SECADO Y ENTIDADES DÉBILES
+### ============================================
+
+### 1. Health Check - Verificar que el backend está corriendo
+GET {{baseUrl}}/health
+
+### 2. Verificar que el lote existe en AreaAcopio (prerrequisito)
+GET {{baseUrl}}/AreaAcopio/{{nlote}}
+
+### 3. GET todos los registros de Secado (debería estar vacío inicialmente)
+GET {{baseUrl}}/Secado
+
+### 4. POST - Crear un registro de Secado COMPLETO con entidades débiles
+POST {{baseUrl}}/Secado
+Content-Type: application/json
+
+{
+  "nlote": "{{nlote}}",
+  "finicio": "2024-01-15T08:00:00Z",
+  "dsecado": 10,
+  "ffinal": "2024-01-25T18:00:00Z",
+  "humedades": [
+    {
+      "fecha": "2024-01-15T08:00:00Z",
+      "humedad": 45.5
+    },
+    {
+      "fecha": "2024-01-16T08:00:00Z",
+      "humedad": 42.3
+    },
+    {
+      "fecha": "2024-01-17T08:00:00Z",
+      "humedad": 38.7
+    },
+    {
+      "fecha": "2024-01-18T08:00:00Z",
+      "humedad": 35.2
+    },
+    {
+      "fecha": "2024-01-19T08:00:00Z",
+      "humedad": 31.8
+    },
+    {
+      "fecha": "2024-01-20T08:00:00Z",
+      "humedad": 28.5
+    },
+    {
+      "fecha": "2024-01-21T08:00:00Z",
+      "humedad": 25.3
+    },
+    {
+      "fecha": "2024-01-22T08:00:00Z",
+      "humedad": 22.1
+    },
+    {
+      "fecha": "2024-01-23T08:00:00Z",
+      "humedad": 18.9
+    },
+    {
+      "fecha": "2024-01-24T08:00:00Z",
+      "humedad": 15.5
+    },
+    {
+      "fecha": "2024-01-25T08:00:00Z",
+      "humedad": 12.0
+    }
+  ],
+  "termoHigrometrias": [
+    {
+      "fecha": "2024-01-15T08:00:00Z",
+      "temperaturaAmbiente": 25.5,
+      "humedadAmbiente": 65.0
+    },
+    {
+      "fecha": "2024-01-15T14:00:00Z",
+      "temperaturaAmbiente": 28.3,
+      "humedadAmbiente": 58.5
+    },
+    {
+      "fecha": "2024-01-16T08:00:00Z",
+      "temperaturaAmbiente": 26.1,
+      "humedadAmbiente": 63.2
+    },
+    {
+      "fecha": "2024-01-16T14:00:00Z",
+      "temperaturaAmbiente": 29.0,
+      "humedadAmbiente": 55.8
+    }
+  ],
+  "temperaturasSecado": [
+    {
+      "fecha": "2024-01-15T08:00:00Z",
+      "temperatura": 35.0
+    },
+    {
+      "fecha": "2024-01-15T12:00:00Z",
+      "temperatura": 42.5
+    },
+    {
+      "fecha": "2024-01-15T16:00:00Z",
+      "temperatura": 38.2
+    },
+    {
+      "fecha": "2024-01-16T08:00:00Z",
+      "temperatura": 36.8
+    },
+    {
+      "fecha": "2024-01-16T12:00:00Z",
+      "temperatura": 43.1
+    }
+  ],
+  "ncamas": [
+    {
+      "numeroCama": "CAMA-A1"
+    },
+    {
+      "numeroCama": "CAMA-A2"
+    },
+    {
+      "numeroCama": "CAMA-B1"
+    }
+  ]
+}
+
+### 5. GET el registro de Secado recién creado por ID
+GET {{baseUrl}}/Secado/{{idSecado}}
+
+### 6. GET registros de Secado por lote
+GET {{baseUrl}}/Secado/ByLote/{{nlote}}
+
+### 7. POST - Crear segundo registro de Secado para el mismo lote
+POST {{baseUrl}}/Secado
+Content-Type: application/json
+
+{
+  "nlote": "{{nlote}}",
+  "finicio": "2024-02-01T08:00:00Z",
+  "dsecado": 12,
+  "ffinal": "2024-02-13T18:00:00Z",
+  "humedades": [
+    {
+      "fecha": "2024-02-01T08:00:00Z",
+      "humedad": 50.0
+    },
+    {
+      "fecha": "2024-02-05T08:00:00Z",
+      "humedad": 35.5
+    },
+    {
+      "fecha": "2024-02-10T08:00:00Z",
+      "humedad": 20.2
+    },
+    {
+      "fecha": "2024-02-13T08:00:00Z",
+      "humedad": 11.8
+    }
+  ],
+  "termoHigrometrias": [
+    {
+      "fecha": "2024-02-01T08:00:00Z",
+      "temperaturaAmbiente": 24.0,
+      "humedadAmbiente": 68.0
+    },
+    {
+      "fecha": "2024-02-07T08:00:00Z",
+      "temperaturaAmbiente": 27.5,
+      "humedadAmbiente": 60.5
+    }
+  ],
+  "temperaturasSecado": [
+    {
+      "fecha": "2024-02-01T10:00:00Z",
+      "temperatura": 37.0
+    },
+    {
+      "fecha": "2024-02-07T10:00:00Z",
+      "temperatura": 40.5
+    }
+  ],
+  "ncamas": [
+    {
+      "numeroCama": "CAMA-C1"
+    },
+    {
+      "numeroCama": "CAMA-C2"
+    }
+  ]
+}
+
+### 8. GET todos los registros de Secado (debería mostrar 2)
+GET {{baseUrl}}/Secado
+
+### 9. PUT - Actualizar el primer registro de Secado
+PUT {{baseUrl}}/Secado/{{idSecado}}
+Content-Type: application/json
+
+{
+  "idSecado": {{idSecado}},
+  "nlote": "{{nlote}}",
+  "finicio": "2024-01-15T08:00:00Z",
+  "dsecado": 11,
+  "ffinal": "2024-01-26T18:00:00Z",
+  "humedades": [
+    {
+      "fecha": "2024-01-15T08:00:00Z",
+      "humedad": 45.5
+    },
+    {
+      "fecha": "2024-01-20T08:00:00Z",
+      "humedad": 30.0
+    },
+    {
+      "fecha": "2024-01-26T08:00:00Z",
+      "humedad": 11.5
+    }
+  ],
+  "termoHigrometrias": [
+    {
+      "fecha": "2024-01-15T08:00:00Z",
+      "temperaturaAmbiente": 25.5,
+      "humedadAmbiente": 65.0
+    }
+  ],
+  "temperaturasSecado": [
+    {
+      "fecha": "2024-01-15T10:00:00Z",
+      "temperatura": 36.0
+    }
+  ],
+  "ncamas": [
+    {
+      "numeroCama": "CAMA-A1"
+    },
+    {
+      "numeroCama": "CAMA-A3"
+    }
+  ]
+}
+
+### 10. GET verificar la actualización
+GET {{baseUrl}}/Secado/{{idSecado}}
+
+### 11. POST - Intentar crear Secado con lote inexistente (debería fallar)
+POST {{baseUrl}}/Secado
+Content-Type: application/json
+
+{
+  "nlote": "LOTE-INEXISTENTE",
+  "finicio": "2024-03-01T08:00:00Z",
+  "humedades": [],
+  "termoHigrometrias": [],
+  "temperaturasSecado": [],
+  "ncamas": []
+}
+
+### 12. DELETE - Eliminar el segundo registro de Secado
+DELETE {{baseUrl}}/Secado/2
+
+### 13. GET verificar que se eliminó
+GET {{baseUrl}}/Secado/2
+
+### 14. GET todos los registros (debería mostrar solo 1)
+GET {{baseUrl}}/Secado
+
+### 15. DELETE - Eliminar el primer registro de Secado
+DELETE {{baseUrl}}/Secado/{{idSecado}}
+
+### 16. GET verificar que se eliminó todo
+GET {{baseUrl}}/Secado

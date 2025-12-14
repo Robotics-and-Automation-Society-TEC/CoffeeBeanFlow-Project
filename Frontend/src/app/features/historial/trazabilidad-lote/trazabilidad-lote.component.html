@@ -1,0 +1,449 @@
+<!-- ======================================== -->
+<!-- TRAZABILIDAD COMPLETA DEL LOTE -->
+<!-- ======================================== -->
+
+<div class="trazabilidad-container">
+  
+  <!-- Header con Búsqueda -->
+  <div class="trazabilidad-header">
+    <div class="header-content">
+      <a routerLink="/" class="btn-home">
+        🏠 Inicio
+      </a>
+      <button class="btn-volver" (click)="volver()">
+        ← Historial
+      </button>
+      <h1>📍 Trazabilidad Completa del Lote</h1>
+    </div>
+    
+    <div class="busqueda-lote">
+      <input 
+        type="text" 
+        [(ngModel)]="nlote" 
+        (keyup.enter)="buscarNuevoLote()"
+        placeholder="Ingrese número de lote..."
+        class="input-lote">
+      <button class="btn-buscar" (click)="buscarNuevoLote()">
+        🔍 Buscar
+      </button>
+    </div>
+  </div>
+
+  <!-- Información del Lote -->
+  <div class="lote-info-card" *ngIf="trazabilidad && trazabilidad.acopio">
+    <div class="lote-badge">
+      <span class="badge-label">Lote:</span>
+      <span class="badge-value">{{ nlote }}</span>
+    </div>
+    <div class="lote-detalles">
+      <div class="detalle-item">
+        <span class="detalle-icon">👤</span>
+        <span>{{ trazabilidad.acopio.nproductor }}</span>
+      </div>
+      <div class="detalle-item">
+        <span class="detalle-icon">🏡</span>
+        <span>{{ trazabilidad.acopio.nfinca }}</span>
+      </div>
+      <div class="detalle-item">
+        <span class="detalle-icon">📅</span>
+        <span>{{ trazabilidad.fechaInicio | date: 'dd/MM/yyyy' }}</span>
+      </div>
+      <div class="detalle-item">
+        <span class="detalle-icon">📊</span>
+        <span>Etapa: {{ trazabilidad.etapaActual }}</span>
+      </div>
+    </div>
+    <div class="acciones-header">
+      <button class="btn-accion" (click)="expandirTodas()">📂 Expandir Todo</button>
+      <button class="btn-accion" (click)="colapsarTodas()">📁 Colapsar Todo</button>
+      <button class="btn-accion" (click)="imprimirTrazabilidad()">🖨️ Imprimir</button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Cargando trazabilidad completa del lote...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-container">
+    <span class="error-icon">⚠️</span>
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Timeline del Proceso -->
+  <app-timeline-proceso 
+    *ngIf="trazabilidad && !loading && !error"
+    [etapaActual]="trazabilidad.etapaActual">
+  </app-timeline-proceso>
+
+  <!-- Métricas Generales -->
+  <div class="metricas-panel" *ngIf="trazabilidad?.metricas && !loading && !error">
+    <div class="section-header clickable" (click)="toggleSeccion('metricas')">
+      <div class="header-left">
+        <span class="section-icon">📊</span>
+        <h2>Métricas del Proceso</h2>
+      </div>
+      <span class="expand-icon">{{ seccionesExpandidas.metricas ? '▼' : '▶' }}</span>
+    </div>
+
+    <ng-container *ngIf="seccionesExpandidas.metricas && trazabilidad?.metricas">
+      <div class="metricas-grid">
+        <div class="metrica-card">
+          <span class="metrica-icon">⏱️</span>
+          <div class="metrica-content">
+            <span class="metrica-value">{{ trazabilidad!.metricas!.duracionTotalDias }}</span>
+            <span class="metrica-label">Días Totales</span>
+          </div>
+        </div>
+        <div class="metrica-card" *ngIf="trazabilidad!.metricas!.duracionSecado">
+          <span class="metrica-icon">☀️</span>
+          <div class="metrica-content">
+            <span class="metrica-value">{{ trazabilidad!.metricas!.duracionSecado }}</span>
+            <span class="metrica-label">Días de Secado</span>
+          </div>
+        </div>
+        <div class="metrica-card" *ngIf="trazabilidad!.metricas!.humedadFinal">
+          <span class="metrica-icon">💧</span>
+          <div class="metrica-content">
+            <span class="metrica-value">{{ trazabilidad!.metricas!.humedadFinal }}%</span>
+            <span class="metrica-label">Humedad Final</span>
+          </div>
+        </div>
+        <div class="metrica-card" *ngIf="trazabilidad!.metricas!.rendimientoFinal">
+          <span class="metrica-icon">📈</span>
+          <div class="metrica-content">
+            <span class="metrica-value">{{ trazabilidad!.metricas!.rendimientoFinal }}%</span>
+            <span class="metrica-label">Rendimiento</span>
+          </div>
+        </div>
+        <div class="metrica-card" *ngIf="trazabilidad!.metricas!.totalSacos">
+          <span class="metrica-icon">📦</span>
+          <div class="metrica-content">
+            <span class="metrica-value">{{ trazabilidad!.metricas!.totalSacos }}</span>
+            <span class="metrica-label">Total Sacos</span>
+          </div>
+        </div>
+        <div class="metrica-card" *ngIf="trazabilidad!.metricas!.puntajeCatacion">
+          <span class="metrica-icon">⭐</span>
+          <div class="metrica-content">
+            <span class="metrica-value">{{ trazabilidad!.metricas!.puntajeCatacion }}</span>
+            <span class="metrica-label">Puntaje Catación</span>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- Secciones de Trazabilidad -->
+  <div class="trazabilidad-sections" *ngIf="trazabilidad && !loading && !error">
+
+    <!-- 1. ACOPIO -->
+    <div class="section" 
+         *ngIf="tieneInformacion('acopio')"
+         [class.expandida]="seccionesExpandidas.acopio"
+         [class.completada]="getEstadoEtapa('Acopio') === 'completada'"
+         [class.actual]="getEstadoEtapa('Acopio') === 'actual'">
+      
+      <div class="section-header clickable" (click)="toggleSeccion('acopio')">
+        <div class="header-left">
+          <span class="section-icon">🏪</span>
+          <h2>Área de Acopio</h2>
+        </div>
+        <span class="expand-icon">{{ seccionesExpandidas.acopio ? '▼' : '▶' }}</span>
+      </div>
+
+      <div class="section-content" *ngIf="seccionesExpandidas.acopio && trazabilidad.acopio">
+        <div class="data-grid">
+          <div class="data-item">
+            <label>Productor:</label>
+            <span>{{ trazabilidad.acopio.nproductor }}</span>
+          </div>
+          <div class="data-item">
+            <label>Finca:</label>
+            <span>{{ trazabilidad.acopio.nfinca }}</span>
+          </div>
+          <div class="data-item">
+            <label>Zona:</label>
+            <span>{{ trazabilidad.acopio.zona }}</span>
+          </div>
+          <div class="data-item">
+            <label>Altura:</label>
+            <span>{{ trazabilidad.acopio.altura }} msnm</span>
+          </div>
+          <div class="data-item">
+            <label>N° Recibo:</label>
+            <span>{{ trazabilidad.acopio.nrecibo }}</span>
+          </div>
+          <div class="data-item">
+            <label>Rendimiento Objetivo:</label>
+            <span>{{ trazabilidad.acopio.robjetivo }}%</span>
+          </div>
+          <div class="data-item">
+            <label>Zona:</label>
+            <span>{{ trazabilidad.acopio.zona }}</span>
+          </div>
+          <div class="data-item">
+            <label>N° Finca:</label>
+            <span>{{ trazabilidad.acopio.nfinca }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. CARACTERIZACIÓN -->
+    <div class="section" 
+         *ngIf="tieneInformacion('caracterizacion')"
+         [class.expandida]="seccionesExpandidas.caracterizacion"
+         [class.completada]="getEstadoEtapa('Caracterización') === 'completada'"
+         [class.actual]="getEstadoEtapa('Caracterización') === 'actual'">
+      
+      <div class="section-header clickable" (click)="toggleSeccion('caracterizacion')">
+        <div class="header-left">
+          <span class="section-icon">🔬</span>
+          <h2>Caracterización</h2>
+          <span class="badge-count">{{ trazabilidad.caracterizaciones?.length || 0 }}</span>
+        </div>
+        <span class="expand-icon">{{ seccionesExpandidas.caracterizacion ? '▼' : '▶' }}</span>
+      </div>
+
+      <div class="section-content" *ngIf="seccionesExpandidas.caracterizacion">
+        <div *ngFor="let caract of trazabilidad.caracterizaciones; let i = index" class="subsection">
+          <h3>Registro #{{ i + 1 }} - {{ caract.tiempo }}</h3>
+          <div class="data-grid">
+            <div class="data-item">
+              <label>Proceso:</label>
+              <span>{{ caract.proceso }}</span>
+            </div>
+            <div class="data-item">
+              <label>Lote Asignado:</label>
+              <span>{{ caract.lAsignado }}</span>
+            </div>
+            <div class="data-item">
+              <label>RC Maduras Promedio:</label>
+              <span>{{ caract.rcMaduras?.promedio }}</span>
+            </div>
+            <div class="data-item">
+              <label>RC Inmaduras Promedio:</label>
+              <span>{{ caract.rcInmaduras?.promedio }}</span>
+            </div>
+            <div class="data-item">
+              <label>RC Sobremaduras Promedio:</label>
+              <span>{{ caract.rcSobremaduras?.promedio }}</span>
+            </div>
+            <div class="data-item">
+              <label>PC Debajo:</label>
+              <span>{{ caract.pcDebajo }}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. SECADO -->
+    <div class="section" 
+         *ngIf="tieneInformacion('secado')"
+         [class.expandida]="seccionesExpandidas.secado"
+         [class.completada]="getEstadoEtapa('Secado') === 'completada'"
+         [class.actual]="getEstadoEtapa('Secado') === 'actual'">
+      
+      <div class="section-header clickable" (click)="toggleSeccion('secado')">
+        <div class="header-left">
+          <span class="section-icon">☀️</span>
+          <h2>Secado</h2>
+          <span class="badge-count">{{ trazabilidad.secados?.length || 0 }}</span>
+        </div>
+        <span class="expand-icon">{{ seccionesExpandidas.secado ? '▼' : '▶' }}</span>
+      </div>
+
+      <div class="section-content" *ngIf="seccionesExpandidas.secado">
+        <div *ngFor="let secado of trazabilidad.secados; let i = index" class="subsection">
+          <h3>Proceso #{{ secado.idSecado }}</h3>
+          <div class="data-grid">
+            <div class="data-item">
+              <label>Fecha Inicio:</label>
+              <span>{{ secado.finicio | date: 'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="data-item">
+              <label>Fecha Final:</label>
+              <span>{{ secado.ffinal | date: 'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="data-item">
+              <label>Días de Secado:</label>
+              <span>{{ secado.dsecado }}</span>
+            </div>
+            <div class="data-item">
+              <label>ID Secado:</label>
+              <span>{{ secado.idSecado }}</span>
+            </div>
+            <div class="data-item" *ngIf="secado.ncamas && secado.ncamas.length > 0">
+              <label>Camas:</label>
+              <span>{{ secado.ncamas.length }} camas</span>
+            </div>
+            <div class="data-item" *ngIf="secado.humedades && secado.humedades.length > 0">
+              <label>Registros Humedad:</label>
+              <span>{{ secado.humedades.length }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. BODEGA -->
+    <div class="section" 
+         *ngIf="tieneInformacion('bodega')"
+         [class.expandida]="seccionesExpandidas.bodega"
+         [class.completada]="getEstadoEtapa('Bodega') === 'completada'"
+         [class.actual]="getEstadoEtapa('Bodega') === 'actual'">
+      
+      <div class="section-header clickable" (click)="toggleSeccion('bodega')">
+        <div class="header-left">
+          <span class="section-icon">🏭</span>
+          <h2>Bodega</h2>
+          <span class="badge-count">{{ trazabilidad.bodegas?.length || 0 }}</span>
+        </div>
+        <span class="expand-icon">{{ seccionesExpandidas.bodega ? '▼' : '▶' }}</span>
+      </div>
+
+      <div class="section-content" *ngIf="seccionesExpandidas.bodega">
+        <div *ngFor="let bodega of trazabilidad.bodegas; let i = index" class="subsection">
+          <h3>Bodega #{{ bodega.idBodega }}</h3>
+          <div class="data-grid">
+            <div class="data-item">
+              <label>Cantidad Sacos:</label>
+              <span>{{ bodega.cantidadSacos }}</span>
+            </div>
+            <div class="data-item">
+              <label>Humedad Inicial:</label>
+              <span>{{ bodega.hinicial }}%</span>
+            </div>
+            <div class="data-item">
+              <label>Humedad Final:</label>
+              <span>{{ bodega.hfinal }}%</span>
+            </div>
+            <div class="data-item">
+              <label>Fecha Inicio Reposo:</label>
+              <span>{{ bodega.finicio_reposo | date: 'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="data-item">
+              <label>Peso Bellota:</label>
+              <span>{{ bodega.wBellota }} kg</span>
+            </div>
+            <div class="data-item">
+              <label>Peso Pergamino:</label>
+              <span>{{ bodega.wPergamino }} kg</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. TRILLA -->
+    <div class="section" 
+         *ngIf="tieneInformacion('trilla')"
+         [class.expandida]="seccionesExpandidas.trilla"
+         [class.completada]="getEstadoEtapa('Trilla') === 'completada'"
+         [class.actual]="getEstadoEtapa('Trilla') === 'actual'">
+      
+      <div class="section-header clickable" (click)="toggleSeccion('trilla')">
+        <div class="header-left">
+          <span class="section-icon">⚙️</span>
+          <h2>Trilla</h2>
+          <span class="badge-count">{{ trazabilidad.trillas?.length || 0 }}</span>
+        </div>
+        <span class="expand-icon">{{ seccionesExpandidas.trilla ? '▼' : '▶' }}</span>
+      </div>
+
+      <div class="section-content" *ngIf="seccionesExpandidas.trilla">
+        <div *ngFor="let trilla of trazabilidad.trillas; let i = index" class="subsection">
+          <h3>Trilla #{{ trilla.idTrilla }}</h3>
+          <div class="data-grid">
+            <div class="data-item">
+              <label>Fecha Final Reposo:</label>
+              <span>{{ trilla.ffinalReposo | date: 'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="data-item">
+              <label>Humedad Inicial:</label>
+              <span>{{ trilla.hinicial }}%</span>
+            </div>
+            <div class="data-item">
+              <label>Humedad Final:</label>
+              <span>{{ trilla.hfinal }}%</span>
+            </div>
+            <div class="data-item">
+              <label>Rendimiento Pelado:</label>
+              <span>{{ trilla.rFinalPelado }}%</span>
+            </div>
+            <div class="data-item">
+              <label>Rendimiento Selección:</label>
+              <span>{{ trilla.rFinalSeleccion }}%</span>
+            </div>
+            <div class="data-item">
+              <label>Peso Verde Final:</label>
+              <span>{{ trilla.wverdeFinal }} kg</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. CATACIÓN -->
+    <div class="section" 
+         *ngIf="tieneInformacion('catacion')"
+         [class.expandida]="seccionesExpandidas.catacion"
+         [class.completada]="getEstadoEtapa('Catación') === 'completada'"
+         [class.actual]="getEstadoEtapa('Catación') === 'actual'">
+      
+      <div class="section-header clickable" (click)="toggleSeccion('catacion')">
+        <div class="header-left">
+          <span class="section-icon">☕</span>
+          <h2>Catación</h2>
+          <span class="badge-count">{{ trazabilidad.cataciones?.length || 0 }}</span>
+        </div>
+        <span class="expand-icon">{{ seccionesExpandidas.catacion ? '▼' : '▶' }}</span>
+      </div>
+
+      <div class="section-content" *ngIf="seccionesExpandidas.catacion">
+        <div *ngFor="let catacion of trazabilidad.cataciones; let i = index" class="subsection">
+          <h3>Catación #{{ catacion.idCatacion }}</h3>
+          <div class="data-grid">
+            <div class="data-item">
+              <label>Fecha Final Reposo:</label>
+              <span>{{ catacion.ffreposo | date: 'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="data-item">
+              <label>Calidad (C):</label>
+              <span>{{ catacion.cccalidad }}</span>
+            </div>
+            <div class="data-item">
+              <label>Puntaje Final:</label>
+              <span class="puntaje-destacado">{{ catacion.pfinales }}</span>
+            </div>
+            <div class="data-item">
+              <label>Limpio:</label>
+              <span>{{ catacion.limpio }}</span>
+            </div>
+            <div class="data-item">
+              <label>Defectuoso:</label>
+              <span>{{ catacion.defectuoso }}</span>
+            </div>
+            <div class="data-item">
+              <label>Quaker:</label>
+              <span>{{ catacion.quaker }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Estado Vacío -->
+  <div *ngIf="!trazabilidad && !loading && !error" class="empty-state">
+    <span class="empty-icon">🔍</span>
+    <h3>Ingrese un número de lote para ver su trazabilidad completa</h3>
+    <p>Utilice el campo de búsqueda en la parte superior</p>
+  </div>
+
+</div>

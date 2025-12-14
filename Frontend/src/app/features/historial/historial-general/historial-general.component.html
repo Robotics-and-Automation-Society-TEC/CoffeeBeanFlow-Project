@@ -1,0 +1,392 @@
+<!-- ======================================== -->
+<!-- HISTORIAL GENERAL - VISTA PRINCIPAL -->
+<!-- ======================================== -->
+
+<div class="historial-container">
+  
+  <!-- Header con Título y Acciones -->
+  <div class="historial-header">
+    <div class="header-content">
+      <h1>📊 Historial General</h1>
+      <p class="subtitle">Visualiza todos los registros del sistema</p>
+    </div>
+    <div class="header-actions">
+      <a routerLink="/" class="btn-home">
+        🏠 Inicio
+      </a>
+      <button class="btn-exportar" (click)="exportarCSV()" title="Exportar a CSV">
+        📥 Exportar
+      </button>
+      <button class="btn-refresh" (click)="cargarTodosLosRegistros()" title="Actualizar">
+        🔄 Actualizar
+      </button>
+    </div>
+  </div>
+
+  <!-- Estadísticas Rápidas -->
+  <div class="estadisticas-panel" *ngIf="estadisticas">
+    <div class="stat-card">
+      <span class="stat-icon">📝</span>
+      <div class="stat-content">
+        <span class="stat-value">{{ estadisticas.totalRegistros }}</span>
+        <span class="stat-label">Total Registros</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">📦</span>
+      <div class="stat-content">
+        <span class="stat-value">{{ estadisticas.lotesActivos }}</span>
+        <span class="stat-label">Lotes Activos</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">✅</span>
+      <div class="stat-content">
+        <span class="stat-value">{{ estadisticas.registrosPorEstado.get('Completado') || 0 }}</span>
+        <span class="stat-label">Completados</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">⏳</span>
+      <div class="stat-content">
+        <span class="stat-value">{{ estadisticas.registrosPorEstado.get('En Proceso') || 0 }}</span>
+        <span class="stat-label">En Proceso</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel de Filtros -->
+  <div class="filtros-panel">
+    <h3>🔍 Filtros</h3>
+    
+    <div class="filtros-grid">
+      
+      <!-- Filtro: Tipo de Entidad -->
+      <div class="filtro-group">
+        <label for="filtroTipo">Tipo:</label>
+        <select 
+          id="filtroTipo" 
+          [(ngModel)]="filtros.tipo" 
+          (change)="aplicarFiltros()">
+          <option [value]="undefined">Todos</option>
+          <option *ngFor="let tipo of tiposEntidad" [value]="tipo">
+            {{ getIconoTipo(tipo) }} {{ tipo }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Filtro: Número de Lote -->
+      <div class="filtro-group">
+        <label for="filtroLote">Lote:</label>
+        <input 
+          type="text" 
+          id="filtroLote" 
+          [(ngModel)]="filtros.nlote" 
+          (input)="aplicarFiltros()"
+          placeholder="Buscar por lote...">
+      </div>
+
+      <!-- Filtro: Estado -->
+      <div class="filtro-group">
+        <label for="filtroEstado">Estado:</label>
+        <select 
+          id="filtroEstado" 
+          [(ngModel)]="filtros.estado" 
+          (change)="aplicarFiltros()">
+          <option [value]="undefined">Todos</option>
+          <option *ngFor="let estado of estadosRegistro" [value]="estado">
+            {{ estado }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Filtro: Fecha Inicio -->
+      <div class="filtro-group">
+        <label for="filtroFechaInicio">Desde:</label>
+        <input 
+          type="date" 
+          id="filtroFechaInicio" 
+          [(ngModel)]="filtros.fechaInicio" 
+          (change)="aplicarFiltros()">
+      </div>
+
+      <!-- Filtro: Fecha Fin -->
+      <div class="filtro-group">
+        <label for="filtroFechaFin">Hasta:</label>
+        <input 
+          type="date" 
+          id="filtroFechaFin" 
+          [(ngModel)]="filtros.fechaFin" 
+          (change)="aplicarFiltros()">
+      </div>
+
+      <!-- Filtro: Búsqueda General -->
+      <div class="filtro-group filtro-busqueda">
+        <label for="filtroBusqueda">Búsqueda:</label>
+        <input 
+          type="text" 
+          id="filtroBusqueda" 
+          [(ngModel)]="filtros.busqueda" 
+          (input)="aplicarFiltros()"
+          placeholder="Buscar en resumen...">
+      </div>
+
+      <!-- Botón Limpiar Filtros -->
+      <div class="filtro-group filtro-acciones">
+        <button class="btn-limpiar" (click)="limpiarFiltros()">
+          🗑️ Limpiar Filtros
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Selector de Vista -->
+  <div class="vista-selector">
+    <button 
+      class="btn-vista" 
+      [class.active]="vistaActual === 'cards'"
+      (click)="cambiarVista('cards')">
+      🃏 Cards
+    </button>
+    <button 
+      class="btn-vista" 
+      [class.active]="vistaActual === 'tabla'"
+      (click)="cambiarVista('tabla')">
+      📊 Tabla
+    </button>
+    <span class="resultados-count">
+      {{ registrosFiltrados.length }} resultados
+    </span>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Cargando historial...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="error-container">
+    <span class="error-icon">⚠️</span>
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Vista de Cards -->
+  <div *ngIf="!loading && !error && vistaActual === 'cards'" class="registros-cards">
+    <div 
+      *ngFor="let registro of registrosPaginados" 
+      class="registro-card"
+      [style.border-left-color]="getColorEstado(registro.estado)">
+      
+      <div class="card-header">
+        <div class="tipo-badge">
+          <span class="tipo-icon">{{ getIconoTipo(registro.tipo) }}</span>
+          <span class="tipo-text">{{ registro.tipo }}</span>
+        </div>
+        <div class="estado-badge" [style.background-color]="getColorEstado(registro.estado)">
+          {{ registro.estado }}
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="card-info">
+          <div class="info-row">
+            <span class="info-label">ID:</span>
+            <span class="info-value">{{ registro.id }}</span>
+          </div>
+          <div class="info-row" *ngIf="registro.nlote">
+            <span class="info-label">Lote:</span>
+            <span class="info-value">{{ registro.nlote }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Fecha:</span>
+            <span class="info-value">{{ registro.fecha | date: 'dd/MM/yyyy' }}</span>
+          </div>
+        </div>
+        <div class="card-resumen">
+          <p>{{ registro.resumen }}</p>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <button class="btn-accion btn-trazabilidad" *ngIf="registro.nlote" [routerLink]="['/trazabilidad']" [queryParams]="{nlote: registro.nlote}">
+          📍 Trazabilidad
+        </button>
+        <button class="btn-accion btn-detalle" (click)="verDetalle(registro)">
+          👁️ Ver Detalle
+        </button>
+        <button class="btn-accion btn-editar" (click)="editarRegistro(registro)">
+          ✏️ Editar
+        </button>
+        <button class="btn-accion btn-eliminar" (click)="eliminarRegistro(registro)">
+          🗑️ Eliminar
+        </button>
+      </div>
+    </div>
+
+    <!-- Sin Resultados -->
+    <div *ngIf="registrosPaginados.length === 0" class="sin-resultados">
+      <span class="sin-resultados-icon">🔍</span>
+      <p>No se encontraron registros con los filtros aplicados</p>
+    </div>
+  </div>
+
+  <!-- Vista de Tabla -->
+  <div *ngIf="!loading && !error && vistaActual === 'tabla'" class="registros-tabla">
+    <table>
+      <thead>
+        <tr>
+          <th>Tipo</th>
+          <th>ID</th>
+          <th>Lote</th>
+          <th>Fecha</th>
+          <th>Estado</th>
+          <th>Resumen</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let registro of registrosPaginados">
+          <td>
+            <div class="tipo-cell">
+              <span class="tipo-icon">{{ getIconoTipo(registro.tipo) }}</span>
+              <span>{{ registro.tipo }}</span>
+            </div>
+          </td>
+          <td>{{ registro.id }}</td>
+          <td>{{ registro.nlote || 'N/A' }}</td>
+          <td>{{ registro.fecha | date: 'dd/MM/yyyy' }}</td>
+          <td>
+            <span 
+              class="estado-badge-small" 
+              [style.background-color]="getColorEstado(registro.estado)">
+              {{ registro.estado }}
+            </span>
+          </td>
+          <td class="resumen-cell">{{ registro.resumen }}</td>
+          <td>
+            <div class="acciones-cell">
+              <button class="btn-icon" *ngIf="registro.nlote" [routerLink]="['/trazabilidad']" [queryParams]="{nlote: registro.nlote}" title="Trazabilidad">
+                📍
+              </button>
+              <button class="btn-icon" (click)="verDetalle(registro)" title="Ver Detalle">
+                👁️
+              </button>
+              <button class="btn-icon" (click)="editarRegistro(registro)" title="Editar">
+                ✏️
+              </button>
+              <button class="btn-icon" (click)="eliminarRegistro(registro)" title="Eliminar">
+                🗑️
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Sin Resultados -->
+    <div *ngIf="registrosPaginados.length === 0" class="sin-resultados">
+      <span class="sin-resultados-icon">🔍</span>
+      <p>No se encontraron registros con los filtros aplicados</p>
+    </div>
+  </div>
+
+  <!-- Paginación -->
+  <div class="paginacion" *ngIf="totalPaginas > 1">
+    <button 
+      class="btn-paginacion" 
+      (click)="cambiarPagina(1)"
+      [disabled]="paginaActual === 1">
+      ⏮️ Primera
+    </button>
+    <button 
+      class="btn-paginacion" 
+      (click)="cambiarPagina(paginaActual - 1)"
+      [disabled]="paginaActual === 1">
+      ◀️ Anterior
+    </button>
+    
+    <div class="numeros-pagina">
+      <button 
+        *ngFor="let pagina of paginasArray" 
+        class="btn-numero-pagina"
+        [class.active]="pagina === paginaActual"
+        (click)="cambiarPagina(pagina)">
+        {{ pagina }}
+      </button>
+    </div>
+
+    <button 
+      class="btn-paginacion" 
+      (click)="cambiarPagina(paginaActual + 1)"
+      [disabled]="paginaActual === totalPaginas">
+      Siguiente ▶️
+    </button>
+    <button 
+      class="btn-paginacion" 
+      (click)="cambiarPagina(totalPaginas)"
+      [disabled]="paginaActual === totalPaginas">
+      Última ⏭️
+    </button>
+  </div>
+
+  <!-- Modal de Detalle -->
+  <div class="modal-overlay" *ngIf="mostrarModal" (click)="cerrarModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Detalle Completo</h2>
+        <button class="btn-close" (click)="cerrarModal()">✖️</button>
+      </div>
+      <div class="modal-body" *ngIf="registroSeleccionado">
+        <div class="detalle-info">
+          <h3>
+            {{ getIconoTipo(registroSeleccionado.tipo) }} 
+            {{ registroSeleccionado.tipo }}
+          </h3>
+          
+          <div class="detalle-grid">
+            <div class="detalle-item">
+              <label>ID:</label>
+              <span>{{ registroSeleccionado.id }}</span>
+            </div>
+            <div class="detalle-item" *ngIf="registroSeleccionado.nlote">
+              <label>Lote:</label>
+              <span>{{ registroSeleccionado.nlote }}</span>
+            </div>
+            <div class="detalle-item">
+              <label>Fecha:</label>
+              <span>{{ registroSeleccionado.fecha | date: 'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <div class="detalle-item">
+              <label>Estado:</label>
+              <span 
+                class="estado-badge" 
+                [style.background-color]="getColorEstado(registroSeleccionado.estado)">
+                {{ registroSeleccionado.estado }}
+              </span>
+            </div>
+          </div>
+
+          <div class="detalle-resumen">
+            <label>Resumen:</label>
+            <p>{{ registroSeleccionado.resumen }}</p>
+          </div>
+
+          <div class="detalle-datos">
+            <label>Datos Completos:</label>
+            <pre>{{ registroSeleccionado.datos | json }}</pre>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-modal btn-editar" (click)="editarRegistro(registroSeleccionado!); cerrarModal()">
+          ✏️ Editar
+        </button>
+        <button class="btn-modal btn-cerrar" (click)="cerrarModal()">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

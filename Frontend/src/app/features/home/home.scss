@@ -1,0 +1,57 @@
+@use '../../../styles/variables' as *;
+@use '../../../styles/mixins' as *;
+
+.home-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $space-4xl;
+}
+
+.home-header {
+  text-align: center;
+  margin-bottom: $space-4xl;
+
+  .logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $space-lg;
+    margin-bottom: $space-lg;
+
+    .logo-icon {
+      font-size: 4rem;
+    }
+
+    .logo-title {
+      font-size: 3rem;
+      color: $cafe-muy-oscuro;
+      font-weight: 700;
+    }
+  }
+
+  .subtitle {
+    color: $cafe-oscuro;
+    font-size: 1.25rem;
+  }
+}
+
+.welcome-card {
+  @include card-base;
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+
+  h2 {
+    color: $verde-oscuro;
+    margin-bottom: $space-lg;
+  }
+
+  .status {
+    margin-top: $space-lg;
+    font-weight: 500;
+
+    .status-ok {
+      color: $color-success-dark;
+    }
+  }
+}

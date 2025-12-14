@@ -1,0 +1,510 @@
+/* ======================================== */
+/* TRAZABILIDAD COMPLETA - ESTILOS */
+/* ======================================== */
+
+.trazabilidad-container {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  background: linear-gradient(145deg, #FEFAF5, #F4F0E6);
+  min-height: calc(100vh - 80px);
+}
+
+/* ========== HEADER ========== */
+
+.trazabilidad-header {
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, #4A2D1A, #2C1810);
+  border-radius: 12px;
+  padding: 20px;
+  color: white;
+  box-shadow: 0 4px 8px rgba(74, 45, 26, 0.15);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.btn-volver,
+.btn-home {
+  padding: 8px 16px;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-home {
+  background: linear-gradient(135deg, var(--color-secondary-dark), var(--color-primary-dark));
+  border: 2px solid var(--color-verde);
+  box-shadow: 0 4px 8px rgba(45, 80, 22, 0.3);
+}
+
+.btn-home:hover {
+  background: linear-gradient(135deg, var(--color-primary-dark), var(--color-verde-dark));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(45, 80, 22, 0.5);
+  border-color: var(--color-verde-light);
+}
+
+.btn-volver {
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.btn-volver:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateX(-3px);
+}
+
+.header-content h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.busqueda-lote {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.input-lote {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  color: #4A2D1A;
+  transition: all 0.3s ease;
+}
+
+.input-lote:focus {
+  outline: none;
+  border-color: #8FAD5A;
+  box-shadow: 0 0 0 3px rgba(143, 173, 90, 0.2);
+}
+
+.btn-buscar {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #8FAD5A, #4A5D2E);
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(143, 173, 90, 0.3);
+}
+
+.btn-buscar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(143, 173, 90, 0.4);
+}
+
+/* ========== LOTE INFO CARD ========== */
+
+.lote-info-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 8px rgba(74, 45, 26, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lote-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #8FAD5A, #4A5D2E);
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  align-self: flex-start;
+}
+
+.badge-label {
+  font-size: 0.9rem;
+}
+
+.badge-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.lote-detalles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.detalle-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #F4F0E6;
+  border-radius: 8px;
+  color: #4A2D1A;
+  font-weight: 500;
+}
+
+.detalle-icon {
+  font-size: 1.2rem;
+}
+
+.acciones-header {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-accion {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--color-secondary), var(--color-accent));
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(111, 78, 55, 0.3);
+}
+
+.btn-accion:hover {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-secondary-light));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(111, 78, 55, 0.4);
+}
+
+/* ========== LOADING & ERROR ========== */
+
+.loading-container,
+.error-container {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(74, 45, 26, 0.1);
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #F4F0E6;
+  border-top-color: #8FAD5A;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.error-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 16px;
+}
+
+/* ========== MÉTRICAS ========== */
+
+.metricas-panel {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 8px rgba(74, 45, 26, 0.1);
+}
+
+.metricas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.metrica-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #F4F0E6;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.metrica-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(74, 45, 26, 0.15);
+}
+
+.metrica-icon {
+  font-size: 2rem;
+}
+
+.metrica-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.metrica-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #4A2D1A;
+  line-height: 1;
+}
+
+.metrica-label {
+  font-size: 0.85rem;
+  color: #8B5A3C;
+  margin-top: 4px;
+}
+
+/* ========== SECCIONES ========== */
+
+.trazabilidad-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.section {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(74, 45, 26, 0.1);
+  border-left: 5px solid #E5C29F;
+  transition: all 0.3s ease;
+}
+
+.section.completada {
+  border-left-color: #8FAD5A;
+}
+
+.section.actual {
+  border-left-color: #f39c12;
+  box-shadow: 0 6px 12px rgba(243, 156, 18, 0.2);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: #F4F0E6;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.section-header:hover {
+  background: #E5C29F;
+}
+
+.section-header.clickable {
+  cursor: pointer;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-icon {
+  font-size: 1.8rem;
+}
+
+.section-header h2 {
+  margin: 0;
+  color: #4A2D1A;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.badge-count {
+  padding: 4px 10px;
+  background: #8FAD5A;
+  color: white;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.expand-icon {
+  font-size: 1.2rem;
+  color: #8B5A3C;
+  transition: transform 0.3s ease;
+}
+
+.section.expandida .expand-icon {
+  transform: rotate(180deg);
+}
+
+.section-content {
+  padding: 24px;
+  background: white;
+}
+
+/* ========== SUBSECCIONES ========== */
+
+.subsection {
+  padding: 16px;
+  background: #F4F0E6;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.subsection:last-child {
+  margin-bottom: 0;
+}
+
+.subsection h3 {
+  margin: 0 0 16px 0;
+  color: #4A2D1A;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #E5C29F;
+}
+
+/* ========== DATA GRID ========== */
+
+.data-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 12px;
+}
+
+.data-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px;
+  background: white;
+  border-radius: 8px;
+}
+
+.data-item label {
+  font-weight: 600;
+  color: #8B5A3C;
+  font-size: 0.85rem;
+}
+
+.data-item span {
+  color: #4A2D1A;
+  font-weight: 500;
+}
+
+.puntaje-destacado {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #8FAD5A;
+}
+
+/* ========== EMPTY STATE ========== */
+
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(74, 45, 26, 0.1);
+}
+
+.empty-icon {
+  font-size: 5rem;
+  display: block;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+
+.empty-state h3 {
+  margin: 0 0 12px 0;
+  color: #4A2D1A;
+  font-size: 1.5rem;
+}
+
+.empty-state p {
+  margin: 0;
+  color: #8B5A3C;
+  font-size: 1.1rem;
+}
+
+/* ========== RESPONSIVE ========== */
+
+@media (max-width: 768px) {
+  .trazabilidad-container {
+    padding: 12px;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-content h1 {
+    font-size: 1.3rem;
+  }
+
+  .busqueda-lote {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .input-lote,
+  .btn-buscar {
+    width: 100%;
+  }
+
+  .lote-detalles {
+    grid-template-columns: 1fr;
+  }
+
+  .metricas-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+
+  .data-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-header h2 {
+    font-size: 1.1rem;
+  }
+}
+
+/* ========== PRINT STYLES ========== */
+
+@media print {
+  .trazabilidad-header,
+  .btn-volver,
+  .busqueda-lote,
+  .acciones-header,
+  .expand-icon {
+    display: none !important;
+  }
+
+  .section {
+    page-break-inside: avoid;
+  }
+
+  .section-content {
+    display: block !important;
+  }
+}

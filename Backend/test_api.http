@@ -1,0 +1,136 @@
+### Variables
+@baseUrl = http://localhost:5253/api
+@nlote = LOTE-TEST-001
+
+### 1. Health Check
+GET {{baseUrl}}/health
+
+### 2. GET todos los registros (debería estar vacío inicialmente)
+GET {{baseUrl}}/AreaAcopio
+
+### 3. POST - Crear un nuevo registro de Área de Acopio con TODOS los atributos
+POST {{baseUrl}}/AreaAcopio
+Content-Type: application/json
+
+{
+  "Nlote": "{{nlote}}",
+  "Altura": 1500,
+  "Zona": "Zona Norte",
+  "Nrecibo": 12345,
+  "Nproductor": "José Pérez",
+  "Nfinca": "La Esperanza",
+  "Robjetivo": 85.5,
+  "Rtotal": 88.2,
+  "Vendido": false,
+  "Disponible": 1000,
+  "Enproceso": "No",
+  "Semilavado": false,
+  "Natural": true,
+  "Anaerobico": false,
+  "Otro": null,
+  "Miel": false,
+  "Lavado": false,
+  "PF_Pulpa_Pergamino": 15.5,
+  "PF_DMecanicos": 2.3,
+  "PF_Segundas": 1.8,
+  "PF_Pergamino_Pulpa": 12.4,
+  "PDensidad_Fruta": 1.05,
+  "PDensidad_Pergamino_Humedo": 0.85
+}
+
+### 4. GET un registro específico
+GET {{baseUrl}}/AreaAcopio/{{nlote}}
+
+### 5. POST - Intentar crear el mismo lote (debería fallar con Conflict)
+POST {{baseUrl}}/AreaAcopio
+Content-Type: application/json
+
+{
+  "Nlote": "{{nlote}}",
+  "Altura": 1600,
+  "Zona": "Zona Sur",
+  "Nrecibo": 54321,
+  "Nproductor": "María González",
+  "Nfinca": "El Paraíso",
+  "Robjetivo": 90.0,
+  "Vendido": false,
+  "Enproceso": "No"
+}
+
+### 6. PUT - Actualizar el registro
+PUT {{baseUrl}}/AreaAcopio/{{nlote}}
+Content-Type: application/json
+
+{
+  "Nlote": "{{nlote}}",
+  "Altura": 1550,
+  "Zona": "Zona Norte Actualizada",
+  "Nrecibo": 12345,
+  "Nproductor": "José Pérez",
+  "Nfinca": "La Esperanza",
+  "Robjetivo": 87.0,
+  "Rtotal": 90.5,
+  "Vendido": false,
+  "Disponible": 950,
+  "Enproceso": "En Secado",
+  "Semilavado": true,
+  "Natural": false,
+  "Anaerobico": false,
+  "Otro": "Honey",
+  "Miel": true,
+  "Lavado": false,
+  "PF_Pulpa_Pergamino": 16.0,
+  "PF_DMecanicos": 2.0,
+  "PF_Segundas": 1.5,
+  "PF_Pergamino_Pulpa": 13.0,
+  "PDensidad_Fruta": 1.08,
+  "PDensidad_Pergamino_Humedo": 0.88
+}
+
+### 7. GET verificar la actualización
+GET {{baseUrl}}/AreaAcopio/{{nlote}}
+
+### 8. POST - Crear segundo lote para verificar lista
+POST {{baseUrl}}/AreaAcopio
+Content-Type: application/json
+
+{
+  "Nlote": "LOTE-TEST-002",
+  "Altura": 1800,
+  "Zona": "Zona Sur",
+  "Nrecibo": 54321,
+  "Nproductor": "María González",
+  "Nfinca": "El Paraíso",
+  "Robjetivo": 90.0,
+  "Rtotal": 92.0,
+  "Vendido": true,
+  "Disponible": 0,
+  "Enproceso": "Vendido",
+  "Semilavado": false,
+  "Natural": false,
+  "Anaerobico": true,
+  "Otro": null,
+  "Miel": false,
+  "Lavado": true,
+  "PF_Pulpa_Pergamino": 14.0,
+  "PF_DMecanicos": 1.5,
+  "PF_Segundas": 2.0,
+  "PF_Pergamino_Pulpa": 11.0,
+  "PDensidad_Fruta": 1.02,
+  "PDensidad_Pergamino_Humedo": 0.82
+}
+
+### 9. GET todos los registros (debería mostrar 2 lotes)
+GET {{baseUrl}}/AreaAcopio
+
+### 10. DELETE - Eliminar el primer lote
+DELETE {{baseUrl}}/AreaAcopio/{{nlote}}
+
+### 11. GET verificar que se eliminó
+GET {{baseUrl}}/AreaAcopio/{{nlote}}
+
+### 12. DELETE - Eliminar el segundo lote
+DELETE {{baseUrl}}/AreaAcopio/LOTE-TEST-002
+
+### 13. GET todos los registros (debería estar vacío nuevamente)
+GET {{baseUrl}}/AreaAcopio

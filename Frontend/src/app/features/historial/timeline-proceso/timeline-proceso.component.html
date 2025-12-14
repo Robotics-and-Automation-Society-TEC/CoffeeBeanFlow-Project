@@ -1,0 +1,49 @@
+<!-- ======================================== -->
+<!-- TIMELINE DEL PROCESO - TRAZABILIDAD -->
+<!-- ======================================== -->
+
+<div class="timeline-container">
+  <div class="timeline-header">
+    <h3>🚀 Progreso del Proceso</h3>
+    <div class="progreso-bar">
+      <div class="progreso-fill" [style.width.%]="timelineData.progreso"></div>
+      <span class="progreso-text">{{ timelineData.progreso }}%</span>
+    </div>
+  </div>
+
+  <div class="timeline-etapas">
+    <div 
+      *ngFor="let etapa of timelineData.etapas; let i = index; let isLast = last"
+      class="etapa-item"
+      [class.completada]="etapa.estado === 'completada'"
+      [class.actual]="etapa.estado === 'actual'"
+      [class.pendiente]="etapa.estado === 'pendiente'">
+      
+      <!-- Icono de Etapa -->
+      <div class="etapa-icono" [style.background-color]="etapa.color">
+        <span class="icono">{{ etapa.icono }}</span>
+        <div class="estado-indicator" *ngIf="etapa.estado === 'completada'">✓</div>
+        <div class="estado-indicator pulsar" *ngIf="etapa.estado === 'actual'">●</div>
+      </div>
+
+      <!-- Línea Conectora -->
+      <div class="etapa-linea" *ngIf="!isLast"
+           [class.completada]="etapa.estado === 'completada'">
+      </div>
+
+      <!-- Información de Etapa -->
+      <div class="etapa-info">
+        <span class="etapa-nombre">{{ etapa.nombre }}</span>
+        <span class="etapa-estado-text" *ngIf="etapa.estado === 'actual'">
+          En Proceso
+        </span>
+        <span class="etapa-estado-text completada-text" *ngIf="etapa.estado === 'completada'">
+          Completada
+        </span>
+        <span class="etapa-estado-text pendiente-text" *ngIf="etapa.estado === 'pendiente'">
+          Pendiente
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
