@@ -1,4 +1,5 @@
-.bodega-form-container {
+.bodega-form-container,
+.form-container {
   max-width: 1000px;
   margin: 0 auto;
   padding: var(--space-xl);
@@ -6,7 +7,8 @@
   min-height: 100vh;
 }
 
-.bodega-form {
+.bodega-form,
+.form {
   background-color: white;
   border-radius: var(--border-radius-lg);
   padding: var(--space-2xl);
@@ -14,10 +16,11 @@
 }
 
 .section-title {
-  color: var(--color-primary-dark);
-  font-size: var(--font-size-xl);
-  font-weight: 700;
+  color: var(--color-white);
+  font-size: 2.5rem;
+  font-weight: 900;
   margin-bottom: var(--space-lg);
+  text-shadow: 0 0 20px rgba(61, 139, 55, 0.8), 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .form-header {
@@ -117,33 +120,37 @@
   text-shadow: 0 0 20px rgba(61, 139, 55, 0.8), 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
-.form-row {
+.form-row,
+.form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: var(--space-lg);
-  margin-bottom: var(--space-lg);
+  gap: var(--space-2xl);
+  margin-bottom: var(--space-2xl);
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
+  margin-bottom: var(--space-lg);
 }
 
 .form-group label {
   font-weight: 500;
   color: var(--color-gray-700);
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--space-md);
   font-size: var(--font-size-sm);
+  display: block;
 }
 
 .form-group input[type="text"],
 .form-group input[type="number"],
 .form-group select {
-  padding: var(--space-md);
+  padding: var(--space-lg);
   border: 2px solid var(--color-gray-300);
   border-radius: var(--border-radius-md);
   font-size: var(--font-size-base);
   transition: border-color var(--transition-fast);
+  width: 100%;
 }
 
 .form-group input:focus,

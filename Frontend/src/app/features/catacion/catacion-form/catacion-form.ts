@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -19,29 +19,145 @@ export class CatacionFormComponent implements OnInit {
   private acopioService = inject(AreaAcopioService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private cdr = inject(ChangeDetectorRef);
 
   catacionForm!: FormGroup;
   modoEdicion = false;
   idCatacion: number | null = null;
-  cargando = false;
+  cargando = true; // CAMBIADO: Empezar en true mientras se cargan los datos
   lotesDisponibles: AreaAcopio[] = [];
+  errorMessage: string | null = null;
 
   ngOnInit(): void {
+    console.log('=== CatacionFormComponent ngOnInit ===');
+    console.log('Inicializando componente de catación...');
+    
     this.inicializarFormulario();
-    this.cargarLotesDisponibles();
+    console.log('Formulario inicializado');
     
     const id = this.route.snapshot.paramMap.get('id');
+    console.log('ID de ruta:', id);
+    
     if (id) {
       this.modoEdicion = true;
       this.idCatacion = parseInt(id, 10);
-      this.cargarCatacion(this.idCatacion);
+      console.log('Modo edición activado. ID:', this.idCatacion);
+      // En modo edición: cargar lotes Y catación en paralelo
+      this.cargarDatosEdicion();
+    } else {
+      console.log('Modo creación. Solo cargar lotes.');
+      // En modo creación: solo cargar lotes
+      this.cargarLotesDisponibles();
+    }
+  }
+
+  cargarDatosEdicion(): void {
+    console.log('=== CARGAR DATOS EDICIÓN ===');
+    console.log('Estado inicial - cargando:', this.cargando);
+    this.cargando = true;
+    this.errorMessage = null;
+    console.log('Estado después de setear true - cargando:', this.cargando);
+    
+    let lotesCompletos = false;
+    let catacionCompleta = false;
+    console.log('Banderas inicializadas - lotesCompletos:', lotesCompletos, 'catacionCompleta:', catacionCompleta);
+    
+    // Cargar lotes
+    this.acopioService.obtenerTodos().subscribe({
+      next: (lotes) => {
+        console.log('Lotes cargados:', lotes);
+        this.lotesDisponibles = lotes;
+        lotesCompletos = true;
+        // Solo quitar loading si ambos terminaron
+        if (lotesCompletos && catacionCompleta) {
+          console.log('✅ AMBOS DATOS CARGADOS');
+          console.log('Estado ANTES de cambiar - cargando:', this.cargando);
+          console.log('lotesCompletos:', lotesCompletos, 'catacionCompleta:', catacionCompleta);
+          
+          // Usar setTimeout para asegurar que Angular detecte el cambio
+          setTimeout(() => {
+            this.cargando = false;
+            console.log('✅ LOADING CAMBIADO A FALSE');
+            console.log('Estado DESPUÉS de cambiar - cargando:', this.cargando);
+            this.cdr.detectChanges();
+            console.log('✅ detectChanges() ejecutado');
+          }, 0);
+        }
+      },
+      error: (error) => {
+        console.error('Error al cargar lotes:', error);
+        this.errorMessage = 'Error al cargar los lotes disponibles.';
+        this.cargando = false;
+        this.cdr.detectChanges();
+        alert(this.errorMessage);
+      }
+    });
+    
+    // Cargar catación
+    if (this.idCatacion) {
+      this.catacionService.obtenerPorId(this.idCatacion).subscribe({
+        next: (catacion) => {
+          console.log('Catación cargada:', catacion);
+          this.catacionForm.patchValue(catacion);
+          
+          // Cargar rondas existentes
+          if (catacion.rondas && catacion.rondas.length > 0) {
+            catacion.rondas.forEach(ronda => {
+              const rondaGroup = this.crearRondaFormGroup();
+              rondaGroup.patchValue(ronda);
+              this.rondas.push(rondaGroup);
+            });
+          }
+          
+          catacionCompleta = true;
+          // Solo quitar loading si ambos terminaron
+          if (lotesCompletos && catacionCompleta) {
+            console.log('✅ AMBOS DATOS CARGADOS (desde catación callback)');
+            console.log('Estado ANTES de cambiar - cargando:', this.cargando);
+            console.log('lotesCompletos:', lotesCompletos, 'catacionCompleta:', catacionCompleta);
+            
+            // Usar setTimeout para asegurar que Angular detecte el cambio
+            setTimeout(() => {
+              this.cargando = false;
+              console.log('✅ LOADING CAMBIADO A FALSE');
+              console.log('Estado DESPUÉS de cambiar - cargando:', this.cargando);
+              this.cdr.detectChanges();
+              console.log('✅ detectChanges() ejecutado');
+            }, 0);
+          }
+        },
+        error: (error) => {
+          console.error('Error al cargar catación:', error);
+          this.errorMessage = `Error al cargar la catación: ${error.message}`;
+          this.cargando = false;
+          this.cdr.detectChanges();
+          alert(this.errorMessage);
+        }
+      });
     }
   }
 
   cargarLotesDisponibles(): void {
+    console.log('Cargando lotes disponibles...');
+    this.cargando = true;
+    this.errorMessage = null;
+    
     this.acopioService.obtenerTodos().subscribe({
-      next: (lotes) => this.lotesDisponibles = lotes,
-      error: (error) => console.error('Error al cargar lotes:', error)
+      next: (lotes) => {
+        console.log('Lotes cargados:', lotes);
+        this.lotesDisponibles = lotes;
+        console.log('Terminando loading (modo creación)');
+        this.cargando = false;
+        this.cdr.detectChanges(); // FORZAR DETECCIÓN DE CAMBIOS
+        console.log('Change detection ejecutado, cargando =', this.cargando);
+      },
+      error: (error) => {
+        console.error('Error al cargar lotes:', error);
+        this.errorMessage = 'Error al cargar los lotes disponibles. Por favor, verifica que el servidor esté funcionando.';
+        this.cargando = false;
+        this.cdr.detectChanges();
+        alert(this.errorMessage);
+      }
     });
   }
 
@@ -134,31 +250,6 @@ export class CatacionFormComponent implements OnInit {
 
   eliminarRonda(index: number): void {
     this.rondas.removeAt(index);
-  }
-
-  cargarCatacion(id: number): void {
-    this.cargando = true;
-    this.catacionService.obtenerPorId(id).subscribe({
-      next: (catacion) => {
-        this.catacionForm.patchValue(catacion);
-        
-        // Cargar rondas existentes
-        if (catacion.rondas && catacion.rondas.length > 0) {
-          catacion.rondas.forEach(ronda => {
-            const rondaGroup = this.crearRondaFormGroup();
-            rondaGroup.patchValue(ronda);
-            this.rondas.push(rondaGroup);
-          });
-        }
-        
-        this.cargando = false;
-      },
-      error: (error) => {
-        console.error('Error al cargar catación:', error);
-        this.cargando = false;
-        alert('Error al cargar la catación');
-      }
-    });
   }
 
   guardar(): void {

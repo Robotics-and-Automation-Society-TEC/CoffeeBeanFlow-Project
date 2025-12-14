@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CoffeeBeanFlowAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ee5ca93331d134e36be7b2b4397213d403a12bc9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5abf42ef9d5ace5b62267655505d232b4efd2ec4")]
 [assembly: System.Reflection.AssemblyProductAttribute("CoffeeBeanFlowAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CoffeeBeanFlowAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -8,6 +8,17 @@
     <p class="subtitle">Registra la evaluación sensorial del café</p>
   </div>
 
+  <!-- Mensaje de error si existe -->
+  <div class="alert alert-error" *ngIf="errorMessage && !cargando">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Indicador de carga -->
+  <div class="loading-overlay" *ngIf="cargando">
+    <div class="spinner"></div>
+    <p>Cargando datos...</p>
+  </div>
+
   <form [formGroup]="catacionForm" (ngSubmit)="guardar()" *ngIf="!cargando" class="form">
     
     <!-- Sección: Información Principal -->
@@ -326,6 +337,4 @@
       </button>
     </div>
   </form>
-
-  <div class="loading" *ngIf="cargando">Cargando...</div>
 </div>
