@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\josev\\OneDrive\\Documentos\\CoffeeBeanFlow-Project-Cambio\\Backend\\CoffeeBeanFlowAPI.csproj": {}
+    "/home/noemi/Documentos/Repo-Cafe/CoffeeBeanFlow-Project/Backend/CoffeeBeanFlowAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\josev\\OneDrive\\Documentos\\CoffeeBeanFlow-Project-Cambio\\Backend\\CoffeeBeanFlowAPI.csproj": {
+    "/home/noemi/Documentos/Repo-Cafe/CoffeeBeanFlow-Project/Backend/CoffeeBeanFlowAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\josev\\OneDrive\\Documentos\\CoffeeBeanFlow-Project-Cambio\\Backend\\CoffeeBeanFlowAPI.csproj",
+        "projectUniqueName": "/home/noemi/Documentos/Repo-Cafe/CoffeeBeanFlow-Project/Backend/CoffeeBeanFlowAPI.csproj",
         "projectName": "CoffeeBeanFlowAPI",
-        "projectPath": "C:\\Users\\josev\\OneDrive\\Documentos\\CoffeeBeanFlow-Project-Cambio\\Backend\\CoffeeBeanFlowAPI.csproj",
-        "packagesPath": "C:\\Users\\josev\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\josev\\OneDrive\\Documentos\\CoffeeBeanFlow-Project-Cambio\\Backend\\obj\\",
+        "projectPath": "/home/noemi/Documentos/Repo-Cafe/CoffeeBeanFlow-Project/Backend/CoffeeBeanFlowAPI.csproj",
+        "packagesPath": "/home/noemi/.nuget/packages/",
+        "outputPath": "/home/noemi/Documentos/Repo-Cafe/CoffeeBeanFlow-Project/Backend/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\josev\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/home/noemi/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -36,9 +36,9 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "direct"
+          "auditMode": "all"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net9.0": {
@@ -88,7 +88,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.308/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
