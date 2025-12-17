@@ -25,6 +25,20 @@
       <h2 class="section-title">📋 Información Principal</h2>
       <div class="form-grid">
         <div class="form-group">
+          <label for="finicio">Fecha y Hora de Inicio *</label>
+          <input
+            type="datetime-local"
+            id="finicio"
+            formControlName="finicio"
+            class="form-control"
+            [class.error]="secadoForm.get('finicio')?.invalid && secadoForm.get('finicio')?.touched"
+          />
+          @if (secadoForm.get('finicio')?.invalid && secadoForm.get('finicio')?.touched) {
+            <span class="error-text">La fecha de inicio es requerida</span>
+          }
+        </div>
+
+        <div class="form-group">
           <label for="nlote">Número de Lote *</label>
           <select
             id="nlote"
@@ -43,21 +57,17 @@
         </div>
 
         <div class="form-group">
-          <label for="finicio">Fecha y Hora de Inicio *</label>
+          <label for="ffinal">Fecha y Hora Final</label>
           <input
             type="datetime-local"
-            id="finicio"
-            formControlName="finicio"
+            id="ffinal"
+            formControlName="ffinal"
             class="form-control"
-            [class.error]="secadoForm.get('finicio')?.invalid && secadoForm.get('finicio')?.touched"
           />
-          @if (secadoForm.get('finicio')?.invalid && secadoForm.get('finicio')?.touched) {
-            <span class="error-text">La fecha de inicio es requerida</span>
-          }
         </div>
 
         <div class="form-group">
-          <label for="dsecado">Días de Secado</label>
+          <label for="dsecado">Días de Secado (calculado automáticamente)</label>
           <input
             type="number"
             id="dsecado"
@@ -65,16 +75,8 @@
             class="form-control"
             placeholder="0"
             min="0"
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="ffinal">Fecha y Hora Final</label>
-          <input
-            type="datetime-local"
-            id="ffinal"
-            formControlName="ffinal"
-            class="form-control"
+            readonly
+            style="background-color: #f0f0f0; cursor: not-allowed;"
           />
         </div>
       </div>

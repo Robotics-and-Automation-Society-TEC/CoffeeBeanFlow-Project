@@ -86,9 +86,7 @@ export class CatacionListComponent implements OnInit {
     if (catacion.c1cerezaseca) total += catacion.c1cerezaseca;
     if (catacion.c1negro) total += catacion.c1negro;
     if (catacion.c1insectos) total += catacion.c1insectos;
-    if (catacion.c1negrop) total += catacion.c1negrop;
-    if (catacion.c1agriop) total += catacion.c1agriop;
-    if (catacion.c1me) total += catacion.c1me;
+    if (catacion.c1ME) total += catacion.c1ME;
     return Math.round(total * 100) / 100;
   }
 

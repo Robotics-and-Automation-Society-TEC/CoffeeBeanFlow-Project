@@ -45,13 +45,37 @@ export class SecadoFormComponent implements OnInit {
     this.secadoForm = this.fb.group({
       nlote: ['', [Validators.required, Validators.maxLength(50)]],
       finicio: ['', Validators.required],
-      dsecado: [null],
+      dsecado: [{ value: null, disabled: true }],
       ffinal: [null],
       humedades: this.fb.array([]),
       termoHigrometrias: this.fb.array([]),
       temperaturasSecado: this.fb.array([]),
       ncamas: this.fb.array([])
     });
+
+    // Escuchar cambios en las fechas para calcular automáticamente los días
+    this.secadoForm.get('finicio')?.valueChanges.subscribe(() => this.calcularDiasSecado());
+    this.secadoForm.get('ffinal')?.valueChanges.subscribe(() => this.calcularDiasSecado());
+  }
+
+  private calcularDiasSecado(): void {
+    const finicio = this.secadoForm.get('finicio')?.value;
+    const ffinal = this.secadoForm.get('ffinal')?.value;
+
+    if (finicio && ffinal) {
+      const fechaInicio = new Date(finicio);
+      const fechaFinal = new Date(ffinal);
+      
+      if (fechaFinal >= fechaInicio) {
+        const diferenciaMilisegundos = fechaFinal.getTime() - fechaInicio.getTime();
+        const dias = Math.ceil(diferenciaMilisegundos / (1000 * 60 * 60 * 24));
+        this.secadoForm.get('dsecado')?.setValue(dias, { emitEvent: false });
+      } else {
+        this.secadoForm.get('dsecado')?.setValue(null, { emitEvent: false });
+      }
+    } else {
+      this.secadoForm.get('dsecado')?.setValue(null, { emitEvent: false });
+    }
   }
 
   private checkEditMode(): void {
@@ -194,18 +218,37 @@ export class SecadoFormComponent implements OnInit {
   // ============================================
 
   onSubmit(): void {
+    console.log('=== INICIO onSubmit ===');
+    console.log('Formulario válido:', !this.secadoForm.invalid);
+    
     if (this.secadoForm.invalid) {
+      console.log('Formulario inválido - mostrando errores');
       this.secadoForm.markAllAsTouched();
       this.errorMessage = 'Por favor, completa todos los campos requeridos';
+      
+      // Mostrar qué campos están inválidos
+      Object.keys(this.secadoForm.controls).forEach(key => {
+        const control = this.secadoForm.get(key);
+        if (control?.invalid) {
+          console.log(`Campo inválido: ${key}`, control.errors);
+        }
+      });
       return;
     }
 
     this.isLoading = true;
     this.errorMessage = '';
 
+    // Habilitar dsecado temporalmente para obtener su valor
+    this.secadoForm.get('dsecado')?.enable();
     const formValue = this.secadoForm.value;
+    this.secadoForm.get('dsecado')?.disable();
+
+    console.log('Valores del formulario:', formValue);
 
     if (this.isEditMode && this.idSecado !== null) {
+      console.log('Modo edición - ID:', this.idSecado);
+      
       const updateDto: UpdateSecadoDto = {
         idSecado: this.idSecado,
         nlote: formValue.nlote,
@@ -227,49 +270,79 @@ export class SecadoFormComponent implements OnInit {
         ncamas: formValue.ncamas
       };
 
+      console.log('DTO de actualización:', updateDto);
+
       this.secadoService.actualizar(this.idSecado, updateDto).subscribe({
         next: () => {
+          console.log('Actualización exitosa');
+          this.isLoading = false;
           this.router.navigate(['/secado']);
         },
         error: (error) => {
-          this.errorMessage = error.message;
+          console.error('Error al actualizar:', error);
+          this.errorMessage = 'Error al actualizar: ' + error.message;
           this.isLoading = false;
+          alert('Error al actualizar: ' + error.message);
         }
       });
     } else {
-      const createDto: CreateSecadoDto = {
+      console.log('Modo creación');
+      
+      const createDto: any = {
         nlote: formValue.nlote,
         finicio: new Date(formValue.finicio).toISOString(),
-        dsecado: formValue.dsecado,
+        dsecado: formValue.dsecado || null,
         ffinal: formValue.ffinal ? new Date(formValue.ffinal).toISOString() : null,
-        humedades: formValue.humedades.map((h: any) => ({
+        humedades: formValue.humedades?.length > 0 ? formValue.humedades.map((h: any) => ({
           fecha: new Date(h.fecha).toISOString(),
           humedad: h.humedad
-        })),
-        termoHigrometrias: formValue.termoHigrometrias.map((t: any) => ({
+        })) : [],
+        termoHigrometrias: formValue.termoHigrometrias?.length > 0 ? formValue.termoHigrometrias.map((t: any) => ({
           fecha: new Date(t.fecha).toISOString(),
           temperaturaAmbiente: t.temperaturaAmbiente,
           humedadAmbiente: t.humedadAmbiente
-        })),
-        temperaturasSecado: formValue.temperaturasSecado.map((t: any) => ({
+        })) : [],
+        temperaturasSecado: formValue.temperaturasSecado?.length > 0 ? formValue.temperaturasSecado.map((t: any) => ({
           fecha: new Date(t.fecha).toISOString(),
           temperatura: t.temperatura
-        })),
-        ncamas: formValue.ncamas.map((n: any) => ({
-          numeroCama: n.numeroCama
-        }))
+        })) : [],
+        ncamas: formValue.ncamas?.length > 0 ? formValue.ncamas.map((n: any) => ({
+          numeroCama: String(n.numeroCama)  // Convertir a string
+        })) : []
       };
 
+      console.log('DTO de creación:', JSON.stringify(createDto, null, 2));
+      console.log('Enviando petición al backend...');
+
       this.secadoService.crear(createDto).subscribe({
-        next: () => {
+        next: (response) => {
+          console.log('Creación exitosa. Respuesta:', response);
+          this.isLoading = false;
           this.router.navigate(['/secado']);
         },
         error: (error) => {
-          this.errorMessage = error.message;
+          console.error('Error completo:', error);
+          console.error('Error status:', error.status);
+          console.error('Error statusText:', error.statusText);
+          console.error('Error error:', error.error);
+          
+          let mensajeError = 'Error al crear el secado';
+          if (error.error?.message) {
+            mensajeError = error.error.message;
+          } else if (error.error?.errors) {
+            mensajeError = JSON.stringify(error.error.errors);
+          } else if (error.message) {
+            mensajeError = error.message;
+          }
+          
+          this.errorMessage = mensajeError;
           this.isLoading = false;
+          alert('Error al crear: ' + mensajeError);
         }
       });
     }
+    
+    console.log('=== FIN onSubmit ===');
   }
 
   cancelar(): void {

@@ -75,8 +75,8 @@ export class BodegaListComponent implements OnInit {
     });
   }
 
-  formatearNumero(valor: number | null): string {
-    if (valor === null) return '-';
+  formatearNumero(valor: number | null | undefined): string {
+    if (valor === null || valor === undefined) return '-';
     return valor.toFixed(2);
   }
 

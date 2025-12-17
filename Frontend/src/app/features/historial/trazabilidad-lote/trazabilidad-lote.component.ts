@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TrazabilidadCompleta, EtapaProceso } from '../../../models/trazabilidad.model';
 import { TrazabilidadService } from '../../../core/services/trazabilidad.service';
@@ -9,7 +9,7 @@ import { TimelineProcesoComponent } from '../timeline-proceso/timeline-proceso.c
 @Component({
   selector: 'app-trazabilidad-lote',
   standalone: true,
-  imports: [CommonModule, FormsModule, TimelineProcesoComponent],
+  imports: [CommonModule, FormsModule, RouterModule, TimelineProcesoComponent],
   templateUrl: './trazabilidad-lote.component.html',
   styleUrl: './trazabilidad-lote.component.css'
 })
@@ -138,7 +138,13 @@ export class TrazabilidadLoteComponent implements OnInit {
 
   buscarNuevoLote(): void {
     if (this.nlote) {
-      this.cargarTrazabilidad();
+      // Actualizar los query params en la URL
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { nlote: this.nlote },
+        queryParamsHandling: 'merge'
+      });
+      // La carga se disparará automáticamente por el observable de queryParams en ngOnInit
     }
   }
 

@@ -120,29 +120,71 @@ export class TrillaFormComponent implements OnInit {
   }
 
   guardar(): void {
+    console.log('=== INICIO guardar TRILLA ===');
+    console.log('Formulario válido:', this.formulario.valid);
+    console.log('Formulario inválido:', this.formulario.invalid);
+    
     if (this.formulario.invalid) {
+      console.log('Formulario inválido, marcando campos como tocados');
       this.formulario.markAllAsTouched();
+      
+      // Log de campos inválidos
+      Object.keys(this.formulario.controls).forEach(key => {
+        const control = this.formulario.get(key);
+        if (control?.invalid) {
+          console.log(`Campo inválido: ${key}`, control.errors);
+        }
+      });
       return;
     }
 
     const datos = this.formulario.value;
+    console.log('Datos del formulario antes de procesar:', JSON.stringify(datos, null, 2));
+    
+    // Convertir ffinalReposo a formato ISO si existe
+    if (datos.ffinalReposo) {
+      datos.ffinalReposo = new Date(datos.ffinalReposo).toISOString();
+      console.log('ffinalReposo convertido a ISO:', datos.ffinalReposo);
+    }
     
     // Si no se incluye PesoVerde, eliminarlo del payload
     if (!this.incluyePesoVerde) {
+      console.log('Eliminando pesoVerde del payload');
       delete datos.pesoVerde;
     }
+    
+    console.log('Datos finales a enviar:', JSON.stringify(datos, null, 2));
 
     if (this.modoEdicion && this.idTrilla) {
+      console.log('Modo edición - ID:', this.idTrilla);
+      
+      // Agregar idTrilla al DTO de actualización
+      datos.idTrilla = this.idTrilla;
+      console.log('DTO con idTrilla:', JSON.stringify(datos, null, 2));
+      
       this.trillaService.actualizar(this.idTrilla, datos).subscribe({
-        next: () => this.router.navigate(['/trilla']),
-        error: (error) => console.error('Error al actualizar:', error)
+        next: () => {
+          console.log('Actualización exitosa');
+          this.router.navigate(['/trilla']);
+        },
+        error: (error) => {
+          console.error('Error al actualizar:', error);
+        }
       });
     } else {
+      console.log('Modo creación');
       this.trillaService.crear(datos).subscribe({
-        next: () => this.router.navigate(['/trilla']),
-        error: (error) => console.error('Error al crear:', error)
+        next: () => {
+          console.log('Creación exitosa');
+          this.router.navigate(['/trilla']);
+        },
+        error: (error) => {
+          console.error('Error al crear:', error);
+        }
       });
     }
+    
+    console.log('=== FIN guardar TRILLA ===');
   }
 
   cancelar(): void {

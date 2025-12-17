@@ -25,6 +25,16 @@
       <h2 class="section-title">📋 Información Principal</h2>
       <div class="form-grid">
         <div class="form-group">
+          <label for="finicioReposo">Fecha Inicio de Reposo</label>
+          <input
+            type="datetime-local"
+            id="finicioReposo"
+            formControlName="finicioReposo"
+            class="form-control"
+          />
+        </div>
+
+        <div class="form-group">
           <label for="nlote">Número de Lote *</label>
           <select
             id="nlote"
@@ -40,16 +50,6 @@
           @if (bodegaForm.get('nlote')?.invalid && bodegaForm.get('nlote')?.touched) {
             <span class="error-text">El número de lote es requerido</span>
           }
-        </div>
-
-        <div class="form-group">
-          <label for="finicio_reposo">Fecha Inicio de Reposo</label>
-          <input
-            type="datetime-local"
-            id="finicio_reposo"
-            formControlName="finicio_reposo"
-            class="form-control"
-          />
         </div>
 
         <div class="form-group">
@@ -191,7 +191,7 @@
       <h2 class="section-title">🔬 Pruebas de Masa</h2>
       <div class="form-grid">
         <div class="form-group">
-          <label for="pmhRelativa">PMH Relativa</label>
+          <label for="pmhRelativa">Humedad relativa (%)</label>
           <input
             type="number"
             id="pmhRelativa"
@@ -200,14 +200,13 @@
             placeholder="0.00"
             step="0.01"
             min="0"
-            max="1"
             [class.error]="bodegaForm.get('pmhRelativa')?.invalid && bodegaForm.get('pmhRelativa')?.touched"
           />
-          <small class="help-text">Prueba de Masa Húmeda relativa</small>
+          <small class="help-text">Humedad relativa del ambiente</small>
         </div>
 
         <div class="form-group">
-          <label for="pmtInterna">PMT Interna (°C)</label>
+          <label for="pmtInterna">Temperatura Interna (°C)</label>
           <input
             type="number"
             id="pmtInterna"
@@ -216,11 +215,11 @@
             placeholder="0.00"
             step="0.1"
           />
-          <small class="help-text">Prueba de Masa - Temperatura interna</small>
+          <small class="help-text">Temperatura interna de la masa</small>
         </div>
 
         <div class="form-group">
-          <label for="pmtExterna">PMT Externa (°C)</label>
+          <label for="pmtExterna">Temperatura Externa (°C)</label>
           <input
             type="number"
             id="pmtExterna"
@@ -229,7 +228,7 @@
             placeholder="0.00"
             step="0.1"
           />
-          <small class="help-text">Prueba de Masa - Temperatura externa</small>
+          <small class="help-text">Temperatura externa de la masa</small>
         </div>
       </div>
     </div>

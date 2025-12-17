@@ -57,6 +57,7 @@ export interface CreateTrillaDto {
 }
 
 export interface UpdateTrillaDto {
+  idTrilla: number;
   nlote: string;
   hinicial?: number | null;
   hfinal?: number | null;

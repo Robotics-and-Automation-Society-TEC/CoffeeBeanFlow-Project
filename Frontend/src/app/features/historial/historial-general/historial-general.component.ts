@@ -187,11 +187,11 @@ export class HistorialGeneralComponent implements OnInit {
   private procesarCaracterizaciones(caracterizaciones: any[]): RegistroGeneral[] {
     return caracterizaciones.map(c => ({
       tipo: 'Caracterizacion',
-      id: `${c.fecha}_${c.hora}`,
-      nlote: c.nlote,
-      fecha: c.fecha || new Date().toISOString(),
+      id: `${c.tiempo}_${c.nloteAreaAcopio}`,
+      nlote: c.nloteAreaAcopio,
+      fecha: c.tiempo || new Date().toISOString(),
       estado: 'Completado',
-      resumen: `${c.proceso || ''} - Lote Asignado: ${c.lasignado || ''}`,
+      resumen: `${c.proceso || ''} - Lote Asignado: ${c.lAsignado || ''}`,
       datos: c
     }));
   }
@@ -200,7 +200,7 @@ export class HistorialGeneralComponent implements OnInit {
     return cataciones.map(c => ({
       tipo: 'Catacion',
       id: c.idCatacion,
-      nlote: 'N/A', // Catación puede no estar vinculada directamente a nlote
+      nlote: c.nlote,
       fecha: c.fcatacion || new Date().toISOString(),
       estado: 'Completado',
       resumen: `Catador: ${c.ncatador || ''} - Calidad: ${c.calidad || ''}`,

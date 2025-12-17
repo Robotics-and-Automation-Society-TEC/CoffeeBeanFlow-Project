@@ -111,11 +111,11 @@
 
     <!-- Sección 2: Rendimiento -->
     <div class="form-section">
-      <h2>📊 Rendimiento</h2>
+      <h2>📊 Rango de maduración</h2>
       
       <div class="form-row">
         <div class="form-group">
-          <label for="robjetivo">Rendimiento Objetivo (%) *</label>
+          <label for="robjetivo">Rango Objetivo (%) *</label>
           <input 
             id="robjetivo" 
             type="number" 
@@ -125,7 +125,7 @@
         </div>
 
         <div class="form-group">
-          <label for="rtotal">Rendimiento Total (%)</label>
+          <label for="rtotal">Rango Total (%)</label>
           <input 
             id="rtotal" 
             type="number" 
@@ -139,6 +139,18 @@
     <!-- Sección 3: Estado y Disponibilidad -->
     <div class="form-section">
       <h2>📦 Estado y Disponibilidad</h2>
+
+      <div class="form-group">
+          <label for="enproceso">Estado del Proceso *</label>
+          <select id="enproceso" formControlName="enproceso">
+            <option value="No">No</option>
+            <option value="En Secado">En Secado</option>
+            <option value="En Trilla">En Trilla</option>
+            <option value="En Bodega">En Bodega</option>
+            <option value="Vendido">Vendido</option>
+          </select>
+        </div>
+      </div>
       
       <div class="form-row">
         <div class="form-group">
@@ -150,17 +162,7 @@
             placeholder="Ej: 1000">
         </div>
 
-        <div class="form-group">
-          <label for="enproceso">Estado del Proceso *</label>
-          <select id="enproceso" formControlName="enproceso">
-            <option value="No">No</option>
-            <option value="En Secado">En Secado</option>
-            <option value="En Trilla">En Trilla</option>
-            <option value="En Bodega">En Bodega</option>
-            <option value="Vendido">Vendido</option>
-          </select>
-        </div>
-      </div>
+        
 
       <div class="form-row">
         <div class="form-group checkbox-group">
@@ -223,13 +225,13 @@
       </div>
     </div>
 
-    <!-- Sección 5: Pruebas Físicas de Beneficio Húmedo -->
+    <!-- Sección 5: Pruebas Físicas de Beneficiado Húmedo -->
     <div class="form-section">
-      <h2>🔬 Pruebas Físicas - Beneficio Húmedo</h2>
+      <h2>🔬 Pruebas Físicas - Beneficiado Húmedo</h2>
       
       <div class="form-row">
         <div class="form-group">
-          <label for="pF_Pulpa_Pergamino">PF Pulpa/Pergamino (%)</label>
+          <label for="pF_Pulpa_Pergamino">Pulpa/Pergamino (%)</label>
           <input 
             id="pF_Pulpa_Pergamino" 
             type="number" 
@@ -239,7 +241,7 @@
         </div>
 
         <div class="form-group">
-          <label for="pF_DMecanicos">PF Daños Mecánicos (%)</label>
+          <label for="pF_DMecanicos">Daños Mecánicos (%)</label>
           <input 
             id="pF_DMecanicos" 
             type="number" 
@@ -251,7 +253,7 @@
 
       <div class="form-row">
         <div class="form-group">
-          <label for="pF_Segundas">PF Segundas (%)</label>
+          <label for="pF_Segundas">Segundas (%)</label>
           <input 
             id="pF_Segundas" 
             type="number" 
@@ -261,7 +263,7 @@
         </div>
 
         <div class="form-group">
-          <label for="pF_Pergamino_Pulpa">PF Pergamino/Pulpa (%)</label>
+          <label for="pF_Pergamino_Pulpa">Pergamino/Pulpa (%)</label>
           <input 
             id="pF_Pergamino_Pulpa" 
             type="number" 
@@ -270,6 +272,9 @@
             placeholder="Ej: 12.4">
         </div>
       </div>
+
+      <h2>🧪 Pruebas de Densidad</h2>
+
 
       <div class="form-row">
         <div class="form-group">

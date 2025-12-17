@@ -36,8 +36,8 @@
               <td class="value-cell">{{ caract.lAsignado || '-' }}</td>
             </tr>
             <tr class="highlight-row">
-              <td class="label-cell">Estado Maduración:</td>
-              <td class="value-cell primary-value">{{ caract.eMaduracion ? (caract.eMaduracion + '%') : '-' }}</td>
+              <td class="label-cell">Escala de maduras (1-10):</td>
+              <td class="value-cell primary-value">{{ caract.emaduracion ? caract.emaduracion : '-' }}</td>
             </tr>
           </table>
         </div>
@@ -47,16 +47,16 @@
           <h3 class="section-title">📊 Rendimientos y Mediciones</h3>
           <table class="info-table">
             <tr>
-              <td class="label-cell">DR Maduras:</td>
-              <td class="value-cell">{{ caract.drMaduras ? (caract.drMaduras + '%') : '-' }}</td>
+              <td class="label-cell">Rango Óptimo de maduras (° brix):</td>
+              <td class="value-cell">{{ caract.dRmaduras ? caract.dRmaduras : '-' }}</td>
             </tr>
             <tr>
               <td class="label-cell">Densidad:</td>
               <td class="value-cell">{{ caract.densidad || '-' }}</td>
             </tr>
             <tr>
-              <td class="label-cell">M Tabla:</td>
-              <td class="value-cell">{{ caract.mTabla || '-' }}</td>
+              <td class="label-cell">Muestreo tabla:</td>
+              <td class="value-cell">{{ caract.mtabla || '-' }}</td>
             </tr>
             <tr>
               <td class="label-cell">Broca:</td>
@@ -71,23 +71,23 @@
           <table class="info-table">
             <tr>
               <td class="label-cell">Verdes:</td>
-              <td class="value-cell">{{ caract.cVerdes || 0 }}</td>
+              <td class="value-cell">{{ caract.cverdes || 0 }}</td>
             </tr>
             <tr>
               <td class="label-cell">Objetivo:</td>
-              <td class="value-cell">{{ caract.cObjetivo || 0 }}</td>
+              <td class="value-cell">{{ caract.cobjetivo || 0 }}</td>
             </tr>
             <tr>
               <td class="label-cell">Inmaduras:</td>
-              <td class="value-cell">{{ caract.cInmaduras || 0 }}</td>
+              <td class="value-cell">{{ caract.cinmaduras || 0 }}</td>
             </tr>
             <tr>
               <td class="label-cell">Sobremaduras:</td>
-              <td class="value-cell">{{ caract.cSobremaduras || 0 }}</td>
+              <td class="value-cell">{{ caract.csobremaduras || 0 }}</td>
             </tr>
             <tr>
               <td class="label-cell">Secas:</td>
-              <td class="value-cell">{{ caract.cSecas || 0 }}</td>
+              <td class="value-cell">{{ caract.csecas || 0 }}</td>
             </tr>
             <tr>
               <td class="label-cell">Vanos:</td>
@@ -105,81 +105,81 @@
           <h3 class="section-title">📈 Porcentajes</h3>
           <table class="info-table">
             <tr>
-              <td class="label-cell">PC Debajo:</td>
-              <td class="value-cell">{{ caract.pcDebajo ? (caract.pcDebajo + '%') : '-' }}</td>
+              <td class="label-cell">Cerezas Debajo:</td>
+              <td class="value-cell">{{ caract.pCdebajo ? (caract.pCdebajo + '%') : '-' }}</td>
             </tr>
             <tr>
-              <td class="label-cell">PC Verdes:</td>
-              <td class="value-cell">{{ caract.pcVerdes ? (caract.pcVerdes + '%') : '-' }}</td>
+              <td class="label-cell">Cerezas Verdes:</td>
+              <td class="value-cell">{{ caract.pCverdes ? (caract.pCverdes + '%') : '-' }}</td>
             </tr>
             <tr>
-              <td class="label-cell">PC Secas:</td>
-              <td class="value-cell">{{ caract.pcSecas ? (caract.pcSecas + '%') : '-' }}</td>
+              <td class="label-cell">Cerezas Secas:</td>
+              <td class="value-cell">{{ caract.pCsecas ? (caract.pCsecas + '%') : '-' }}</td>
             </tr>
             <tr>
-              <td class="label-cell">PC Encima:</td>
-              <td class="value-cell">{{ caract.pcEncima ? (caract.pcEncima + '%') : '-' }}</td>
+              <td class="label-cell">Cerezas Encima:</td>
+              <td class="value-cell">{{ caract.pCencima ? (caract.pCencima + '%') : '-' }}</td>
             </tr>
             <tr>
-              <td class="label-cell">PC Objetivo:</td>
-              <td class="value-cell">{{ caract.pcObjetivo ? (caract.pcObjetivo + '%') : '-' }}</td>
+              <td class="label-cell">Cerezas Objetivo:</td>
+              <td class="value-cell">{{ caract.pCobjetivo ? (caract.pCobjetivo + '%') : '-' }}</td>
             </tr>
           </table>
         </div>
 
         <!-- RC Sobremaduras -->
-        <div class="info-section rc-section" *ngIf="caract.rcSobremaduras">
+        <div class="info-section rc-section" *ngIf="caract.rCsobremaduras">
           <h3 class="section-title">📊 RC Sobremaduras</h3>
           <table class="info-table">
             <tr>
               <td class="label-cell">GBX:</td>
-              <td class="value-cell">{{ caract.rcSobremaduras.gbx || '-' }}</td>
+              <td class="value-cell">{{ caract.rCsobremaduras.gbx || '-' }}</td>
             </tr>
             <tr>
               <td class="label-cell">Promedio:</td>
-              <td class="value-cell">{{ caract.rcSobremaduras.promedio || '-' }}</td>
+              <td class="value-cell">{{ caract.rCsobremaduras.promedio || '-' }}</td>
             </tr>
-            <tr *ngIf="caract.rcSobremaduras.observaciones">
+            <tr *ngIf="caract.rCsobremaduras.observaciones">
               <td class="label-cell">Observaciones:</td>
-              <td class="value-cell">{{ caract.rcSobremaduras.observaciones }}</td>
+              <td class="value-cell">{{ caract.rCsobremaduras.observaciones }}</td>
             </tr>
           </table>
         </div>
 
         <!-- RC Inmaduras -->
-        <div class="info-section rc-section" *ngIf="caract.rcInmaduras">
+        <div class="info-section rc-section" *ngIf="caract.rCinmaduras">
           <h3 class="section-title">📊 RC Inmaduras</h3>
           <table class="info-table">
             <tr>
               <td class="label-cell">GBX:</td>
-              <td class="value-cell">{{ caract.rcInmaduras.gbx || '-' }}</td>
+              <td class="value-cell">{{ caract.rCinmaduras.gbx || '-' }}</td>
             </tr>
             <tr>
               <td class="label-cell">Promedio:</td>
-              <td class="value-cell">{{ caract.rcInmaduras.promedio || '-' }}</td>
+              <td class="value-cell">{{ caract.rCinmaduras.promedio || '-' }}</td>
             </tr>
-            <tr *ngIf="caract.rcInmaduras.observaciones">
+            <tr *ngIf="caract.rCinmaduras.observaciones">
               <td class="label-cell">Observaciones:</td>
-              <td class="value-cell">{{ caract.rcInmaduras.observaciones }}</td>
+              <td class="value-cell">{{ caract.rCinmaduras.observaciones }}</td>
             </tr>
           </table>
         </div>
 
         <!-- RC Maduras -->
-        <div class="info-section rc-section" *ngIf="caract.rcMaduras">
+        <div class="info-section rc-section" *ngIf="caract.rCmaduras">
           <h3 class="section-title">📊 RC Maduras</h3>
           <table class="info-table">
             <tr>
               <td class="label-cell">GBX:</td>
-              <td class="value-cell">{{ caract.rcMaduras.gbx || '-' }}</td>
+              <td class="value-cell">{{ caract.rCmaduras.gbx || '-' }}</td>
             </tr>
             <tr>
               <td class="label-cell">Promedio:</td>
-              <td class="value-cell">{{ caract.rcMaduras.promedio || '-' }}</td>
+              <td class="value-cell">{{ caract.rCmaduras.promedio || '-' }}</td>
             </tr>
-            <tr *ngIf="caract.rcMaduras.observaciones">
+            <tr *ngIf="caract.rCmaduras.observaciones">
               <td class="label-cell">Observaciones:</td>
-              <td class="value-cell">{{ caract.rcMaduras.observaciones }}</td>
+              <td class="value-cell">{{ caract.rCmaduras.observaciones }}</td>
             </tr>
           </table>
         </div>

@@ -28,6 +28,7 @@
   font-size: 2rem;
   margin: 0 0 8px 0;
   font-weight: 600;
+  color: white;
 }
 
 .subtitle {
@@ -471,7 +472,8 @@
 .registros-tabla {
   background: white;
   border-radius: 12px;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   box-shadow: 0 4px 8px rgba(74, 45, 26, 0.1);
   margin-bottom: 24px;
 }

@@ -160,6 +160,10 @@ namespace CoffeeBeanFlowAPI.Migrations
                         .HasColumnType("numeric")
                         .HasColumnName("c1negrop");
 
+                    b.Property<decimal?>("C2agrioP")
+                        .HasColumnType("numeric")
+                        .HasColumnName("c2agriop");
+
                     b.Property<decimal?>("C2averanado")
                         .HasColumnType("numeric")
                         .HasColumnName("c2averanado");
@@ -191,6 +195,10 @@ namespace CoffeeBeanFlowAPI.Migrations
                     b.Property<decimal?>("C2mordido")
                         .HasColumnType("numeric")
                         .HasColumnName("c2mordido");
+
+                    b.Property<decimal?>("C2negroP")
+                        .HasColumnType("numeric")
+                        .HasColumnName("c2negrop");
 
                     b.Property<decimal?>("C2partido")
                         .HasColumnType("numeric")
@@ -240,8 +248,8 @@ namespace CoffeeBeanFlowAPI.Migrations
                         .HasColumnType("numeric")
                         .HasColumnName("diecisiete");
 
-                    b.Property<decimal?>("FFreposo")
-                        .HasColumnType("numeric")
+                    b.Property<DateTime?>("FFreposo")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("ffreposo");
 
                     b.Property<decimal?>("Limpio")

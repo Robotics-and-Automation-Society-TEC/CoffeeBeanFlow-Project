@@ -19,7 +19,6 @@
     <div class="catacion-card" *ngFor="let catacion of cataciones">
       <div class="card-header">
         <span class="id-text">LOTE: {{ catacion.nlote || 'Sin lote' }}</span>
-        <span class="estado-text">{{ getEstadoCalidad(catacion.pfinales) }} {{ catacion.pfinales }}</span>
       </div>
 
       <div class="card-body">
@@ -27,10 +26,6 @@
         <div class="info-section">
           <h3 class="section-title">📋 Información General</h3>
           <table class="info-table">
-            <tr class="highlight-row">
-              <td class="label-cell">Puntos Finales:</td>
-              <td class="value-cell primary-value">{{ catacion.pfinales || '-' }}</td>
-            </tr>
             <tr>
               <td class="label-cell">Limpio:</td>
               <td class="value-cell">{{ catacion.limpio ? (catacion.limpio + '%') : '-' }}</td>
@@ -40,8 +35,8 @@
               <td class="value-cell">{{ catacion.defectuoso ? (catacion.defectuoso + '%') : '-' }}</td>
             </tr>
             <tr>
-              <td class="label-cell">CC Calidad:</td>
-              <td class="value-cell">{{ catacion.cccalidad ? (catacion.cccalidad + '%') : '-' }}</td>
+              <td class="label-cell">Clasificación Calidad:</td>
+              <td class="value-cell">{{ catacion.cCcalidad ? (catacion.cCcalidad + '%') : '-' }}</td>
             </tr>
           </table>
         </div>
@@ -51,16 +46,16 @@
           <h3 class="section-title">🔥 Calidad y Tostado</h3>
           <table class="info-table">
             <tr>
-              <td class="label-cell">FF Reposo:</td>
-              <td class="value-cell">{{ catacion.ffreposo || '-' }}</td>
+              <td class="label-cell">Fecha Final de Reposo:</td>
+              <td class="value-cell">{{ catacion.fFreposo ? (catacion.fFreposo | date:'dd/MM/yyyy HH:mm') : '-' }}</td>
             </tr>
             <tr>
               <td class="label-cell">Quaker:</td>
               <td class="value-cell">{{ catacion.quaker || '-' }}</td>
             </tr>
             <tr>
-              <td class="label-cell">CC Verde:</td>
-              <td class="value-cell">{{ catacion.ccverde ? (catacion.ccverde + '%') : '-' }}</td>
+              <td class="label-cell">Clasificación Color en Verde:</td>
+              <td class="value-cell">{{ catacion.cCverde ? (catacion.cCverde + '%') : '-' }}</td>
             </tr>
             <tr>
               <td class="label-cell">R Tostado:</td>

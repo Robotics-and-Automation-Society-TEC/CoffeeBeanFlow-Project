@@ -98,7 +98,14 @@ export class CatacionFormComponent implements OnInit {
       this.catacionService.obtenerPorId(this.idCatacion).subscribe({
         next: (catacion) => {
           console.log('Catación cargada:', catacion);
-          this.catacionForm.patchValue(catacion);
+          
+          // Formatear fFreposo para el input datetime-local
+          const catacionFormateada = {
+            ...catacion,
+            fFreposo: catacion.fFreposo ? this.formatDateForInput(catacion.fFreposo) : null
+          };
+          
+          this.catacionForm.patchValue(catacionFormateada);
           
           // Cargar rondas existentes
           if (catacion.rondas && catacion.rondas.length > 0) {
@@ -168,13 +175,13 @@ export class CatacionFormComponent implements OnInit {
       // Atributos simples
       limpio: [null, [Validators.min(0), Validators.max(100)]],
       defectuoso: [null, [Validators.min(0), Validators.max(100)]],
-      ffreposo: [null, [Validators.min(0)]],
+      fFreposo: [null],
       overde: [null, [Validators.min(0)]],
       quaker: [null, [Validators.min(0)]],
-      ccverde: [null, [Validators.min(0), Validators.max(100)]],
+      cCverde: [null, [Validators.min(0), Validators.max(100)]],
       rtostado: [null, [Validators.min(0), Validators.max(100)]],
       dfueste: [null, [Validators.min(0)]],
-      cccalidad: [null, [Validators.min(0), Validators.max(100)]],
+      cCcalidad: [null, [Validators.min(0), Validators.max(100)]],
       
       // Atributos C1
       c1agrio: [null, [Validators.min(0)]],
@@ -182,9 +189,7 @@ export class CatacionFormComponent implements OnInit {
       c1cerezaseca: [null, [Validators.min(0)]],
       c1negro: [null, [Validators.min(0)]],
       c1insectos: [null, [Validators.min(0)]],
-      c1negrop: [null, [Validators.min(0)]],
-      c1agriop: [null, [Validators.min(0)]],
-      c1me: [null, [Validators.min(0)]],
+      c1ME: [null, [Validators.min(0)]],
       
       // Atributos C2
       c2flotador: [null, [Validators.min(0)]],
@@ -200,8 +205,9 @@ export class CatacionFormComponent implements OnInit {
       
       // C2PCM
       c2partido: [null, [Validators.min(0)]],
-      c2cortado: [null, [Validators.min(0)]],
       c2mordido: [null, [Validators.min(0)]],
+      c2negroP: [null, [Validators.min(0)]],
+      c2agrioP: [null, [Validators.min(0)]],
       
       // Zaranda
       tresSobreDieciseis: [null, [Validators.min(0), Validators.max(100)]],
@@ -223,9 +229,6 @@ export class CatacionFormComponent implements OnInit {
       tonagton75: [null, [Validators.min(0), Validators.max(100)]],
       tonagton85: [null, [Validators.min(0), Validators.max(100)]],
       tonagton95: [null, [Validators.min(0), Validators.max(100)]],
-      
-      // Atributo derivado
-      pfinales: [null, [Validators.min(0), Validators.max(100)]],
       
       // FormArray para Rondas (1:N)
       rondas: this.fb.array([])
@@ -261,6 +264,23 @@ export class CatacionFormComponent implements OnInit {
     this.cargando = true;
     const datos = this.catacionForm.value;
 
+    console.log('=== GUARDAR CATACIÓN ===');
+    console.log('Datos del formulario antes de conversión:', datos);
+    console.log('fFreposo antes:', datos.fFreposo);
+    console.log('cCverde:', datos.cCverde);
+    console.log('cCcalidad:', datos.cCcalidad);
+    console.log('c1ME:', datos.c1ME);
+    console.log('c2negroP:', datos.c2negroP);
+    console.log('c2agrioP:', datos.c2agrioP);
+
+    // Convertir fFreposo a ISO string si existe
+    if (datos.fFreposo) {
+      datos.fFreposo = new Date(datos.fFreposo).toISOString();
+      console.log('fFreposo después de conversión:', datos.fFreposo);
+    }
+
+    console.log('Datos completos a enviar:', JSON.stringify(datos, null, 2));
+
     if (this.modoEdicion && this.idCatacion) {
       datos.idCatacion = this.idCatacion;
       this.catacionService.actualizar(this.idCatacion, datos).subscribe({
@@ -293,5 +313,15 @@ export class CatacionFormComponent implements OnInit {
 
   cancelar(): void {
     this.router.navigate(['/catacion']);
+  }
+
+  private formatDateForInput(dateString: string): string {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
   }
 }

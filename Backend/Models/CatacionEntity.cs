@@ -22,7 +22,7 @@ namespace Backend.Models
         public decimal? Defectuoso { get; set; }
 
         [Column("ffreposo")]
-        public decimal? FFreposo { get; set; }
+        public DateTime? FFreposo { get; set; }
 
         [Column("overde")]
         public decimal? Overde { get; set; }
@@ -57,12 +57,6 @@ namespace Backend.Models
 
         [Column("c1insectos")]
         public decimal? C1insectos { get; set; }
-
-        [Column("c1negrop")]
-        public decimal? C1negroP { get; set; }
-
-        [Column("c1agriop")]
-        public decimal? C1agrioP { get; set; }
 
         [Column("c1me")]
         public decimal? C1ME { get; set; }
@@ -102,6 +96,12 @@ namespace Backend.Models
 
         [Column("c2mordido")]
         public decimal? C2mordido { get; set; }
+
+        [Column("c2negrop")]
+        public decimal? C2negroP { get; set; }
+
+        [Column("c2agriop")]
+        public decimal? C2agrioP { get; set; }
 
         // Atributo compuesto Zaranda
         [Column("tres_sobre_dieciseis")]

@@ -14,7 +14,7 @@ export interface Bodega {
   hinicial: number | null;
   dPergamino: number | null;
   dBellota: number | null;
-  finicio_reposo: string | null;  // DateTime en formato ISO
+  finicioReposo: string | null;  // DateTime en formato ISO
   cantidadSacos: number | null;
   pmhRelativa: number | null;
   pmtInterna: number | null;
@@ -43,7 +43,7 @@ export interface CreateBodegaDto {
   hinicial?: number | null;
   dPergamino?: number | null;
   dBellota?: number | null;
-  finicio_reposo?: string | null;
+  finicioReposo?: string | null;
   cantidadSacos?: number | null;
   pmhRelativa?: number | null;
   pmtInterna?: number | null;
@@ -62,7 +62,7 @@ export interface UpdateBodegaDto {
   hinicial?: number | null;
   dPergamino?: number | null;
   dBellota?: number | null;
-  finicio_reposo?: string | null;
+  finicioReposo?: string | null;
   cantidadSacos?: number | null;
   pmhRelativa?: number | null;
   pmtInterna?: number | null;

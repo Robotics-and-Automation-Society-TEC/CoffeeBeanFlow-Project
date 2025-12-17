@@ -221,12 +221,12 @@
 .table-footer {
   margin-top: var(--space-lg);
   text-align: right;
-  color: var(--color-gray-600);
+  color: var(--color-white);
   font-size: var(--font-size-sm);
 }
 
 .table-footer strong {
-  color: var(--color-primary);
+  color: var(--color-white);
 }
 
 /* Responsive */

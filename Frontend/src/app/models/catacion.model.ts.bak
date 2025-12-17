@@ -11,13 +11,13 @@ export interface Catacion {
   // Atributos simples
   limpio: number | null;
   defectuoso: number | null;
-  fFreposo: string | null;
+  ffreposo: string | null;
   overde: number | null;
   quaker: number | null;
-  cCverde: number | null;
+  ccverde: number | null;
   rtostado: number | null;
   dfueste: number | null;
-  cCcalidad: number | null;
+  cccalidad: number | null;
   
   // Atributos C1 (Categoría 1)
   c1agrio: number | null;
@@ -25,7 +25,7 @@ export interface Catacion {
   c1cerezaseca: number | null;
   c1negro: number | null;
   c1insectos: number | null;
-  c1ME: number | null;
+  c1me: number | null;
   
   // Atributos C2 (Categoría 2)
   c2flotador: number | null;
@@ -87,6 +87,8 @@ export interface CreateCatacionDto {
   c1cerezaseca: number | null;
   c1negro: number | null;
   c1insectos: number | null;
+  c1negrop: number | null;
+  c1agriop: number | null;
   c1me: number | null;
   c2flotador: number | null;
   c2averanado: number | null;

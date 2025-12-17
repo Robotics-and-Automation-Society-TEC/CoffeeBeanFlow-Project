@@ -50,9 +50,9 @@ export class BodegaFormComponent implements OnInit {
       hinicial: [null, [Validators.min(0), Validators.max(100)]],
       dPergamino: [null, [Validators.min(0), Validators.max(1)]],
       dBellota: [null, [Validators.min(0), Validators.max(1)]],
-      finicio_reposo: [null],
+      finicioReposo: [null],
       cantidadSacos: [null, [Validators.min(0)]],
-      pmhRelativa: [null, [Validators.min(0), Validators.max(1)]],
+      pmhRelativa: [null, [Validators.min(0)]],
       pmtInterna: [null],
       pmtExterna: [null]
     });
@@ -81,7 +81,7 @@ export class BodegaFormComponent implements OnInit {
           hinicial: bodega.hinicial,
           dPergamino: bodega.dPergamino,
           dBellota: bodega.dBellota,
-          finicio_reposo: bodega.finicio_reposo ? this.formatDateForInput(bodega.finicio_reposo) : null,
+          finicioReposo: bodega.finicioReposo ? this.formatDateForInput(bodega.finicioReposo) : null,
           cantidadSacos: bodega.cantidadSacos,
           pmhRelativa: bodega.pmhRelativa,
           pmtInterna: bodega.pmtInterna,
@@ -107,9 +107,23 @@ export class BodegaFormComponent implements OnInit {
   }
 
   onSubmit(): void {
+    console.log('=== INICIO onSubmit BODEGA ===');
+    console.log('Formulario válido:', this.bodegaForm.valid);
+    console.log('Formulario inválido:', this.bodegaForm.invalid);
+    console.log('Errores del formulario:', this.bodegaForm.errors);
+    
     if (this.bodegaForm.invalid) {
+      console.log('Formulario inválido, marcando campos como tocados');
       this.bodegaForm.markAllAsTouched();
       this.errorMessage = 'Por favor, completa todos los campos requeridos';
+      
+      // Log de campos inválidos
+      Object.keys(this.bodegaForm.controls).forEach(key => {
+        const control = this.bodegaForm.get(key);
+        if (control?.invalid) {
+          console.log(`Campo inválido: ${key}`, control.errors);
+        }
+      });
       return;
     }
 
@@ -117,8 +131,10 @@ export class BodegaFormComponent implements OnInit {
     this.errorMessage = '';
 
     const formValue = this.bodegaForm.value;
+    console.log('Valores del formulario:', formValue);
 
     if (this.isEditMode && this.idBodega !== null) {
+      console.log('Modo edición - ID:', this.idBodega);
       const updateDto: UpdateBodegaDto = {
         idBodega: this.idBodega,
         nlote: formValue.nlote,
@@ -128,23 +144,30 @@ export class BodegaFormComponent implements OnInit {
         hinicial: formValue.hinicial,
         dPergamino: formValue.dPergamino,
         dBellota: formValue.dBellota,
-        finicio_reposo: formValue.finicio_reposo ? new Date(formValue.finicio_reposo).toISOString() : null,
+        finicioReposo: formValue.finicioReposo ? new Date(formValue.finicioReposo).toISOString() : null,
         cantidadSacos: formValue.cantidadSacos,
         pmhRelativa: formValue.pmhRelativa,
         pmtInterna: formValue.pmtInterna,
         pmtExterna: formValue.pmtExterna
       };
 
+      console.log('DTO de actualización:', JSON.stringify(updateDto, null, 2));
+      console.log('Enviando petición de actualización al backend...');
+
       this.bodegaService.actualizar(this.idBodega, updateDto).subscribe({
         next: () => {
+          console.log('Actualización exitosa');
           this.router.navigate(['/bodega']);
         },
         error: (error) => {
+          console.error('Error al actualizar:', error);
           this.errorMessage = error.message;
           this.isLoading = false;
         }
       });
     } else {
+      console.log('Modo creación');
+      
       const createDto: CreateBodegaDto = {
         nlote: formValue.nlote,
         wBellota: formValue.wBellota,
@@ -153,23 +176,30 @@ export class BodegaFormComponent implements OnInit {
         hinicial: formValue.hinicial,
         dPergamino: formValue.dPergamino,
         dBellota: formValue.dBellota,
-        finicio_reposo: formValue.finicio_reposo ? new Date(formValue.finicio_reposo).toISOString() : null,
+        finicioReposo: formValue.finicioReposo ? new Date(formValue.finicioReposo).toISOString() : null,
         cantidadSacos: formValue.cantidadSacos,
         pmhRelativa: formValue.pmhRelativa,
         pmtInterna: formValue.pmtInterna,
         pmtExterna: formValue.pmtExterna
       };
 
+      console.log('DTO de creación:', JSON.stringify(createDto, null, 2));
+      console.log('Enviando petición de creación al backend...');
+
       this.bodegaService.crear(createDto).subscribe({
         next: () => {
+          console.log('Creación exitosa');
           this.router.navigate(['/bodega']);
         },
         error: (error) => {
+          console.error('Error al crear:', error);
           this.errorMessage = error.message;
           this.isLoading = false;
         }
       });
     }
+    
+    console.log('=== FIN onSubmit BODEGA ===');
   }
 
   cancelar(): void {

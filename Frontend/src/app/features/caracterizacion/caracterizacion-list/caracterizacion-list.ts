@@ -69,8 +69,8 @@ export class CaracterizacionListComponent implements OnInit {
   }
 
   calcularCalidadGeneral(caract: Caracterizacion): number | null {
-    if (caract.eMaduracion === null) return null;
-    return caract.eMaduracion;
+    if (caract.emaduracion === null) return null;
+    return caract.emaduracion;
   }
 
   getEstadoCalidad(caract: Caracterizacion): string {
@@ -83,14 +83,14 @@ export class CaracterizacionListComponent implements OnInit {
   }
 
   tieneRC(caract: Caracterizacion): boolean {
-    return !!(caract.rcSobremaduras || caract.rcInmaduras || caract.rcMaduras);
+    return !!(caract.rCsobremaduras || caract.rCinmaduras || caract.rCmaduras);
   }
 
   contarRC(caract: Caracterizacion): number {
     let count = 0;
-    if (caract.rcSobremaduras) count++;
-    if (caract.rcInmaduras) count++;
-    if (caract.rcMaduras) count++;
+    if (caract.rCsobremaduras) count++;
+    if (caract.rCinmaduras) count++;
+    if (caract.rCmaduras) count++;
     return count;
   }
 }

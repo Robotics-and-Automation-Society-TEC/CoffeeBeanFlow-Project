@@ -49,8 +49,8 @@
         </div>
 
         <div class="form-field">
-          <label for="pfinales">Puntos Finales</label>
-          <input type="number" id="pfinales" formControlName="pfinales" step="0.01" min="0" max="100">
+          <label for="fFreposo">Fecha Final de Reposo</label>
+          <input type="datetime-local" id="fFreposo" formControlName="fFreposo">
         </div>
       </div>
     </div>
@@ -60,12 +60,7 @@
       <h2 class="section-title">🔥 Calidad y Tostado</h2>
       <div class="form-grid">
         <div class="form-field">
-          <label for="ffreposo">FF Reposo</label>
-          <input type="number" id="ffreposo" formControlName="ffreposo" step="0.01" min="0">
-        </div>
-
-        <div class="form-field">
-          <label for="overde">Olor Verde</label>
+          <label for="overde">Olor en Verde</label>
           <input type="number" id="overde" formControlName="overde" step="0.01" min="0">
         </div>
 
@@ -75,23 +70,23 @@
         </div>
 
         <div class="form-field">
-          <label for="ccverde">CC Verde (%)</label>
-          <input type="number" id="ccverde" formControlName="ccverde" step="0.01" min="0" max="100">
+          <label for="cCverde">Clasificación Color en Verde</label>
+          <input type="number" id="cCverde" formControlName="cCverde" step="0.01" min="0" max="100">
         </div>
 
         <div class="form-field">
-          <label for="rtostado">R Tostado (%)</label>
+          <label for="rtostado">Rendimiento Tostado (%)</label>
           <input type="number" id="rtostado" formControlName="rtostado" step="0.01" min="0" max="100">
         </div>
 
         <div class="form-field">
-          <label for="dfueste">D Fueste</label>
+          <label for="dfueste">Densidad Tueste</label>
           <input type="number" id="dfueste" formControlName="dfueste" step="0.01" min="0">
         </div>
 
         <div class="form-field">
-          <label for="cccalidad">CC Calidad (%)</label>
-          <input type="number" id="cccalidad" formControlName="cccalidad" step="0.01" min="0" max="100">
+          <label for="cCcalidad">Clasificación Calidad</label>
+          <input type="number" id="cCcalidad" formControlName="cCcalidad" step="0.01" min="0" max="100">
         </div>
       </div>
     </div>
@@ -106,7 +101,7 @@
         </div>
 
         <div class="form-field">
-          <label for="c1hongos">C1 Hongos</label>
+          <label for="c1hongos">C1 Daños por Hongos</label>
           <input type="number" id="c1hongos" formControlName="c1hongos" step="0.01" min="0">
         </div>
 
@@ -121,23 +116,14 @@
         </div>
 
         <div class="form-field">
-          <label for="c1insectos">C1 Insectos</label>
+          <label for="c1insectos">C1 Insectos Severo</label>
           <input type="number" id="c1insectos" formControlName="c1insectos" step="0.01" min="0">
         </div>
 
         <div class="form-field">
-          <label for="c1negrop">C1 Negro P</label>
-          <input type="number" id="c1negrop" formControlName="c1negrop" step="0.01" min="0">
-        </div>
 
-        <div class="form-field">
-          <label for="c1agriop">C1 Agrio P</label>
-          <input type="number" id="c1agriop" formControlName="c1agriop" step="0.01" min="0">
-        </div>
-
-        <div class="form-field">
-          <label for="c1me">C1 ME</label>
-          <input type="number" id="c1me" formControlName="c1me" step="0.01" min="0">
+          <label for="c1ME">C1 Materia Extraña</label>
+          <input type="number" id="c1ME" formControlName="c1ME" step="0.01" min="0">
         </div>
       </div>
     </div>
@@ -182,23 +168,28 @@
         </div>
 
         <div class="form-field">
-          <label for="c2pulpa">C2 Pulpa</label>
+          <label for="c2pulpa">C2 Cáscara/Pulpa</label>
           <input type="number" id="c2pulpa" formControlName="c2pulpa" step="0.01" min="0">
         </div>
 
         <div class="form-field">
-          <label for="c2partido">C2 Partido</label>
+          <label for="c2partido">C2 Partido/Cortados</label>
           <input type="number" id="c2partido" formControlName="c2partido" step="0.01" min="0">
         </div>
 
         <div class="form-field">
-          <label for="c2cortado">C2 Cortado</label>
-          <input type="number" id="c2cortado" formControlName="c2cortado" step="0.01" min="0">
+          <label for="c2mordido">C2 Insectos</label>
+          <input type="number" id="c2mordido" formControlName="c2mordido" step="0.01" min="0">
         </div>
 
         <div class="form-field">
-          <label for="c2mordido">C2 Mordido</label>
-          <input type="number" id="c2mordido" formControlName="c2mordido" step="0.01" min="0">
+          <label for="c2negroP">C2 Negro Parcial</label>
+          <input type="number" id="c2negroP" formControlName="c2negroP" step="0.01" min="0">
+        </div>
+
+        <div class="form-field">
+          <label for="c2agrioP">C2 Agrio Parcial</label>
+          <input type="number" id="c2agrioP" formControlName="c2agrioP" step="0.01" min="0">
         </div>
       </div>
     </div>
