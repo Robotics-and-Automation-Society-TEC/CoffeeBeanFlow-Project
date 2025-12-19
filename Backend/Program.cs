@@ -20,7 +20,10 @@ builder.Services.AddDbContext<CoffeeBeanFlowDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 // Configurar CORS
-var allowedOrigins = new[] { "http://localhost:4200", "http://localhost:4201" };
+var allowedOrigins = new[] { 
+    "http://localhost:4200", 
+    "http://192.168.0.47:4200",
+    "http://localhost:4201" };
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularApp", policy =>

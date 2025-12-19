@@ -8,7 +8,8 @@ import { catchError, retry } from 'rxjs/operators';
 })
 export class ApiService {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:5253/api';
+  private baseUrl = 'http://192.168.0.47:5253/api';
+  //private baseUrl = 'http://localhost:5253/api';
 
   /**
    * Crear un nuevo registro

@@ -173,7 +173,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 2. Selecciona **PostgreSQL 16** para Windows x64
 3. Ejecuta el instalador (`.exe`)
 4. Durante la instalación:
-   - **Password:** Configura una contraseña para el usuario `postgres` (anótala, la necesitarás)
+   - **Password:** Configura una contraseña para el usuario `postgres` (anótala, la necesitarás) (La contraseña puede ser 1234)
    - **Port:** Deja el puerto por defecto `5432`
    - **Locale:** Puedes dejarlo por defecto o seleccionar español
    - **Components:** Asegúrate de instalar:
