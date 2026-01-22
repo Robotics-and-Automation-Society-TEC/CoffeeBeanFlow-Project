@@ -1,9 +1,0 @@
-dotenv
-langchain
-langchain-text-splitters
-langgraph
-langchain[openai]
-langchain-openai
-langchain-qdrant
-langchain-community
-pypdf
