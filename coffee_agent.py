@@ -23,10 +23,7 @@ from langchain_openai import OpenAIEmbeddings
 # Using text-embedding-3-small
 embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
 
-"""### Qdrant Vector Database
-
-Load Qdrant cluster
-"""
+"""Qdrant Vector Database"""
 
 from qdrant_client.models import Distance, VectorParams
 from langchain_qdrant import QdrantVectorStore
@@ -58,10 +55,7 @@ vector_store = QdrantVectorStore(
     embedding=embeddings,
 )
 
-"""### SQL database
-
-Download sample database - For testing
-"""
+"""SQL database"""
 
 import requests, pathlib
 
@@ -84,7 +78,7 @@ from langchain_community.utilities import SQLDatabase
 
 db = SQLDatabase.from_uri("sqlite:///Chinook.db")
 
-"""### Create tools"""
+"""Create tools"""
 
 from langchain.tools import tool
 
@@ -107,10 +101,7 @@ toolkit = SQLDatabaseToolkit(db=db, llm=model)
 # This is actually 4 tools: query, schema, list_tables, query_checker (agent picks ig)
 sql_tools = toolkit.get_tools()
 
-"""## Test chatbot
-
-Input system prompt
-"""
+"""Test chatbot"""
 
 # Create actual agent
 from langchain.agents import create_agent
