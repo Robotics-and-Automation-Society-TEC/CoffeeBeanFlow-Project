@@ -1,7 +1,21 @@
-# Get API keys
+# CoffeeBeanFlow
+
+# This code creates an AI agent as a chatbot for all things coffee related
+
+# It has 2 different tools:
+# RAG tool for general info about coffee (mostly in Costa Rica)
+# SQL tool for our own database of our micromill
+
+# As well as general gpt-4.1 knowledge
+
+# ---------------------------------------------------------------------------
+
+# GET API KEYS
+
 import os
 from dotenv import load_dotenv
 
+# Import from .env file
 load_dotenv()
 
 # LangSmith
@@ -10,20 +24,22 @@ os.environ["LANGSMITH_API_KEY"] = os.getenv("LangSmith_API_Key")
 # OpenAI
 os.environ["OPENAI_API_KEY"] = os.getenv('OpenAI_Key')
 
-# Create llm from OpenAI
+# ---------------------------------------------------------------------------
+
+# CHOOSE MODELS - OPENAI
+
 from langchain_openai import ChatOpenAI
-
-# Using gpt-4.1-nano
-model = ChatOpenAI(model="gpt-4.1-nano")
-
-"""Embedding Model"""
-
 from langchain_openai import OpenAIEmbeddings
 
-# Using text-embedding-3-small
+# Using gpt-4.1-nano as LLM
+model = ChatOpenAI(model="gpt-4.1-nano")
+
+# Using text-embedding-3-small for embeddings
 embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
 
-"""Qdrant Vector Database"""
+# -------------------------------------------------------------------------------------------
+
+# QDRANT VECTOR DATABASE
 
 from qdrant_client.models import Distance, VectorParams
 from langchain_qdrant import QdrantVectorStore
@@ -55,11 +71,14 @@ vector_store = QdrantVectorStore(
     embedding=embeddings,
 )
 
-"""SQL database"""
+# ----------------------------------------------------------------------------------
+
+# SQL DATABASE
 
 import requests, pathlib
+from langchain_community.utilities import SQLDatabase
 
-# Download from web page
+# Download from web page - Test only
 url = "https://storage.googleapis.com/benchmarks-artifacts/chinook/Chinook.db"
 local_path = pathlib.Path("Chinook.db")
 
@@ -74,19 +93,20 @@ else:
     else:
         print(f"Failed to download the file. Status code: {response.status_code}")
 
-from langchain_community.utilities import SQLDatabase
-
 db = SQLDatabase.from_uri("sqlite:///Chinook.db")
 
-"""Create tools"""
+# ----------------------------------------------------------------------------------
+
+# CREATE TOOLS
 
 from langchain.tools import tool
+from langchain_community.agent_toolkits import SQLDatabaseToolkit
 
 # Create first tool - Retrieve info from pdfs (RAG)
 @tool(response_format="content_and_artifact")
 def retrieve_context(query: str):
     "Retrieve information to help answer a query."
-    retrieved_docs = vector_store.similarity_search(query, k=2)
+    retrieved_docs = vector_store.similarity_search(query, k=3)
     serialized = "\n\n".join(
         (f"Source: {doc.metadata}\nContent: {doc.page_content}")
         for doc in retrieved_docs
@@ -94,16 +114,12 @@ def retrieve_context(query: str):
     return serialized, retrieved_docs
 
 # Create second tool - Retrieve info from sql database
-from langchain_community.agent_toolkits import SQLDatabaseToolkit
-
 toolkit = SQLDatabaseToolkit(db=db, llm=model)
+sql_tools = toolkit.get_tools() # This is actually 4 tools: query, schema, list_tables, query_checker
 
-# This is actually 4 tools: query, schema, list_tables, query_checker (agent picks ig)
-sql_tools = toolkit.get_tools()
+# ----------------------------------------------------------------------------------------------------
 
-"""Test chatbot"""
-
-# Create actual agent
+# CREATE AGENT
 from langchain.agents import create_agent
 from langgraph.checkpoint.memory import InMemorySaver
 
@@ -115,7 +131,7 @@ tools = [retrieve_context] + sql_tools
 
 # This is very important - Create a custom system promt
 system_prompt = """
-You are an agent tasked with helping people who work with coffee harvesting and processing in the countryside in Costa Rica. Speak accordingly.
+You are an agent tasked with helping people who work with coffee harvesting and processing in the countryside in Costa Rica. Speak accordingly, always in Spanish.
 
 You have access to two tools, use both as needed.
 
@@ -141,30 +157,28 @@ Then you should query the schema of the most relevant tables.
     top_k=5,
 )
 
-# Short-term memory
+# Initialize agent
 agent = create_agent(model, tools, checkpointer=checkpointer, system_prompt=system_prompt)
-# No memory
-#agent = create_agent(model, tools, system_prompt=system_prompt)
 
-"""Input query - Get agent response"""
+# ------------------------------------------------------------------------------------------
+
+# INPUT QUERY - GET AGENT RESPONSE
+
+print("\nChatbot ready!")
 
 # General test
-query = (
-    #"¿Cuáles bandas de rock tienen más albums?"
-    #"¿Cuántos albums tiene cada una?"
-    #"¡Hola!"
-    #"¿Cómo es la finca Juancito?"
-    "¿Ya me puedo ir a dormir?"
-)
+while True:
+    query = input("\nInput query: ")
 
-for event in agent.stream(
-    {
-      "messages": [{
-        "role": "user",
-        "content": query
-      }]
-    },
-    {"configurable": {"thread_id": "1"}},
-    stream_mode="values",
-  ):
-    event["messages"][-1].pretty_print()
+    # Print tool use and chatbot response
+    for event in agent.stream(
+        {
+        "messages": [{
+            "role": "user",
+            "content": query
+        }]
+        },
+        {"configurable": {"thread_id": "1"}},
+        stream_mode="values",
+    ):
+        event["messages"][-1].pretty_print()
