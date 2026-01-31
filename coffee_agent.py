@@ -8,129 +8,109 @@
 
 # As well as general gpt-4.1 knowledge
 
-# ---------------------------------------------------------------------------
-
-# GET API KEYS
-
 import os
+import argparse
 from dotenv import load_dotenv
-
-# Import from .env file
-load_dotenv()
-
-# LangSmith
-os.environ["LANGSMITH_TRACING"] = "true"
-os.environ["LANGSMITH_API_KEY"] = os.getenv("LangSmith_API_Key")
-# OpenAI
-os.environ["OPENAI_API_KEY"] = os.getenv('OpenAI_Key')
-
-# ---------------------------------------------------------------------------
-
-# CHOOSE MODELS - OPENAI
 
 from langchain_openai import ChatOpenAI
 from langchain_openai import OpenAIEmbeddings
-
-# Using gpt-4.1-nano as LLM
-model = ChatOpenAI(model="gpt-4.1-nano")
-
-# Using text-embedding-3-small for embeddings
-embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
-
-# -------------------------------------------------------------------------------------------
-
-# QDRANT VECTOR DATABASE
 
 from qdrant_client.models import Distance, VectorParams
 from langchain_qdrant import QdrantVectorStore
 from qdrant_client import QdrantClient
 
-# Load cloud api
-client = QdrantClient(
-    url="https://6fceb271-9e8c-4e12-82c0-f244c9c3aa3e.us-east4-0.gcp.cloud.qdrant.io:6333",
-    api_key=os.getenv('Qdrant_Key'),
-)
+def _load_env():
+    load_dotenv()
+    os.environ["LANGSMITH_TRACING"] = "true"
+    os.environ["LANGSMITH_API_KEY"] = os.getenv("LangSmith_API_Key")
+    os.environ["OPENAI_API_KEY"] = os.getenv('OpenAI_Key')
 
-# Get length of embedding vector
-vector_size = len(embeddings.embed_query("sample text"))
 
-# Create RAG collection
-if not client.collection_exists("RAG"):
-    client.create_collection(
+def _build_agent(quiet: bool = False):
+    # Using gpt-4.1-nano as LLM
+    model = ChatOpenAI(model="gpt-4.1-nano")
+
+    # Using text-embedding-3-small for embeddings
+    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+
+    # Load cloud api
+    client = QdrantClient(
+        url="https://6fceb271-9e8c-4e12-82c0-f244c9c3aa3e.us-east4-0.gcp.cloud.qdrant.io:6333",
+        api_key=os.getenv('Qdrant_Key'),
+    )
+
+    # Get length of embedding vector
+    vector_size = len(embeddings.embed_query("sample text"))
+
+    # Create RAG collection
+    if not client.collection_exists("RAG"):
+        client.create_collection(
+            collection_name="RAG",
+            vectors_config=VectorParams(size=vector_size, distance=Distance.COSINE)
+        )
+
+    # Load cluster
+    vector_store = QdrantVectorStore(
+        client=client,
         collection_name="RAG",
-        vectors_config=VectorParams(size=vector_size, distance=Distance.COSINE)
+        embedding=embeddings,
     )
 
-# Check current collections
-print(client.get_collections())
+    # SQL DATABASE
+    import requests, pathlib
+    from langchain_community.utilities import SQLDatabase
 
-# Load cluster
-vector_store = QdrantVectorStore(
-    client=client,
-    collection_name="RAG",
-    embedding=embeddings,
-)
+    # Download from web page - Test only
+    url = "https://storage.googleapis.com/benchmarks-artifacts/chinook/Chinook.db"
+    local_path = pathlib.Path("Chinook.db")
 
-# ----------------------------------------------------------------------------------
-
-# SQL DATABASE
-
-import requests, pathlib
-from langchain_community.utilities import SQLDatabase
-
-# Download from web page - Test only
-url = "https://storage.googleapis.com/benchmarks-artifacts/chinook/Chinook.db"
-local_path = pathlib.Path("Chinook.db")
-
-# Create path
-if local_path.exists():
-    print(f"{local_path} already exists, skipping download.")
-else:
-    response = requests.get(url)
-    if response.status_code == 200:
-        local_path.write_bytes(response.content)
-        print(f"File downloaded and saved as {local_path}")
+    # Create path
+    if local_path.exists():
+        if not quiet:
+            print(f"{local_path} already exists, skipping download.")
     else:
-        print(f"Failed to download the file. Status code: {response.status_code}")
+        response = requests.get(url)
+        if response.status_code == 200:
+            local_path.write_bytes(response.content)
+            if not quiet:
+                print(f"File downloaded and saved as {local_path}")
+        else:
+            if not quiet:
+                print(f"Failed to download the file. Status code: {response.status_code}")
 
-db = SQLDatabase.from_uri("sqlite:///Chinook.db")
+    db = SQLDatabase.from_uri("sqlite:///Chinook.db")
 
-# ----------------------------------------------------------------------------------
+    # CREATE TOOLS
+    from langchain.tools import tool
+    from langchain_community.agent_toolkits import SQLDatabaseToolkit
 
-# CREATE TOOLS
+    # Create first tool - Retrieve info from pdfs (RAG)
+    @tool(response_format="content_and_artifact")
+    def retrieve_context(query: str):
+        "Retrieve information to help answer a query."
+        retrieved_docs = vector_store.similarity_search(query, k=3)
+        serialized = "\n\n".join(
+            (f"Source: {doc.metadata}\nContent: {doc.page_content}")
+            for doc in retrieved_docs
+        )
+        return serialized, retrieved_docs
 
-from langchain.tools import tool
-from langchain_community.agent_toolkits import SQLDatabaseToolkit
+    # Create second tool - Retrieve info from sql database
+    toolkit = SQLDatabaseToolkit(db=db, llm=model)
+    sql_tools = toolkit.get_tools() # This is actually 4 tools: query, schema, list_tables, query_checker
 
-# Create first tool - Retrieve info from pdfs (RAG)
-@tool(response_format="content_and_artifact")
-def retrieve_context(query: str):
-    "Retrieve information to help answer a query."
-    retrieved_docs = vector_store.similarity_search(query, k=3)
-    serialized = "\n\n".join(
-        (f"Source: {doc.metadata}\nContent: {doc.page_content}")
-        for doc in retrieved_docs
-    )
-    return serialized, retrieved_docs
+    # CREATE AGENT
+    from langchain.agents import create_agent
+    from langgraph.checkpoint.memory import InMemorySaver
 
-# Create second tool - Retrieve info from sql database
-toolkit = SQLDatabaseToolkit(db=db, llm=model)
-sql_tools = toolkit.get_tools() # This is actually 4 tools: query, schema, list_tables, query_checker
+    # Allow for short-term memory
+    checkpointer = InMemorySaver()
 
-# ----------------------------------------------------------------------------------------------------
+    # Load tools
+    tools = [retrieve_context] + sql_tools
 
-# CREATE AGENT
-from langchain.agents import create_agent
-from langgraph.checkpoint.memory import InMemorySaver
-
-# Allow for short-term memory
-checkpointer = InMemorySaver()
-
-# Load tools
-tools = [retrieve_context] + sql_tools
-
-# This is very important - Create a custom system promt
-system_prompt = """
+    # This is very important - Create a custom system promt
+    system_prompt = """
 You are an agent tasked with helping people who work with coffee harvesting and processing in the countryside in Costa Rica. Speak accordingly, always in Spanish.
 
 You have access to two tools, use both as needed.
@@ -156,21 +136,13 @@ Then you should query the schema of the most relevant tables.
     dialect=db.dialect,
     top_k=5,
 )
-
-# Initialize agent
-agent = create_agent(model, tools, checkpointer=checkpointer, system_prompt=system_prompt)
+    # Initialize agent
+    return create_agent(model, tools, checkpointer=checkpointer, system_prompt=system_prompt)
 
 # ------------------------------------------------------------------------------------------
 
-# INPUT QUERY - GET AGENT RESPONSE
-
-print("\nChatbot ready!")
-
-# General test
-while True:
-    query = input("\nInput query: ")
-
-    # Print tool use and chatbot response
+def get_response(agent, query: str) -> str:
+    response_text = ""
     for event in agent.stream(
         {
         "messages": [{
@@ -181,4 +153,34 @@ while True:
         {"configurable": {"thread_id": "1"}},
         stream_mode="values",
     ):
-        event["messages"][-1].pretty_print()
+        last_message = event["messages"][-1]
+        if hasattr(last_message, "content"):
+            response_text = last_message.content
+    return response_text
+
+
+if __name__ == "__main__":
+    _load_env()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--query", type=str, default="")
+    args = parser.parse_args()
+
+    agent = _build_agent(quiet=bool(args.query))
+
+    if args.query:
+        print(get_response(agent, args.query), flush=True)
+    else:
+        print("\nChatbot ready!", flush=True)
+        while True:
+            query = input("\nInput query: ")
+            for event in agent.stream(
+                {
+                "messages": [{
+                    "role": "user",
+                    "content": query
+                }]
+                },
+                {"configurable": {"thread_id": "1"}},
+                stream_mode="values",
+            ):
+                event["messages"][-1].pretty_print()

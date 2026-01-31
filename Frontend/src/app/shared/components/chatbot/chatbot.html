@@ -1,0 +1,54 @@
+<div class="chatbot-container">
+  <button class="chatbot-fab" (click)="toggle()" [class.open]="isOpen">
+    <span *ngIf="!isOpen" class="fab-icon">💬</span>
+    <span *ngIf="isOpen" class="fab-icon">✖️</span>
+  </button>
+
+  <div class="chat-panel" [class.open]="isOpen" [@slideIn]>
+    <div class="chat-header">
+      <div class="brand">
+        <div class="avatar">☕</div>
+        <div class="title">
+          <div class="name">Asistente de Café</div>
+          <div class="status">●  En línea</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" (click)="clear()" title="Limpiar chat">🗑️</button>
+        <button class="icon-btn" (click)="toggle()" title="Cerrar">❌</button>
+      </div>
+    </div>
+
+    <div class="chat-messages">
+      <div *ngIf="messages.length === 0" class="empty-state">
+        Pregúntame sobre procesos de café, secado, catación o trazabilidad.
+      </div>
+
+      <div *ngFor="let msg of messages; let i = index" class="msg" [class.user]="msg.isUser" [@fadeIn]>
+        <div class="bubble">
+          <div class="text" [innerHTML]="formatMessage(msg.text)"></div>
+          <div class="time">{{ msg.time }}</div>
+        </div>
+      </div>
+
+      <div *ngIf="isLoading" class="msg">
+        <div class="bubble typing">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input">
+      <input
+        type="text"
+        [(ngModel)]="currentMessage"
+        placeholder="Escribe tu pregunta..."
+        [disabled]="isLoading"
+        (keyup.enter)="send()"
+      />
+      <button class="send-btn" (click)="send()" [disabled]="isLoading || !currentMessage.trim()">
+        ➤
+      </button>
+    </div>
+  </div>
+</div>
